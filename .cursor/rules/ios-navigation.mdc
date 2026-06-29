@@ -1,0 +1,60 @@
+---
+description: iOS-style hierarchical navigation — push/pop transitions and swipe-back
+alwaysApply: true
+globs: ["src/**/*.tsx", "src/**/*.ts"]
+---
+
+# iOS Navigation (Push / Pop)
+
+Use the shared navigation stack for **hierarchical drill-down** screens. Match Apple HIG navigation patterns.
+
+## When to use push vs modal
+
+| Pattern | API | Motion |
+|---------|-----|--------|
+| **Push** (list row, card tap, chevron link) | `push()` from `useNavigationStack()` | Enter from **right**, exit to **right** |
+| **Modal** (Send money, forms, alerts, sheets) | Kalep modal / separate overlay — **not** the nav stack | Present from bottom or fade |
+
+## Required API
+
+```tsx
+import { useNavigationStack } from "@/shared/navigation"
+
+const { push, pop, canPop } = useNavigationStack()
+
+// Open a detail screen
+push({
+  key: "transactions", // stable, unique per destination + params
+  render: () => <TransactionsScreen />,
+})
+
+// Back button
+pop()
+```
+
+**Rules:**
+- Never swap screens with `useState` + conditional render for hierarchical navigation
+- Always use stable `key` strings (include params: `card-controls:virtual`)
+- Use `render: () => <Screen />` so screens mount inside the navigation context
+- Stack screens must wire Back to `pop()` (or optional `onBack` override for tests)
+
+## Transition spec
+
+- **Push:** incoming screen `translateX(100%) → 0`; previous screen parallax `0 → -33%`
+- **Pop:** outgoing screen `translateX(0) → 100%`; previous screen `-33% → 0`
+- **Duration:** 350ms, easing `cubic-bezier(0.32, 0.72, 0, 1)`
+- **Swipe-back:** edge drag from leading ~20px; commit pop at ≥50% width
+- **Reduced motion:** opacity fade (~150ms), no horizontal slide
+
+## Adding a new screen
+
+1. Create the screen component under `src/features/<feature>/components/`
+2. From the parent screen, call `push({ key, render })` on tap
+3. Wire the screen's back action to `pop()`
+4. Do **not** add React Router unless URL routing is explicitly required
+
+## Reference
+
+- Module: `src/shared/navigation/`
+- Styles: `src/shared/styles/navigation.css`
+- First consumer: `src/pages/HomePage.tsx` → Card Controls

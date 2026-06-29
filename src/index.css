@@ -1,0 +1,64 @@
+@import "@fontsource-variable/inter";
+@import "@bolteu/kalep-react/src/components/Chip/Chip.css";
+@import "@bolteu/kalep-react/src/components/Badge/Badge.css";
+@import "@bolteu/kalep-react/src/components/Datepicker/Datepicker.css";
+@import "./shared/styles/tokens.css";
+@import "./shared/styles/navigation.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.__kalep [class*="bolt-font-"] {
+  font-family: var(--font-family), system-ui, sans-serif !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+  background: var(--device-bg);
+  color: var(--content-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+:is(*)::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.ffeature {
+  font-feature-settings:
+    "cv03" 1,
+    "cv04" 1,
+    "lnum" 1,
+    "pnum" 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  button:not([data-no-press]):not([role="tab"]):not([disabled]):active,
+  a[href]:not([data-no-press]):active,
+  [role="button"]:not([data-no-press]):not([aria-disabled="true"]):active {
+    transform: scale(0.975);
+    transition: transform 100ms ease-out;
+    transform-origin: center;
+  }
+}

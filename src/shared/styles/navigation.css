@@ -1,0 +1,123 @@
+:root {
+  --nav-duration: 350ms;
+  --nav-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --nav-parallax: 33%;
+}
+
+.nav-stack {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.nav-layer {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.nav-layer--top {
+  z-index: 2;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
+}
+
+.nav-layer--below {
+  z-index: 1;
+}
+
+@keyframes nav-push-top {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes nav-push-below {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(var(--nav-parallax) * -1));
+  }
+}
+
+@keyframes nav-pop-top {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes nav-pop-below {
+  from {
+    transform: translateX(calc(var(--nav-parallax) * -1));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes nav-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.nav-stack[data-direction="push"] .nav-layer--top {
+  animation: nav-push-top var(--nav-duration) var(--nav-ease) forwards;
+}
+
+.nav-stack[data-direction="push"] .nav-layer--below {
+  animation: nav-push-below var(--nav-duration) var(--nav-ease) forwards;
+}
+
+.nav-stack[data-direction="pop"] .nav-layer--top {
+  animation: nav-pop-top var(--nav-duration) var(--nav-ease) forwards;
+}
+
+.nav-stack[data-direction="pop"] .nav-layer--below {
+  animation: nav-pop-below var(--nav-duration) var(--nav-ease) forwards;
+}
+
+.nav-stack[data-direction="idle"] .nav-layer--top {
+  transform: translateX(0);
+}
+
+.nav-stack[data-direction="idle"] .nav-layer--below {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.nav-stack[data-direction="drag"] .nav-layer--below {
+  visibility: visible;
+  pointer-events: none;
+}
+
+.nav-stack[data-direction="drag"] .nav-layer--top {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-stack[data-direction="push"] .nav-layer--top,
+  .nav-stack[data-direction="pop"] .nav-layer--top {
+    animation: nav-fade-in 150ms ease forwards;
+    transform: none;
+  }
+
+  .nav-stack[data-direction="push"] .nav-layer--below,
+  .nav-stack[data-direction="pop"] .nav-layer--below {
+    animation: none;
+    transform: none;
+  }
+}

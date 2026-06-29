@@ -1,0 +1,30 @@
+:root {
+  --content-primary: var(--color-content-primary);
+  --content-secondary: var(--color-content-secondary);
+  --content-tertiary: var(--color-content-tertiary);
+  --content-action-primary: var(--color-content-action-primary);
+  --border-separator: var(--color-border-separator);
+  --layer-floor-1: var(--color-layer-floor-1);
+  --device-bg: var(--color-special-brand-alt);
+
+  --font-family: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-weight-regular: 450;
+  --font-weight-semibold: 650;
+
+  --shell-width: 100%;
+  --device-bezel-outer: #a0b39f;
+  --device-bezel-inner: #000000;
+  --device-screen-w: 24.5625rem;
+  --device-screen-h: 53.25rem;
+  --device-screen-radius: 2.25rem;
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+  --app-h: 100dvh;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --shell-width: var(--device-screen-w);
+    --app-h: var(--device-screen-h);
+  }
+}
