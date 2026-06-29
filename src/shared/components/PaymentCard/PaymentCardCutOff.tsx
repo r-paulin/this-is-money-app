@@ -1,11 +1,11 @@
 import boltLogo from "./assets/bolt-logo.svg"
 import { PaymentCardBadge } from "./PaymentCardBadge"
-import { PaymentCardDotPattern } from "./PaymentCardPattern"
 import {
   getBadgeLabel,
-  getCutOffBackground,
+  getCutOffBackgroundStyle,
   type PaymentCardCutOffProps,
 } from "./paymentCard.config"
+import { PaymentCardDotPattern } from "./PaymentCardPattern"
 
 export function PaymentCardCutOff({
   virtual = false,
@@ -37,9 +37,7 @@ export function PaymentCardCutOff({
     .filter(Boolean)
     .join(" ")
 
-  const style = {
-    backgroundImage: getCutOffBackground(virtual),
-  }
+  const style = getCutOffBackgroundStyle(virtual, extended)
 
   if (onClick) {
     return (

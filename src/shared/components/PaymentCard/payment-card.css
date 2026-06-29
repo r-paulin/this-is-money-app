@@ -1,0 +1,19 @@
+/* iOS-style opacity fade — UIKit default ~250ms ease-in-out */
+@keyframes payment-card-lock-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.payment-card-lock-overlay {
+  animation: payment-card-lock-fade-in 250ms cubic-bezier(0.42, 0, 0.58, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .payment-card-lock-overlay {
+    animation: none;
+  }
+}

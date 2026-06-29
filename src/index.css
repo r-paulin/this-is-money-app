@@ -55,8 +55,7 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   button:not([data-no-press]):not([role="tab"]):not([disabled]):active,
-  a[href]:not([data-no-press]):active,
-  [role="button"]:not([data-no-press]):not([aria-disabled="true"]):active {
+  a[href]:not([data-no-press]):active {
     transform: scale(0.975);
     transition: transform 100ms ease-out;
     transform-origin: center;

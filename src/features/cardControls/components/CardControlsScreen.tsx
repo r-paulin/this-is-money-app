@@ -1,13 +1,18 @@
 import { GhostButton, ListItemLayout } from "@bolteu/kalep-react"
 import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import LockOutlined from "@bolteu/kalep-react-icons/dist/LockOutlined"
+import UnlockOutlined from "@bolteu/kalep-react-icons/dist/UnlockOutlined"
 import { useState } from "react"
-import { getCardControlImage } from "../cardControlAssets"
 import {
   CARD_CONTROL_ITEMS,
   type CardControlActionId,
 } from "../data/cardControlItems"
 import type { CardType } from "@/features/home/home.types"
+import { PaymentCard } from "@/shared/components/PaymentCard"
+import { SwapSlot, TextSwap } from "@/shared/components/TextSwap"
 import { useNavigationStack } from "@/shared/navigation"
+
+type LockSwapKey = "lock" | "unlock"
 
 export interface CardControlsScreenProps {
   cardType: CardType
@@ -21,7 +26,6 @@ export function CardControlsScreen({
   const { pop } = useNavigationStack()
   const handleBack = onBack ?? pop
   const [locked, setLocked] = useState(false)
-  const cardImage = getCardControlImage(cardType)
 
   const handleAction = (id: CardControlActionId) => {
     console.info("[stub] Card control:", id, { cardType })
@@ -42,25 +46,27 @@ export function CardControlsScreen({
         </div>
 
         <div className="flex justify-center px-6 pb-6 pt-4">
-          <img
-            src={cardImage}
-            alt={`${cardType} card`}
-            width={345}
-            height={218}
-            className="h-[13.625rem] w-full max-w-[21.5625rem] rounded-[12px] object-cover object-center shadow-[0px_6px_12px_-2px_rgba(28,28,28,0.25),0px_3px_7px_-3px_rgba(28,28,28,0.3)]"
-          />
+          <PaymentCard virtual={cardType === "virtual"} locked={locked} />
         </div>
 
         <ul className="m-0 list-none p-0">
           {CARD_CONTROL_ITEMS.map((item, index) => {
-            const Icon = item.icon
             const isLast = index === CARD_CONTROL_ITEMS.length - 1
             const isLock = item.id === "lock"
+            const lockSwapKey: LockSwapKey = locked ? "unlock" : "lock"
 
             return (
               <li key={item.id}>
                 <ListItemLayout
-                  primary={item.primary}
+                  primary={
+                    isLock ? (
+                      <TextSwap
+                        value={lockSwapKey === "unlock" ? "Unlock card" : "Lock card"}
+                      />
+                    ) : (
+                      item.primary
+                    )
+                  }
                   separator={!isLast}
                   paddingStart={6}
                   paddingEnd={6}
@@ -71,9 +77,24 @@ export function CardControlsScreen({
                       ? () => setLocked((value) => !value)
                       : () => handleAction(item.id)
                   }
-                  renderStartSlot={() => (
-                    <Icon size="lg" className="text-secondary" />
-                  )}
+                  renderStartSlot={() =>
+                    isLock ? (
+                      <SwapSlot
+                        value={lockSwapKey}
+                        className="inline-flex items-center"
+                      >
+                        {(key) =>
+                          key === "unlock" ? (
+                            <LockOutlined size="lg" className="text-secondary" />
+                          ) : (
+                            <UnlockOutlined size="lg" className="text-secondary" />
+                          )
+                        }
+                      </SwapSlot>
+                    ) : (
+                      <item.icon size="lg" className="text-secondary" />
+                    )
+                  }
                 />
               </li>
             )

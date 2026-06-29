@@ -1,2 +1,3 @@
 export { PaymentCardCutOff } from "./PaymentCardCutOff"
-export type { PaymentCardCutOffProps } from "./paymentCard.config"
+export { PaymentCard } from "./PaymentCard"
+export type { PaymentCardCutOffProps, PaymentCardProps } from "./paymentCard.config"

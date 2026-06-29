@@ -31,7 +31,7 @@ export function MoreForYouList({ onMenuItemClick }: MoreForYouListProps) {
       padding={0}
       className="overflow-hidden !border-0"
     >
-      <List.Root>
+      <List.Root className="[&_li>div:hover]:!bg-layer-floor-1 [&_li>div:focus:hover]:!bg-layer-floor-1">
         {HOME_MENU_ITEMS.map((item, index) => {
           const Icon = MENU_ICONS[item.id]
           const isLast = index === HOME_MENU_ITEMS.length - 1
