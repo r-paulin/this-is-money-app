@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { CardControlsScreen } from "@/features/cardControls"
+import { CardControlsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
 import type { CardType } from "@/features/home/home.types"
 import { NavigationProvider, useNavigationStack } from "@/shared/navigation"
@@ -11,7 +11,7 @@ function HomeRoute() {
     (cardType: CardType) => {
       push({
         key: `card-controls:${cardType}`,
-        render: () => <CardControlsScreen cardType={cardType} />,
+        render: () => <CardControlsGate cardType={cardType} />,
       })
     },
     [push],

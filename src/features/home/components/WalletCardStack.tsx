@@ -3,7 +3,7 @@ import { PaymentCardCutOff } from "@/shared/components/PaymentCard"
 import type { CardType } from "../home.types"
 
 interface WalletCardStackProps {
-  balanceLabel: ReactNode
+  balanceLabel?: ReactNode
   balanceAmount: ReactNode
   sendMoneyButton: ReactNode
   onCardClick: (cardType: CardType) => void

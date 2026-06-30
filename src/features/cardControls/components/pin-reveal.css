@@ -1,0 +1,21 @@
+/* iOS-style PIN reveal — subtle scale + fade (UIKit spring-like) */
+@keyframes pin-reminder-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pin-reminder-reveal {
+  animation: pin-reminder-reveal 450ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-reminder-reveal {
+    animation: none;
+  }
+}
