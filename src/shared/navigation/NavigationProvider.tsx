@@ -42,6 +42,7 @@ export function NavigationProvider({
   const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const pendingPopRef = useRef(false)
+  const pendingPopToRootRef = useRef(false)
 
   const push = useCallback(
     (entry: ScreenEntry) => {
@@ -62,8 +63,19 @@ export function NavigationProvider({
     setIsTransitioning(true)
   }, [isDragging, isTransitioning, stack.length])
 
+  const popToRoot = useCallback(() => {
+    if (stack.length <= 1 || isTransitioning || isDragging) return
+
+    pendingPopToRootRef.current = true
+    setDirection("pop")
+    setIsTransitioning(true)
+  }, [isDragging, isTransitioning, stack.length])
+
   const completeTransition = useCallback(() => {
-    if (pendingPopRef.current) {
+    if (pendingPopToRootRef.current) {
+      pendingPopToRootRef.current = false
+      setStack((current) => [current[0]])
+    } else if (pendingPopRef.current) {
       pendingPopRef.current = false
       setStack((current) => current.slice(0, -1))
     }
@@ -79,6 +91,7 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      popToRoot,
       canPop: stack.length > 1,
       isTransitioning,
       direction,
@@ -93,6 +106,7 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      popToRoot,
       isTransitioning,
       direction,
       completeTransition,

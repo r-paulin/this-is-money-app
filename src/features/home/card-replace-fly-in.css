@@ -1,0 +1,42 @@
+.card-replace-fly-in {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  transition:
+    left var(--card-replace-duration) var(--card-replace-ease),
+    top var(--card-replace-duration) var(--card-replace-ease),
+    transform var(--card-replace-duration) var(--card-replace-ease),
+    opacity var(--card-replace-duration) var(--card-replace-ease);
+  will-change: left, top, transform, opacity;
+}
+
+.card-replace-fly-in--from {
+  opacity: 1;
+}
+
+.card-replace-fly-in--to {
+  opacity: 1;
+}
+
+.card-replace-slot-settle {
+  animation: card-replace-slot-settle var(--card-replace-duration) var(--card-replace-ease);
+}
+
+@keyframes card-replace-slot-settle {
+  0% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-replace-fly-in {
+    transition: none;
+  }
+
+  .card-replace-slot-settle {
+    animation: none;
+  }
+}

@@ -11,6 +11,7 @@ export type NavigationContextValue = {
   stack: ScreenEntry[]
   push: (entry: ScreenEntry) => void
   pop: () => void
+  popToRoot: () => void
   canPop: boolean
   isTransitioning: boolean
   direction: TransitionDirection | null

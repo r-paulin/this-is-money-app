@@ -14,6 +14,7 @@ import { SwapSlot, TextSwap } from "@/shared/components/TextSwap"
 import { useNavigationStack } from "@/shared/navigation"
 import { CardDetailsGate } from "./CardDetailsGate"
 import { PinReminderGate } from "./PinReminderGate"
+import { ReplaceCardGate } from "./ReplaceCardGate"
 
 type LockSwapKey = "lock" | "unlock"
 
@@ -45,6 +46,14 @@ export function CardControlsScreen({
       push({
         key: `card-details:${cardType}`,
         render: () => <CardDetailsGate lastFour={lastFour} />,
+      })
+      return
+    }
+
+    if (id === "replace") {
+      push({
+        key: `replace-card:${cardType}`,
+        render: () => <ReplaceCardGate cardType={cardType} />,
       })
       return
     }
