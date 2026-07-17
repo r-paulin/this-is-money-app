@@ -10,6 +10,9 @@ compatibility_date = "2024-09-23"
 
 [assets]
 directory = "./dist"
+# SPA fallback — do not use public/_redirects `/* /index.html 200`
+# (Cloudflare rejects it as an infinite loop, code 100324).
+not_found_handling = "single-page-application"
 
 [build]
 command = "npm run pages:build"

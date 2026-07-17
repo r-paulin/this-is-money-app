@@ -22,5 +22,9 @@ After saving, redeploy. The log should skip the automatic bun install; npm ci ru
 
 Confirm the deployment commit matches Git (log includes CF_PAGES_COMMIT_SHA).
 
+SPA routing is configured in wrangler.toml via:
+  [assets] not_found_handling = "single-page-application"
+Do not add public/_redirects with `/* /index.html 200` — Cloudflare rejects that rule.
+
 Direct upload (optional, after `wrangler login`):
   npm run build && npx wrangler pages deploy ./dist --project-name=this-is-money-app
