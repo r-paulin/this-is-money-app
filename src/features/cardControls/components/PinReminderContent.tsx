@@ -19,7 +19,7 @@ import {
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar, SkeletonCircle } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import "./pin-reveal.css"
-import "./text-stagger.css"
+import "@/shared/styles/text-stagger.css"
 
 export interface PinReminderContentProps {
   loading?: boolean

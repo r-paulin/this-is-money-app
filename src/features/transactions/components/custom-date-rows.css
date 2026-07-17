@@ -1,0 +1,62 @@
+/* iOS UITableView-style insert/delete for custom date rows.
+   Height via grid 0fr→1fr; content fades + eases (UIKit ~250–300ms ease-in-out). */
+
+.custom-date-rows {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.custom-date-rows.is-open {
+  grid-template-rows: 1fr;
+}
+
+.custom-date-rows__clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.custom-date-rows__row {
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
+  transition:
+    opacity 220ms cubic-bezier(0.42, 0, 0.58, 1),
+    transform 300ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition-delay: 0s;
+}
+
+.custom-date-rows.is-open .custom-date-rows__row {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Enter stagger: End date follows Start by one beat (iOS sequential insert). */
+.custom-date-rows.is-open .custom-date-rows__row--1 {
+  transition-delay: 0s;
+}
+
+.custom-date-rows.is-open .custom-date-rows__row--2 {
+  transition-delay: 40ms;
+}
+
+/* Closed / exit: collapse together — no reverse stagger. */
+.custom-date-rows:not(.is-open) .custom-date-rows__row {
+  opacity: 0;
+  transform: translate3d(0, -4px, 0);
+  transition:
+    opacity 200ms cubic-bezier(0.42, 0, 0.58, 1),
+    transform 220ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-date-rows,
+  .custom-date-rows__row {
+    transition: none !important;
+  }
+
+  .custom-date-rows.is-open .custom-date-rows__row {
+    opacity: 1;
+    transform: none;
+  }
+}

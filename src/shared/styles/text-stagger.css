@@ -11,6 +11,8 @@
 
 .t-stagger-line {
   display: block;
+  font-weight: inherit;
+  font-variation-settings: inherit;
   opacity: 0;
   transform: translateY(var(--stagger-distance));
   filter: blur(var(--stagger-blur));

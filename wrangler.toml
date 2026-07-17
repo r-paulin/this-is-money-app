@@ -1,0 +1,15 @@
+# Cloudflare Pages (Git): v3 may run `bun install` before your build command even
+# with package-lock.json. Bun fails on vendored @bolteu/* tarballs here.
+#
+# Required: Pages > Settings > Environment variables
+#   SKIP_DEPENDENCY_INSTALL = 1
+# Builds > Build command: npm run pages:build   (output directory: dist)
+# See cloudflare-pages-setup.txt in this repo.
+name = "this-is-money-app"
+compatibility_date = "2024-09-23"
+
+[assets]
+directory = "./dist"
+
+[build]
+command = "npm run pages:build"

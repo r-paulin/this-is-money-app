@@ -1,0 +1,23 @@
+.statement-ready-hero {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+}
+
+.statement-ready-hero--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 350ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 350ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statement-ready-hero {
+    opacity: 1;
+    transform: none;
+  }
+
+  .statement-ready-hero--visible {
+    transition: none;
+  }
+}

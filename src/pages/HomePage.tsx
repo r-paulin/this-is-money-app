@@ -3,7 +3,8 @@ import { CardControlsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
 import { WalletCardsProvider } from "@/features/home/WalletCardsProvider"
 import { useWalletCards } from "@/features/home/useWalletCards"
-import type { CardType } from "@/features/home/home.types"
+import type { CardType, HomeMenuItemId } from "@/features/home/home.types"
+import { TransactionsGate } from "@/features/transactions"
 import { NavigationProvider, useNavigationStack } from "@/shared/navigation"
 
 function HomeRoute() {
@@ -22,7 +23,23 @@ function HomeRoute() {
     [lastFourByType, push],
   )
 
-  return <HomeScreen onCardClick={openCardControls} />
+  const openMenuItem = useCallback(
+    (id: HomeMenuItemId) => {
+      if (id === "transactions") {
+        push({
+          key: "transactions",
+          render: () => <TransactionsGate />,
+        })
+        return
+      }
+      console.info("[stub] Navigate:", id)
+    },
+    [push],
+  )
+
+  return (
+    <HomeScreen onCardClick={openCardControls} onMenuItemClick={openMenuItem} />
+  )
 }
 
 export function HomePage() {

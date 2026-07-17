@@ -1,0 +1,22 @@
+/* Creating screen exits downward to reveal statement ready. */
+.statement-creating-screen {
+  min-height: 100dvh;
+  will-change: transform;
+  transition: transform 450ms cubic-bezier(0.32, 0.72, 0, 1);
+  transform: translate3d(0, 0, 0);
+}
+
+.statement-creating-screen.is-exiting {
+  transform: translate3d(0, 100%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statement-creating-screen {
+    transition: none;
+  }
+
+  .statement-creating-screen.is-exiting {
+    opacity: 0;
+    transform: none;
+  }
+}

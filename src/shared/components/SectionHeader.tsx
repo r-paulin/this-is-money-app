@@ -4,10 +4,12 @@ import type { ReactNode } from "react"
 interface SectionHeaderProps {
   id?: string
   children: ReactNode
+  /** Bottom spacer in px. Transactions list uses 8; default 12 matches Figma 6582:20909. */
+  paddingBottom?: 8 | 12
 }
 
-/** Figma Ⓒ Section Header (6582:20909) — 24px top, title, 12px bottom, px-6. */
-export function SectionHeader({ id, children }: SectionHeaderProps) {
+/** Figma Ⓒ Section Header — 24px top, title, bottom spacer, px-6. */
+export function SectionHeader({ id, children, paddingBottom = 12 }: SectionHeaderProps) {
   return (
     <div className="flex w-full flex-col items-start px-6">
       <div className="h-6 w-full shrink-0" aria-hidden />
@@ -22,7 +24,10 @@ export function SectionHeader({ id, children }: SectionHeaderProps) {
           {children}
         </Typography>
       </h2>
-      <div className="h-3 w-full shrink-0" aria-hidden />
+      <div
+        className={`w-full shrink-0 ${paddingBottom === 8 ? "h-2" : "h-3"}`}
+        aria-hidden
+      />
     </div>
   )
 }

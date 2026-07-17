@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "pages:build": "npm ci && npm run build",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pages:deploy": "npm run build && wrangler pages deploy ./dist --project-name=this-is-money-app"
   },
   "dependencies": {
     "@bolteu/design-tokens": "file:./vendor-tarballs/bolteu-design-tokens-2.1.1.tgz",

@@ -16,9 +16,10 @@ const REFRESH_STUB_MS = 800
 
 export interface HomeScreenProps {
   onCardClick: (cardType: CardType) => void
+  onMenuItemClick?: (id: HomeMenuItemId) => void
 }
 
-export function HomeScreen({ onCardClick }: HomeScreenProps) {
+export function HomeScreen({ onCardClick, onMenuItemClick }: HomeScreenProps) {
   const { replaceAnimation, clearReplaceAnimation } = useWalletCards()
   const physicalCardRef = useRef<HTMLDivElement>(null)
   const virtualCardRef = useRef<HTMLDivElement>(null)
@@ -30,6 +31,10 @@ export function HomeScreen({ onCardClick }: HomeScreenProps) {
   }
 
   const handleMenuItemClick = (id: HomeMenuItemId) => {
+    if (onMenuItemClick) {
+      onMenuItemClick(id)
+      return
+    }
     console.info("[stub] Navigate:", id)
   }
 
