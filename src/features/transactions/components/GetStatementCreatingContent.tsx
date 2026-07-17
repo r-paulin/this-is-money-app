@@ -4,8 +4,10 @@ import "@/shared/styles/text-stagger.css"
 import "./statement-creating.css"
 
 const CREATING_HOLD_MS = 8000
-const TEXT_HIDE_MS = 200
-const SCREEN_EXIT_MS = 450
+/** Soft text fade before the screen starts leaving. */
+const TEXT_HIDE_MS = 280
+/** Must match statement-creating.css exit duration. */
+const SCREEN_EXIT_MS = 620
 
 function prefersReducedMotion(): boolean {
   return (
@@ -15,9 +17,9 @@ function prefersReducedMotion(): boolean {
 }
 
 export interface GetStatementCreatingContentProps {
-  /** Fired after the screen has finished exiting downward. */
+  /** Fired after the screen has finished exiting. */
   onExitComplete: () => void
-  /** Fired when the exit begins so the ready screen can mount underneath. */
+  /** Fired when exit begins so the ready screen can mount underneath. */
   onExitStart?: () => void
 }
 
@@ -28,7 +30,6 @@ export function GetStatementCreatingContent({
   const staggerRef = useRef<HTMLDivElement>(null)
   const [exiting, setExiting] = useState(false)
 
-  // Staggered text entrance
   useEffect(() => {
     const element = staggerRef.current
     if (!element) return
@@ -45,7 +46,6 @@ export function GetStatementCreatingContent({
     return () => window.cancelAnimationFrame(frame)
   }, [])
 
-  // Hold 8s, then hide text and slide screen down
   useEffect(() => {
     const reduced = prefersReducedMotion()
     let textHideTimer = 0

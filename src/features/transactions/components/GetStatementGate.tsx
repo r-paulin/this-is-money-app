@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
 import { useNavigationStack } from "@/shared/navigation"
 import {
@@ -14,15 +14,26 @@ import { GetStatementReadyContent } from "./GetStatementReadyContent"
 
 const SKELETON_MS = 800
 const BUTTON_LOAD_MS = 1000
+/** Start ready entrance after creating has begun fading (not instantly under the overlay). */
+const READY_ENTRANCE_DELAY_MS = 360
 
 type GetStatementStep = "form" | "creating" | "ready"
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+}
 
 export function GetStatementGate() {
   const { pop } = useNavigationStack()
   const [skeletonRevealed, setSkeletonRevealed] = useState(false)
   const [step, setStep] = useState<GetStatementStep>("form")
   const [showReadyUnderCreating, setShowReadyUnderCreating] = useState(false)
+  const [readyEntrance, setReadyEntrance] = useState(false)
   const [creatingButton, setCreatingButton] = useState(false)
+  const readyEntranceTimerRef = useRef(0)
   const now = useMemo(() => new Date(), [])
   const options = useMemo(() => buildStatementRangeOptions(now), [now])
   const [selectedRange, setSelectedRange] = useState<StatementRangeId>("this_month")
@@ -34,6 +45,10 @@ export function GetStatementGate() {
       setSkeletonRevealed(true)
     }, SKELETON_MS)
     return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    return () => window.clearTimeout(readyEntranceTimerRef.current)
   }, [])
 
   const handleCustomStartChange = useCallback(
@@ -59,17 +74,25 @@ export function GetStatementGate() {
     window.setTimeout(() => {
       setCreatingButton(false)
       setShowReadyUnderCreating(false)
+      setReadyEntrance(false)
       setStep("creating")
     }, BUTTON_LOAD_MS)
   }, [creatingButton])
 
   const handleCreatingExitStart = useCallback(() => {
     setShowReadyUnderCreating(true)
+    setReadyEntrance(false)
+    window.clearTimeout(readyEntranceTimerRef.current)
+    const delay = prefersReducedMotion() ? 0 : READY_ENTRANCE_DELAY_MS
+    readyEntranceTimerRef.current = window.setTimeout(() => {
+      setReadyEntrance(true)
+    }, delay)
   }, [])
 
   const handleCreatingExitComplete = useCallback(() => {
     setStep("ready")
     setShowReadyUnderCreating(false)
+    setReadyEntrance(true)
   }, [])
 
   const handleBack = useCallback(() => {
@@ -79,13 +102,12 @@ export function GetStatementGate() {
   if (step === "creating" || step === "ready") {
     const showReady = step === "ready" || showReadyUnderCreating
     const showCreating = step === "creating"
+    const playEntrance = step === "ready" || readyEntrance
 
     return (
       <div className="relative min-h-dvh overflow-hidden bg-layer-floor-1">
         {showReady ? (
-          <div className={showCreating ? "absolute inset-0 z-0" : undefined}>
-            <GetStatementReadyContent onBack={handleBack} />
-          </div>
+          <GetStatementReadyContent onBack={handleBack} playEntrance={playEntrance} />
         ) : null}
         {showCreating ? (
           <div className="absolute inset-0 z-10">

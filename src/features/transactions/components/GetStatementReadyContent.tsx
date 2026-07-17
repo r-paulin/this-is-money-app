@@ -5,9 +5,14 @@ import statementReadyDocs from "../assets/statement-ready-docs.png"
 import "@/shared/styles/text-stagger.css"
 import "./statement-ready.css"
 
-const IMAGE_DELAY_MS = 120
 const IMAGE_WIDTH = 200
 const IMAGE_HEIGHT = 148
+/** Beat before the hero starts rising — keeps entry calm after the handoff. */
+const IMAGE_DELAY_MS = 160
+/** Text stagger starts after the image has begun moving. */
+const TEXT_DELAY_MS = 220
+/** Download button fades in after copy. */
+const ACTIONS_DELAY_MS = 420
 
 function prefersReducedMotion(): boolean {
   return (
@@ -18,40 +23,62 @@ function prefersReducedMotion(): boolean {
 
 export interface GetStatementReadyContentProps {
   onBack: () => void
+  /**
+   * When false, content stays in its pre-entrance state (ready to reveal under
+   * the creating overlay). When true, plays the entrance sequence.
+   */
+  playEntrance?: boolean
 }
 
-export function GetStatementReadyContent({ onBack }: GetStatementReadyContentProps) {
+export function GetStatementReadyContent({
+  onBack,
+  playEntrance = true,
+}: GetStatementReadyContentProps) {
   const snackbar = useSnackbar()
   const staggerRef = useRef<HTMLDivElement>(null)
-  const [imageVisible, setImageVisible] = useState(() => prefersReducedMotion())
+  const [imageVisible, setImageVisible] = useState(false)
+  const [actionsVisible, setActionsVisible] = useState(false)
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      return
+    if (!playEntrance) return
+
+    const reduced = prefersReducedMotion()
+
+    if (reduced) {
+      const frame = window.requestAnimationFrame(() => {
+        setImageVisible(true)
+        setActionsVisible(true)
+        staggerRef.current?.classList.add("is-shown")
+      })
+      return () => window.cancelAnimationFrame(frame)
     }
 
-    const timer = window.setTimeout(() => {
+    const imageTimer = window.setTimeout(() => {
       setImageVisible(true)
     }, IMAGE_DELAY_MS)
 
-    return () => window.clearTimeout(timer)
-  }, [])
+    const textTimer = window.setTimeout(() => {
+      const element = staggerRef.current
+      if (!element) return
+      element.classList.remove("is-shown", "is-hiding")
+      window.requestAnimationFrame(() => {
+        element.classList.add("is-shown")
+      })
+    }, TEXT_DELAY_MS)
 
-  useEffect(() => {
-    const element = staggerRef.current
-    if (!element) return
+    const actionsTimer = window.setTimeout(() => {
+      setActionsVisible(true)
+    }, ACTIONS_DELAY_MS)
 
-    if (prefersReducedMotion()) {
-      element.classList.add("is-shown")
-      return
+    return () => {
+      window.clearTimeout(imageTimer)
+      window.clearTimeout(textTimer)
+      window.clearTimeout(actionsTimer)
     }
+  }, [playEntrance])
 
-    element.classList.remove("is-shown", "is-hiding")
-    const frame = window.requestAnimationFrame(() => {
-      element.classList.add("is-shown")
-    })
-    return () => window.cancelAnimationFrame(frame)
-  }, [])
+  const showImage = playEntrance && imageVisible
+  const showActions = playEntrance && actionsVisible
 
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
@@ -72,7 +99,7 @@ export function GetStatementReadyContent({ onBack }: GetStatementReadyContentPro
           height={IMAGE_HEIGHT}
           className={[
             "statement-ready-hero shrink-0 object-contain",
-            imageVisible ? "statement-ready-hero--visible" : "",
+            showImage ? "statement-ready-hero--visible" : "",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -92,7 +119,14 @@ export function GetStatementReadyContent({ onBack }: GetStatementReadyContentPro
           </div>
         </div>
 
-        <div className="w-full pt-4">
+        <div
+          className={[
+            "statement-ready-actions w-full pt-4",
+            showActions ? "statement-ready-actions--visible" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
           <Button
             size="lg"
             variant="primary"
