@@ -1,11 +1,11 @@
 import type { ReactNode, RefObject } from "react"
 import { PaymentCardCutOff } from "@/shared/components/PaymentCard"
+import walletBalancePocket from "@/shared/components/PaymentCard/assets/wallet-balance-pocket.svg"
 import type { CardType } from "../home.types"
+import "./wallet-stack.css"
 
 interface WalletCardStackProps {
-  balanceLabel?: ReactNode
   balanceAmount: ReactNode
-  sendMoneyButton: ReactNode
   onCardClick: (cardType: CardType) => void
   physicalCardRef?: RefObject<HTMLDivElement | null>
   virtualCardRef?: RefObject<HTMLDivElement | null>
@@ -14,14 +14,13 @@ interface WalletCardStackProps {
 }
 
 /**
- * Wallet header — Figma node 6582:20906 / 6395:17187.
- * Stacked cut-off payment cards overlap the balance panel by 24px.
- * The back (physical) card is extended to fill the stack depth behind the front card.
+ * Wallet header — Figma 6957:28467.
+ * Inset cut-off cards stack over a soft depth gradient, then tuck into a
+ * notched balance pocket. Physical card is extended so it stays behind the
+ * virtual card when the front card press-scales.
  */
 export function WalletCardStack({
-  balanceLabel,
   balanceAmount,
-  sendMoneyButton,
   onCardClick,
   physicalCardRef,
   virtualCardRef,
@@ -29,11 +28,13 @@ export function WalletCardStack({
   settlingCardType = null,
 }: WalletCardStackProps) {
   return (
-    <div className="flex w-full flex-col items-center">
+    <div className="wallet-stack">
+      <div className="wallet-stack__depth" aria-hidden />
+
       <div
         ref={physicalCardRef}
         className={[
-          "relative z-0 -mb-20 w-full shrink-0",
+          "wallet-stack__card wallet-stack__card--physical",
           hiddenCardType === "physical" ? "opacity-0" : "",
           settlingCardType === "physical" ? "card-replace-slot-settle" : "",
         ]
@@ -48,10 +49,11 @@ export function WalletCardStack({
           className="relative w-full"
         />
       </div>
+
       <div
         ref={virtualCardRef}
         className={[
-          "relative z-[1] -mb-6 w-full shrink-0",
+          "wallet-stack__card wallet-stack__card--virtual",
           hiddenCardType === "virtual" ? "opacity-0" : "",
           settlingCardType === "virtual" ? "card-replace-slot-settle" : "",
         ]
@@ -65,12 +67,15 @@ export function WalletCardStack({
           className="relative w-full"
         />
       </div>
-      <div className="relative z-10 flex w-full flex-col items-center rounded-[12px] bg-layer-floor-1 py-9">
-        <div className="w-full px-6 pb-4 text-center">
-          {balanceLabel}
-          {balanceAmount}
-        </div>
-        <div className="flex justify-center">{sendMoneyButton}</div>
+
+      <div className="wallet-stack__pocket">
+        <img
+          src={walletBalancePocket}
+          alt=""
+          className="wallet-stack__pocket-shape"
+          aria-hidden
+        />
+        <div className="wallet-stack__pocket-content">{balanceAmount}</div>
       </div>
     </div>
   )

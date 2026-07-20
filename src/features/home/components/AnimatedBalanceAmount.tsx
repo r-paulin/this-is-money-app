@@ -113,7 +113,7 @@ export function AnimatedBalanceAmount({
 
   return (
     <>
-      <Typography variant="body-m-regular" color="secondary" as="p" align="center">
+      <Typography variant="body-m-compact-regular" color="secondary" as="p" align="center">
         Available balance
       </Typography>
       <p className="ffeature m-0 text-center bolt-font-heading-l-accent text-primary">

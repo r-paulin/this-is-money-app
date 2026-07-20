@@ -71,5 +71,5 @@ export function getCutOffBackgroundStyle(
 }
 
 export function getBadgeLabel(virtual: boolean): string {
-  return virtual ? "Virtual" : "Physical"
+  return virtual ? "Virtual card" : "Physical card"
 }

@@ -1,0 +1,91 @@
+/* Home wallet stack — Figma 6957:28467
+   Soft gray gradient = layered depth behind inset cards;
+   notched balance pocket sits in front. */
+
+.wallet-stack {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  /* Soft diffuse float for the whole assembly */
+  filter: drop-shadow(0 10px 28px rgba(28, 28, 28, 0.12));
+}
+
+/* Soft diffuse “shadow” slab tucked behind the card stack */
+.wallet-stack__depth {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 39px;
+  z-index: 0;
+  height: 81px;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(
+    to bottom,
+    #eaeceb 43.75%,
+    #dcdedd 65.385%,
+    #b1b2b2 92.788%
+  );
+}
+
+.wallet-stack__card {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 12px);
+  margin-bottom: -24px;
+  flex-shrink: 0;
+}
+
+/* Extended back card (136px) — compensate +56px height so virtual stays put.
+   Fills behind the virtual card so press-scale doesn’t reveal the depth slab. */
+.wallet-stack__card--physical {
+  z-index: 1;
+  margin-bottom: -80px;
+}
+
+.wallet-stack__card--virtual {
+  z-index: 2;
+  /* Soft lift onto the physical card behind */
+  box-shadow: 0 4px 12px -2px rgba(28, 28, 28, 0.22);
+  border-radius: 12px 12px 0 0;
+}
+
+.wallet-stack__pocket {
+  position: relative;
+  z-index: 10;
+  height: 140px;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0 0 16px 16px;
+}
+
+.wallet-stack__pocket-shape {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.wallet-stack__pocket-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  padding-inline: 24px;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wallet-stack {
+    filter: none;
+  }
+
+  .wallet-stack__card--virtual {
+    box-shadow: none;
+  }
+}

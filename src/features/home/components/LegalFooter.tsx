@@ -1,5 +1,6 @@
 import { Link, Typography } from "@bolteu/kalep-react"
 
+/** Figma 6957:28104 — Airwallex legal line with Terms link. */
 export function LegalFooter() {
   return (
     <footer className="px-6 pb-6">

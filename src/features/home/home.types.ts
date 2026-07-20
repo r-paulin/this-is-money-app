@@ -1,8 +1,9 @@
 export type HomeMenuItemId =
   | "transactions"
+  | "send-money"
   | "loans"
-  | "cards"
   | "rewards"
+  | "feedback"
 
 export type CardType = "physical" | "virtual"
 

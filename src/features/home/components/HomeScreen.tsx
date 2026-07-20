@@ -1,5 +1,3 @@
-import { Button } from "@bolteu/kalep-react"
-import ArrowCircleUp from "@bolteu/kalep-react-icons/dist/ArrowCircleUp"
 import { useCallback, useRef, useState } from "react"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { PullToRefresh } from "@/shared/components/PullToRefresh"
@@ -8,8 +6,9 @@ import type { CardType, HomeMenuItemId } from "../home.types"
 import "../card-replace-fly-in.css"
 import { AnimatedBalanceAmount } from "./AnimatedBalanceAmount"
 import { CardReplaceFlyIn } from "./CardReplaceFlyIn"
+import { GoogleWalletBanner } from "./GoogleWalletBanner"
 import { LegalFooter } from "./LegalFooter"
-import { MoreForYouList } from "./MoreForYouList"
+import { ServicesList } from "./ServicesList"
 import { WalletCardStack } from "./WalletCardStack"
 
 const REFRESH_STUB_MS = 800
@@ -25,10 +24,7 @@ export function HomeScreen({ onCardClick, onMenuItemClick }: HomeScreenProps) {
   const virtualCardRef = useRef<HTMLDivElement>(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [settlingCardType, setSettlingCardType] = useState<CardType | null>(null)
-
-  const handleSendMoney = () => {
-    console.info("[stub] Send money")
-  }
+  const [showWalletBanner, setShowWalletBanner] = useState(true)
 
   const handleMenuItemClick = (id: HomeMenuItemId) => {
     if (onMenuItemClick) {
@@ -60,9 +56,9 @@ export function HomeScreen({ onCardClick, onMenuItemClick }: HomeScreenProps) {
 
   return (
     <>
-      <PullToRefresh onRefresh={handleRefresh}>
+      <PullToRefresh onRefresh={handleRefresh} className="!bg-layer-floor-1">
         <div className="flex flex-col">
-          <header className="w-full px-6 pb-0 pt-10">
+          <header className="w-full px-6 pb-0 pt-6">
             <WalletCardStack
               onCardClick={onCardClick}
               physicalCardRef={physicalCardRef}
@@ -70,24 +66,22 @@ export function HomeScreen({ onCardClick, onMenuItemClick }: HomeScreenProps) {
               hiddenCardType={replaceAnimation?.cardType ?? null}
               settlingCardType={settlingCardType}
               balanceAmount={<AnimatedBalanceAmount refreshTrigger={refreshTrigger} />}
-              sendMoneyButton={
-                <Button
-                  size="md"
-                  variant="secondary"
-                  startIcon={<ArrowCircleUp />}
-                  onClick={handleSendMoney}
-                >
-                  Send money
-                </Button>
-              }
             />
           </header>
 
-          <section aria-labelledby="more-for-you-heading">
-            <SectionHeader id="more-for-you-heading">More for you</SectionHeader>
+          <section aria-labelledby="services-heading">
+            <SectionHeader id="services-heading" variant="heading-s-accent">
+              Services
+            </SectionHeader>
 
-            <div className="px-6 pb-6">
-              <MoreForYouList onMenuItemClick={handleMenuItemClick} />
+            {showWalletBanner ? (
+              <div className="px-6 pb-3">
+                <GoogleWalletBanner onDismiss={() => setShowWalletBanner(false)} />
+              </div>
+            ) : null}
+
+            <div className="pb-6">
+              <ServicesList onMenuItemClick={handleMenuItemClick} />
             </div>
           </section>
 
