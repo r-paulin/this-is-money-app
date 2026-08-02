@@ -11,7 +11,9 @@ import { useRef } from "react"
 import {
   formatCustomRangeChip,
   parseDateInputValue,
+  STATEMENT_FILE_FORMAT_OPTIONS,
   toDateInputValue,
+  type StatementFileFormat,
   type StatementRangeId,
   type StatementRangeOption,
 } from "../lib/statementRanges"
@@ -30,6 +32,8 @@ export interface GetStatementFormContentProps {
   onCustomStartChange: (date: Date) => void
   onCustomEndChange: (date: Date) => void
   maxDate: Date
+  fileFormat: StatementFileFormat
+  onFileFormatChange: (format: StatementFileFormat) => void
   creating: boolean
   onCreate: () => void
   onBack: () => void
@@ -44,6 +48,8 @@ export function GetStatementFormContent({
   onCustomStartChange,
   onCustomEndChange,
   maxDate,
+  fileFormat,
+  onFileFormatChange,
   creating,
   onCreate,
   onBack,
@@ -77,22 +83,10 @@ export function GetStatementFormContent({
           return (
             <li key={option.id}>
               <ListItemLayout
-                primary={
-                  <Typography
-                    variant={selected ? "body-m-compact-accent" : "body-m-compact-regular"}
-                    color="primary"
-                    as="span"
-                  >
-                    {option.label}
-                  </Typography>
-                }
-                secondary={
-                  option.subtitle ? (
-                    <Typography variant="body-s-regular" color="secondary" as="span">
-                      {option.subtitle}
-                    </Typography>
-                  ) : undefined
-                }
+                primary={option.label}
+                secondary={option.subtitle}
+                primaryTypographyProps={{ variant: "body-m-compact-regular" }}
+                secondaryTypographyProps={{ variant: "body-s-regular" }}
                 separator={!isLast}
                 paddingStart={6}
                 paddingEnd={6}
@@ -183,6 +177,52 @@ export function GetStatementFormContent({
           </div>
         </div>
       </div>
+
+      {/* Figma 7024:22398 — File format section header (12 top / 8 bottom, no radio). */}
+      <ListItemLayout
+        primary="File format"
+        secondary="Select the format for your download"
+        primaryTypographyProps={{ variant: "body-l-accent" }}
+        secondaryTypographyProps={{ variant: "body-s-regular" }}
+        separator={false}
+        paddingStart={6}
+        paddingEnd={6}
+        paddingTop={3}
+        paddingBottom={2}
+      />
+
+      <ul className="m-0 list-none p-0" role="radiogroup" aria-label="File format">
+        {STATEMENT_FILE_FORMAT_OPTIONS.map((option, index) => {
+          const isLast = index === STATEMENT_FILE_FORMAT_OPTIONS.length - 1
+          const selected = fileFormat === option.id
+          return (
+            <li key={option.id}>
+              {/* Figma 7024:22428 — 8px vertical padding (size.comp.M), 48px row. */}
+              <ListItemLayout
+                primary={option.label}
+                primaryTypographyProps={{ variant: "body-m-compact-regular" }}
+                separator={!isLast}
+                paddingStart={6}
+                paddingEnd={6}
+                paddingTop={2}
+                paddingBottom={2}
+                disabled={creating}
+                onClick={() => onFileFormatChange(option.id)}
+                renderEndSlot={() => (
+                  <Radio
+                    checked={selected}
+                    disabled={creating}
+                    readOnly
+                    tabIndex={-1}
+                    aria-label={option.label}
+                    onChange={() => onFileFormatChange(option.id)}
+                  />
+                )}
+              />
+            </li>
+          )
+        })}
+      </ul>
 
       {/* Button sits under the list (Figma 6875:54191), not pinned to viewport bottom */}
       <div className="px-6 py-4">

@@ -5,6 +5,7 @@ import {
   buildStatementRangeOptions,
   clampDateToMax,
   startOfDay,
+  type StatementFileFormat,
   type StatementRangeId,
 } from "../lib/statementRanges"
 import { GetStatementCreatingContent } from "./GetStatementCreatingContent"
@@ -37,6 +38,7 @@ export function GetStatementGate() {
   const now = useMemo(() => new Date(), [])
   const options = useMemo(() => buildStatementRangeOptions(now), [now])
   const [selectedRange, setSelectedRange] = useState<StatementRangeId>("this_month")
+  const [fileFormat, setFileFormat] = useState<StatementFileFormat>("pdf")
   const [customStart, setCustomStart] = useState(() => startOfDay(now))
   const [customEnd, setCustomEnd] = useState(() => startOfDay(now))
 
@@ -138,6 +140,8 @@ export function GetStatementGate() {
         onCustomStartChange={handleCustomStartChange}
         onCustomEndChange={handleCustomEndChange}
         maxDate={now}
+        fileFormat={fileFormat}
+        onFileFormatChange={setFileFormat}
         creating={creatingButton}
         onCreate={handleCreate}
         onBack={pop}

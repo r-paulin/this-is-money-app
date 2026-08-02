@@ -6,6 +6,8 @@ export type StatementRangeId =
   | "last_3_months"
   | "custom"
 
+export type StatementFileFormat = "pdf" | "csv"
+
 export interface StatementRangeOption {
   id: StatementRangeId
   label: string
@@ -14,6 +16,17 @@ export interface StatementRangeOption {
   start: Date
   end: Date
 }
+
+export interface StatementFileFormatOption {
+  id: StatementFileFormat
+  label: string
+}
+
+export const STATEMENT_FILE_FORMAT_OPTIONS: StatementFileFormatOption[] = [
+  { id: "pdf", label: "PDF" },
+  { id: "csv", label: "CSV" },
+]
+
 
 const MONTHS_LONG = [
   "January",
