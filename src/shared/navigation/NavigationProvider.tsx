@@ -1,3 +1,4 @@
+import { AppNavbar } from "@/shared/components/AppNavbar"
 import {
   useCallback,
   useLayoutEffect,
@@ -41,6 +42,9 @@ export function NavigationProvider({
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [navbarBackHandler, setNavbarBackHandler] = useState<(() => void) | null>(
+    null,
+  )
   const pendingPopRef = useRef(false)
   const pendingPopToRootRef = useRef(false)
 
@@ -101,6 +105,8 @@ export function NavigationProvider({
       setDragOffset,
       isDragging,
       setIsDragging,
+      navbarBackHandler,
+      setNavbarBackHandler,
     }),
     [
       stack,
@@ -113,13 +119,17 @@ export function NavigationProvider({
       reducedMotion,
       dragOffset,
       isDragging,
+      navbarBackHandler,
     ],
   )
 
   return (
     <NavigationContext.Provider value={value}>
-      <NavigationStack />
-      {children}
+      <div className="relative h-full min-h-dvh overflow-hidden">
+        <AppNavbar />
+        <NavigationStack />
+        {children}
+      </div>
     </NavigationContext.Provider>
   )
 }

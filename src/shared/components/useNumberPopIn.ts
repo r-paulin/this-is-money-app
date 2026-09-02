@@ -21,9 +21,11 @@ export function useNumberPopIn(initialValue: string, initialPlaying = false) {
   const setDigits = useCallback((nextValue: string) => {
     pendingReplayRef.current = true
     setPlaying(false)
-    setPreviousValue(value)
-    setValue(nextValue)
-  }, [value])
+    setValue((current) => {
+      setPreviousValue(current)
+      return nextValue
+    })
+  }, [])
 
   const setDigitsStatic = useCallback((nextValue: string) => {
     pendingReplayRef.current = false

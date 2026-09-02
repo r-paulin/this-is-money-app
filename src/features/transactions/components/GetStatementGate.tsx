@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
-import { useNavigationStack } from "@/shared/navigation"
 import {
   buildStatementRangeOptions,
   clampDateToMax,
@@ -28,13 +27,13 @@ function prefersReducedMotion(): boolean {
 }
 
 export function GetStatementGate() {
-  const { pop } = useNavigationStack()
   const [skeletonRevealed, setSkeletonRevealed] = useState(false)
   const [step, setStep] = useState<GetStatementStep>("form")
   const [showReadyUnderCreating, setShowReadyUnderCreating] = useState(false)
   const [readyEntrance, setReadyEntrance] = useState(false)
   const [creatingButton, setCreatingButton] = useState(false)
   const readyEntranceTimerRef = useRef(0)
+  const createButtonTimerRef = useRef(0)
   const now = useMemo(() => new Date(), [])
   const options = useMemo(() => buildStatementRangeOptions(now), [now])
   const [selectedRange, setSelectedRange] = useState<StatementRangeId>("this_month")
@@ -50,7 +49,10 @@ export function GetStatementGate() {
   }, [])
 
   useEffect(() => {
-    return () => window.clearTimeout(readyEntranceTimerRef.current)
+    return () => {
+      window.clearTimeout(readyEntranceTimerRef.current)
+      window.clearTimeout(createButtonTimerRef.current)
+    }
   }, [])
 
   const handleCustomStartChange = useCallback(
@@ -73,7 +75,9 @@ export function GetStatementGate() {
   const handleCreate = useCallback(() => {
     if (creatingButton) return
     setCreatingButton(true)
-    window.setTimeout(() => {
+    window.clearTimeout(createButtonTimerRef.current)
+    createButtonTimerRef.current = window.setTimeout(() => {
+      createButtonTimerRef.current = 0
       setCreatingButton(false)
       setShowReadyUnderCreating(false)
       setReadyEntrance(false)
@@ -97,10 +101,6 @@ export function GetStatementGate() {
     setReadyEntrance(true)
   }, [])
 
-  const handleBack = useCallback(() => {
-    pop()
-  }, [pop])
-
   if (step === "creating" || step === "ready") {
     const showReady = step === "ready" || showReadyUnderCreating
     const showCreating = step === "creating"
@@ -109,7 +109,7 @@ export function GetStatementGate() {
     return (
       <div className="relative min-h-dvh overflow-hidden bg-layer-floor-1">
         {showReady ? (
-          <GetStatementReadyContent onBack={handleBack} playEntrance={playEntrance} />
+          <GetStatementReadyContent playEntrance={playEntrance} />
         ) : null}
         {showCreating ? (
           <div className="absolute inset-0 z-10">
@@ -129,7 +129,7 @@ export function GetStatementGate() {
       deferContentMount
       className="min-h-dvh bg-layer-floor-1"
       aria-label={skeletonRevealed ? undefined : "Loading get statement"}
-      skeleton={<GetStatementLoadingScreen onBack={pop} />}
+      skeleton={<GetStatementLoadingScreen />}
     >
       <GetStatementFormContent
         options={options}
@@ -144,7 +144,6 @@ export function GetStatementGate() {
         onFileFormatChange={setFileFormat}
         creating={creatingButton}
         onCreate={handleCreate}
-        onBack={pop}
       />
     </SkeletonReveal>
   )

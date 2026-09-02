@@ -1,5 +1,5 @@
 import { Typography } from "@bolteu/kalep-react"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { useNumberPopIn } from "@/shared/components/useNumberPopIn"
 
@@ -41,12 +41,23 @@ export function AnimatedBalanceAmount({
   const hasAutoUpdatedRef = useRef(false)
   const mountTimerRef = useRef<number | null>(null)
   const refreshTimerRef = useRef<number | null>(null)
+  const initialAmountRef = useRef(initialAmount)
+  const targetAmountRef = useRef(targetAmount)
+  const changeAfterMsRef = useRef(changeAfterMs)
+  const setDigitsRef = useRef(setDigits)
+  const setDigitsStaticRef = useRef(setDigitsStatic)
+
+  initialAmountRef.current = initialAmount
+  targetAmountRef.current = targetAmount
+  changeAfterMsRef.current = changeAfterMs
+  setDigitsRef.current = setDigits
+  setDigitsStaticRef.current = setDigitsStatic
 
   useEffect(() => {
     valueRef.current = value
   }, [value])
 
-  const scheduleTargetAnimation = () => {
+  const scheduleTargetAnimation = useCallback(() => {
     if (mountTimerRef.current !== null) {
       window.clearTimeout(mountTimerRef.current)
     }
@@ -54,9 +65,13 @@ export function AnimatedBalanceAmount({
     mountTimerRef.current = window.setTimeout(() => {
       mountTimerRef.current = null
       hasAutoUpdatedRef.current = true
-      animateToAmount(targetAmount, setDigits, setDigitsStatic)
-    }, changeAfterMs)
-  }
+      animateToAmount(
+        targetAmountRef.current,
+        setDigitsRef.current,
+        setDigitsStaticRef.current,
+      )
+    }, changeAfterMsRef.current)
+  }, [])
 
   useEffect(() => {
     if (hasAutoUpdatedRef.current) return
@@ -69,7 +84,7 @@ export function AnimatedBalanceAmount({
         mountTimerRef.current = null
       }
     }
-  }, [changeAfterMs, setDigits, setDigitsStatic, targetAmount])
+  }, [scheduleTargetAnimation])
 
   useEffect(() => {
     if (refreshTrigger <= 0) return
@@ -85,15 +100,19 @@ export function AnimatedBalanceAmount({
     }
 
     const runRefreshCycle = () => {
-      if (valueRef.current !== initialAmount) {
-        animateToAmount(initialAmount, setDigits, setDigitsStatic)
+      if (valueRef.current !== initialAmountRef.current) {
+        animateToAmount(
+          initialAmountRef.current,
+          setDigitsRef.current,
+          setDigitsStaticRef.current,
+        )
       }
 
       hasAutoUpdatedRef.current = false
       scheduleTargetAnimation()
     }
 
-    if (valueRef.current === initialAmount) {
+    if (valueRef.current === initialAmountRef.current) {
       runRefreshCycle()
       return
     }
@@ -109,7 +128,7 @@ export function AnimatedBalanceAmount({
         refreshTimerRef.current = null
       }
     }
-  }, [changeAfterMs, initialAmount, refreshTrigger, setDigits, setDigitsStatic, targetAmount])
+  }, [refreshTrigger, scheduleTargetAnimation])
 
   return (
     <>

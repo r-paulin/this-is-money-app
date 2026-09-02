@@ -1,8 +1,6 @@
-import { GhostButton, ListItemLayout, Typography } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { ListItemLayout, Typography } from "@bolteu/kalep-react"
 import { SkeletonBar, SkeletonCircle } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import {
-  REPLACE_CARD_BACK_LINE_HEIGHT,
   REPLACE_REASON_OPTIONS,
   type ReplaceReasonId,
 } from "../lib/replaceCard.constants"
@@ -11,85 +9,33 @@ export interface ReplaceCardReasonContentProps {
   loading?: boolean
   selectedReason?: ReplaceReasonId
   onReasonChange?: (reason: ReplaceReasonId) => void
-  onBack?: () => void
-}
-
-function BackIconSlot({ loading }: { loading: boolean }) {
-  return (
-    <span
-      className="relative flex shrink-0 items-center justify-center"
-      style={{ width: 24, height: 24 }}
-    >
-      {loading ? (
-        <SkeletonCircle size={24} />
-      ) : (
-        <ChevronCircleLeft size="lg" className="text-action-primary" />
-      )}
-    </span>
-  )
 }
 
 export function ReplaceCardReasonContent({
   loading = false,
   selectedReason,
   onReasonChange,
-  onBack,
 }: ReplaceCardReasonContentProps) {
   return (
     <div className="min-h-dvh bg-layer-floor-1">
       <div className="flex flex-col">
-        <div className="px-5 pr-6 pt-6">
-          <GhostButton onClick={() => onBack?.()} aria-label="Back" disabled={loading}>
-            <span
-              className="relative flex items-center gap-2"
-              style={{ minHeight: REPLACE_CARD_BACK_LINE_HEIGHT }}
+        <div className="px-6 py-3">
+          <div className="relative">
+            <Typography
+              variant="heading-l-accent"
+              color="primary"
+              as="h1"
+              aria-hidden={loading}
             >
-              <BackIconSlot loading={loading} />
-              <span
-                className="relative block"
-                style={{
-                  minHeight: REPLACE_CARD_BACK_LINE_HEIGHT,
-                  lineHeight: `${REPLACE_CARD_BACK_LINE_HEIGHT}px`,
-                }}
-              >
-                <span
-                  className={
-                    loading
-                      ? "invisible text-body-m font-semibold text-action-primary"
-                      : "text-body-m font-semibold text-action-primary"
-                  }
-                >
-                  Back
-                </span>
-                {loading ? (
-                  <SkeletonBar
-                    width={56}
-                    height={14}
-                    className="absolute left-0 top-1/2 -translate-y-1/2"
-                  />
-                ) : null}
-              </span>
-            </span>
-          </GhostButton>
-
-          <div className="pb-4 pt-6">
-            <div className="relative">
-              <Typography
-                variant="heading-l-accent"
-                color="primary"
-                as="h1"
-                aria-hidden={loading}
-              >
-                <span className={loading ? "invisible" : undefined}>Replace your card</span>
-              </Typography>
-              {loading ? (
-                <SkeletonBar
-                  width={180}
-                  height={14}
-                  className="absolute left-0 top-1/2 -translate-y-1/2"
-                />
-              ) : null}
-            </div>
+              <span className={loading ? "invisible" : undefined}>Replace your card</span>
+            </Typography>
+            {loading ? (
+              <SkeletonBar
+                width={180}
+                height={14}
+                className="absolute left-0 top-1/2 -translate-y-1/2"
+              />
+            ) : null}
           </div>
         </div>
 

@@ -1,5 +1,4 @@
-import { Button, GhostButton, Typography, useSnackbar } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { Button, Typography, useSnackbar } from "@bolteu/kalep-react"
 import { useEffect, useRef, useState } from "react"
 import statementReadyDocs from "../assets/statement-ready-docs.png"
 import "@/shared/styles/text-stagger.css"
@@ -22,7 +21,6 @@ function prefersReducedMotion(): boolean {
 }
 
 export interface GetStatementReadyContentProps {
-  onBack: () => void
   /**
    * When false, content stays in its pre-entrance state (ready to reveal under
    * the creating overlay). When true, plays the entrance sequence.
@@ -31,7 +29,6 @@ export interface GetStatementReadyContentProps {
 }
 
 export function GetStatementReadyContent({
-  onBack,
   playEntrance = true,
 }: GetStatementReadyContentProps) {
   const snackbar = useSnackbar()
@@ -82,15 +79,6 @@ export function GetStatementReadyContent({
 
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
-      <div className="px-5 pr-6 pt-6">
-        <GhostButton onClick={onBack} aria-label="Back">
-          <span className="flex items-center gap-2">
-            <ChevronCircleLeft size="lg" className="text-action-primary" />
-            <span className="text-body-m font-semibold text-action-primary">Back</span>
-          </span>
-        </GhostButton>
-      </div>
-
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-6">
         <img
           src={statementReadyDocs}

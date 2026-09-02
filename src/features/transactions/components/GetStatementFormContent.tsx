@@ -1,11 +1,9 @@
 import {
   Button,
-  GhostButton,
   ListItemLayout,
   Radio,
   Typography,
 } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
 import ChevronDown from "@bolteu/kalep-react-icons/dist/ChevronDown"
 import { useRef } from "react"
 import {
@@ -36,7 +34,6 @@ export interface GetStatementFormContentProps {
   onFileFormatChange: (format: StatementFileFormat) => void
   creating: boolean
   onCreate: () => void
-  onBack: () => void
 }
 
 export function GetStatementFormContent({
@@ -52,7 +49,6 @@ export function GetStatementFormContent({
   onFileFormatChange,
   creating,
   onCreate,
-  onBack,
 }: GetStatementFormContentProps) {
   const startInputRef = useRef<HTMLInputElement>(null)
   const endInputRef = useRef<HTMLInputElement>(null)
@@ -61,15 +57,6 @@ export function GetStatementFormContent({
 
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
-      <div className="px-5 pr-6 pt-6">
-        <GhostButton onClick={onBack} aria-label="Back" disabled={creating}>
-          <span className="flex items-center gap-2">
-            <ChevronCircleLeft size="lg" className="text-action-primary" />
-            <span className="text-body-m font-semibold text-action-primary">Back</span>
-          </span>
-        </GhostButton>
-      </div>
-
       <div className="px-6 py-3">
         <Typography variant="heading-l-accent" color="primary" as="h1">
           Get statement

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { DEFAULT_CARD_LAST_FOUR, generateCardDetails } from "../lib/generateCardDetails"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
-import { useNavigationStack } from "@/shared/navigation"
 import { CardDetailsContent } from "./CardDetailsContent"
 
 const LOADER_MS = 800
@@ -11,7 +10,6 @@ export interface CardDetailsGateProps {
 }
 
 export function CardDetailsGate({ lastFour = DEFAULT_CARD_LAST_FOUR }: CardDetailsGateProps) {
-  const { pop } = useNavigationStack()
   const [revealed, setRevealed] = useState(false)
   const details = useMemo(() => {
     if (!revealed) {
@@ -34,9 +32,9 @@ export function CardDetailsGate({ lastFour = DEFAULT_CARD_LAST_FOUR }: CardDetai
       deferContentMount
       className="min-h-dvh bg-layer-floor-1"
       aria-label={revealed ? undefined : "Loading card details"}
-      skeleton={<CardDetailsContent loading onBack={pop} />}
+      skeleton={<CardDetailsContent loading />}
     >
-      <CardDetailsContent details={details} onBack={pop} />
+      <CardDetailsContent details={details} />
     </SkeletonReveal>
   )
 }

@@ -1,4 +1,6 @@
 export { NavigationProvider } from "./NavigationProvider"
 export { NavigationStack } from "./NavigationStack"
 export { useNavigationStack } from "./useNavigationStack"
+export { useNavbarBack } from "./useNavbarBack"
+export { useAfterNavigationTransition } from "./useAfterNavigationTransition"
 export type { ScreenEntry, TransitionDirection } from "./navigation.types"

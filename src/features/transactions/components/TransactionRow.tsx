@@ -1,21 +1,40 @@
-import { Typography } from "@bolteu/kalep-react"
+import { ListItemLayout, Typography } from "@bolteu/kalep-react"
 import type { Transaction } from "../data/mockTransactions"
-import { formatEurFromCents, formatSignedTransactionAmount } from "../lib/formatTransactionAmount"
+import type { TransactionKind } from "../data/mccThemes"
+import {
+  formatSignedTransactionAmount,
+  formatTransactionListEurFromCents,
+} from "../lib/formatTransactionAmount"
 import { formatTransactionTimestamp } from "../lib/formatTransactionDate"
+import { highlightSubstringMatch } from "../lib/highlightSubstringMatch"
+import { merchantTitle } from "../lib/merchantTitle"
 import { TransactionCategoryIcon } from "./TransactionCategoryIcon"
 
 export interface TransactionRowProps {
   transaction: Transaction
   separator: boolean
+  searchQuery?: string
 }
 
-function statusSuffix(kind: Transaction["kind"]): string | null {
-  if (kind === "declined") return "Declined"
-  if (kind === "refund") return "Refund"
-  return null
+function statusSuffix(kind: TransactionKind): string | null {
+  switch (kind) {
+    case "declined":
+      return "Declined"
+    case "refund":
+      return "Refund"
+    case "authorization":
+      return "Authorization"
+    case "reversal":
+      return "Reverted"
+    case "failed":
+      return "Failed"
+    default:
+      return null
+  }
 }
 
-export function TransactionRow({ transaction, separator }: TransactionRowProps) {
+export function TransactionRow({ transaction, separator, searchQuery }: TransactionRowProps) {
+  const title = merchantTitle(transaction)
   const amount = formatSignedTransactionAmount({
     amountCents: transaction.amountCents,
     kind: transaction.kind,
@@ -24,51 +43,68 @@ export function TransactionRow({ transaction, separator }: TransactionRowProps) 
   const timestamp = formatTransactionTimestamp(transaction.occurredAt)
   const secondaryLabel = status ? `${timestamp} · ${status}` : timestamp
 
-  const amountClass =
+  const amountColor =
     amount.tone === "credit"
-      ? "text-action-primary"
-      : amount.tone === "declined"
-        ? "text-secondary line-through"
-        : "text-primary"
+      ? "action-primary"
+      : amount.tone === "declined" || amount.tone === "missing"
+        ? "secondary"
+        : "primary"
+
+  const amountClass = amount.tone === "declined" ? "line-through" : undefined
+
+  const primary =
+    searchQuery && searchQuery.trim().length > 0 ? (
+      highlightSubstringMatch(title, searchQuery)
+    ) : (
+      title
+    )
+
+  const secondary =
+    transaction.serviceFeeCents != null && transaction.serviceFeeCents > 0 ? (
+      <>
+        {secondaryLabel}
+        <br />
+        {`Service fee included: ${formatTransactionListEurFromCents(transaction.serviceFeeCents)}`}
+      </>
+    ) : (
+      secondaryLabel
+    )
 
   return (
-    <div
-      className={`flex w-full items-start gap-3 px-6 py-3 ${
-        separator ? "border-0 border-b border-solid border-separator" : ""
-      }`}
-    >
-      <div className="flex shrink-0 items-center">
-        <TransactionCategoryIcon
-          mcc={transaction.mcc}
-          kind={transaction.kind}
-          themeOverride={transaction.themeOverride}
-        />
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <Typography variant="body-m-regular" color="primary" as="div">
-          {transaction.merchant}
-        </Typography>
-        <Typography variant="body-s-regular" color="secondary" as="div">
-          {secondaryLabel}
-        </Typography>
-        {transaction.serviceFeeCents != null && transaction.serviceFeeCents > 0 ? (
-          <Typography variant="body-s-regular" color="secondary" as="div">
-            {`Service fee included: ${formatEurFromCents(transaction.serviceFeeCents)}`}
+    <ListItemLayout
+      primary={
+        <span className="line-clamp-3 break-words">
+          {primary}
+        </span>
+      }
+      secondary={secondary}
+      separator={separator}
+      paddingStart={6}
+      paddingEnd={6}
+      primaryTypographyProps={{ variant: "body-m-compact-regular" }}
+      secondaryTypographyProps={{ variant: "body-s-regular" }}
+      renderStartSlot={() => (
+        <div className="self-start">
+          <TransactionCategoryIcon
+            mcc={transaction.mcc}
+            kind={transaction.kind}
+            themeOverride={transaction.themeOverride}
+          />
+        </div>
+      )}
+      renderEndSlot={() => (
+        <div className="self-start">
+          <Typography
+            variant="body-m-compact-regular"
+            color={amountColor}
+            as="span"
+            align="end"
+          >
+            <span className={amountClass}>{amount.text}</span>
           </Typography>
-        ) : null}
-      </div>
-
-      <div className="shrink-0">
-        <Typography
-          variant="body-m-regular"
-          color={amount.tone === "credit" ? "action-primary" : "primary"}
-          as="span"
-          align="end"
-        >
-          <span className={amountClass}>{amount.text}</span>
-        </Typography>
-      </div>
-    </div>
+        </div>
+      )}
+      aria-label={title}
+    />
   )
 }

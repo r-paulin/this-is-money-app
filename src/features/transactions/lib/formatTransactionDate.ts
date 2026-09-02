@@ -34,12 +34,21 @@ export function formatTransactionSectionLabel(occurredAt: number, now = new Date
   return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}, ${date.getFullYear()}`
 }
 
-/** Secondary line date/time: “2 Jul, 10:30”. */
-export function formatTransactionTimestamp(occurredAt: number): string {
+const TIMESTAMP_FORMAT: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "short",
+  hour: "numeric",
+  minute: "2-digit",
+}
+
+/** Secondary line date/time — locale-aware, e.g. `11 Oct, 16:30` or `Oct 7, 7:05 PM`. */
+export function formatTransactionTimestamp(
+  occurredAt: number,
+  locales?: string | string[],
+): string {
   const date = new Date(occurredAt)
-  const hh = String(date.getHours()).padStart(2, "0")
-  const mm = String(date.getMinutes()).padStart(2, "0")
-  return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}, ${hh}:${mm}`
+  const formatter = new Intl.DateTimeFormat(locales, TIMESTAMP_FORMAT)
+  return formatter.format(date)
 }
 
 export function groupKeyForTransaction(occurredAt: number, now = new Date()): string {

@@ -4,11 +4,25 @@ import {
   useRef,
   useState,
 } from "react"
+import { isNavLayerAnimationEvent } from "./navAnimation"
 import {
   getInteractiveTransforms,
   useEdgeSwipeBack,
 } from "./useEdgeSwipeBack"
 import { useNavigationStack } from "./useNavigationStack"
+
+type LayerRole = "top" | "below" | "cached"
+
+function layerClassName(role: LayerRole): string {
+  switch (role) {
+    case "top":
+      return "nav-layer nav-layer--top"
+    case "below":
+      return "nav-layer nav-layer--below"
+    case "cached":
+      return "nav-layer nav-layer--cached"
+  }
+}
 
 export function NavigationStack() {
   const {
@@ -61,6 +75,7 @@ export function NavigationStack() {
       if (reducedMotion) return
       if (!isTransitioning || isDragging) return
       if (event.currentTarget.dataset.layerRole !== "top") return
+      if (!isNavLayerAnimationEvent(event)) return
 
       completeTransition()
     },
@@ -118,6 +133,12 @@ export function NavigationStack() {
     }
   }
 
+  const getLayerRole = (index: number): LayerRole => {
+    if (index === topIndex) return "top"
+    if (showBelow && index === belowIndex) return "below"
+    return "cached"
+  }
+
   return (
     <div
       ref={containerRef}
@@ -128,27 +149,23 @@ export function NavigationStack() {
       onPointerUp={handlePointerUp}
       onPointerCancel={edgeSwipeHandlers.onPointerCancel}
     >
-      {showBelow && belowIndex >= 0 ? (
-        <div
-          key={stack[belowIndex].key}
-          className="nav-layer nav-layer--below"
-          data-layer-role="below"
-          aria-hidden
-          style={getLayerStyle("below")}
-        >
-          {stack[belowIndex].render()}
-        </div>
-      ) : null}
+      {stack.map((entry, index) => {
+        const role = getLayerRole(index)
+        const layerRole = role === "cached" ? undefined : role
 
-      <div
-        key={stack[topIndex].key}
-        className="nav-layer nav-layer--top"
-        data-layer-role="top"
-        style={getLayerStyle("top")}
-        onAnimationEnd={handleAnimationEnd}
-      >
-        {stack[topIndex].render()}
-      </div>
+        return (
+          <div
+            key={entry.key}
+            className={layerClassName(role)}
+            data-layer-role={layerRole}
+            aria-hidden={role === "below" || role === "cached" ? true : undefined}
+            style={layerRole ? getLayerStyle(layerRole) : undefined}
+            onAnimationEnd={role === "top" ? handleAnimationEnd : undefined}
+          >
+            {entry.render()}
+          </div>
+        )
+      })}
     </div>
   )
 }

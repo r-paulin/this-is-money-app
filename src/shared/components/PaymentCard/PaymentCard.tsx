@@ -24,7 +24,7 @@ export function PaymentCard({
       role="img"
       aria-label={`${label} card ending in ${lastFour}${locked ? ", locked" : ""}`}
       className={[
-        "relative h-[13.625rem] w-full max-w-[21.5625rem] overflow-hidden rounded-[12px] border border-neutral-primary",
+        "relative h-[13.625rem] w-full max-w-[21.5625rem] overflow-hidden rounded-card border border-neutral-primary",
         "shadow-[0px_6px_12px_-2px_rgba(28,28,28,0.25),0px_3px_7px_-3px_rgba(28,28,28,0.3)]",
         className,
       ]

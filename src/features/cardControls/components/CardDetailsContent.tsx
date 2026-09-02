@@ -1,12 +1,9 @@
-import { GhostButton, ListItemLayout, Typography, useSnackbar } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { ListItemLayout, Typography, useSnackbar } from "@bolteu/kalep-react"
 import CopyOutlined from "@bolteu/kalep-react-icons/dist/CopyOutlined"
 import { useCallback } from "react"
 import type { CardDetailsData } from "../lib/generateCardDetails"
-import { useNavigationStack } from "@/shared/navigation"
-import { SkeletonBar, SkeletonCircle } from "@/shared/components/skeleton/SkeletonPlaceholders"
+import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import {
-  CARD_DETAILS_BACK_LINE_HEIGHT,
   CARD_DETAILS_COPY_ICON_SIZE,
   CARD_DETAILS_LABEL_LINE_HEIGHT,
   CARD_DETAILS_ROW_TEMPLATES,
@@ -17,7 +14,6 @@ import {
 export interface CardDetailsContentProps {
   details?: CardDetailsData
   loading?: boolean
-  onBack?: () => void
 }
 
 function DetailLabelSlot({
@@ -72,21 +68,6 @@ function DetailValueSlot({
   )
 }
 
-function BackIconSlot({ loading }: { loading: boolean }) {
-  return (
-    <span
-      className="relative flex shrink-0 items-center justify-center"
-      style={{ width: CARD_DETAILS_COPY_ICON_SIZE, height: CARD_DETAILS_COPY_ICON_SIZE }}
-    >
-      {loading ? (
-        <SkeletonCircle size={CARD_DETAILS_COPY_ICON_SIZE} />
-      ) : (
-        <ChevronCircleLeft size="lg" className="text-action-primary" />
-      )}
-    </span>
-  )
-}
-
 function CopyIconSlot({ loading }: { loading: boolean }) {
   return (
     <span
@@ -105,10 +86,7 @@ function CopyIconSlot({ loading }: { loading: boolean }) {
 export function CardDetailsContent({
   details,
   loading = false,
-  onBack,
 }: CardDetailsContentProps) {
-  const { pop } = useNavigationStack()
-  const handleBack = onBack ?? pop
   const snackbar = useSnackbar()
 
   const handleCopy = useCallback(
@@ -164,49 +142,23 @@ export function CardDetailsContent({
   return (
     <div className="min-h-dvh bg-layer-floor-1">
       <div className="flex flex-col">
-        <div className="px-5 pr-6 pt-6">
-          <GhostButton onClick={handleBack} aria-label="Back">
-            <span
-              className="relative flex items-center gap-2"
-              style={{ minHeight: CARD_DETAILS_BACK_LINE_HEIGHT }}
+        <div className="px-6 py-3">
+          <div className="relative">
+            <Typography
+              variant="heading-l-accent"
+              color="primary"
+              as="h1"
+              aria-hidden={loading}
             >
-              <BackIconSlot loading={loading} />
-              <span
-                className="relative block"
-                style={{ minHeight: CARD_DETAILS_BACK_LINE_HEIGHT, lineHeight: `${CARD_DETAILS_BACK_LINE_HEIGHT}px` }}
-              >
-                <span className={loading ? "invisible text-body-m font-semibold text-action-primary" : "text-body-m font-semibold text-action-primary"}>
-                  Back
-                </span>
-                {loading ? (
-                  <SkeletonBar
-                    width={56}
-                    height={14}
-                    className="absolute left-0 top-1/2 -translate-y-1/2"
-                  />
-                ) : null}
-              </span>
-            </span>
-          </GhostButton>
-
-          <div className="pb-4 pt-6">
-            <div className="relative">
-              <Typography
-                variant="heading-l-accent"
-                color="primary"
-                as="h1"
-                aria-hidden={loading}
-              >
-                <span className={loading ? "invisible" : undefined}>Card details</span>
-              </Typography>
-              {loading ? (
-                <SkeletonBar
-                  width={160}
-                  height={14}
-                  className="absolute left-0 top-1/2 -translate-y-1/2"
-                />
-              ) : null}
-            </div>
+              <span className={loading ? "invisible" : undefined}>Card details</span>
+            </Typography>
+            {loading ? (
+              <SkeletonBar
+                width={160}
+                height={14}
+                className="absolute left-0 top-1/2 -translate-y-1/2"
+              />
+            ) : null}
           </div>
         </div>
 

@@ -1,7 +1,6 @@
-import { GhostButton, Typography } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { TextField, Typography } from "@bolteu/kalep-react"
 import Download from "@bolteu/kalep-react-icons/dist/Download"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { useNavigationStack } from "@/shared/navigation"
 import { buildMockTransactions } from "../data/mockTransactions"
@@ -9,22 +8,31 @@ import {
   formatTransactionSectionLabel,
   groupKeyForTransaction,
 } from "../lib/formatTransactionDate"
+import { searchTransactions } from "../lib/searchTransactions"
 import { GetStatementGate } from "./GetStatementGate"
 import { TransactionRow } from "./TransactionRow"
 
-export interface TransactionsScreenProps {
-  onBack?: () => void
-}
+const SEARCH_DEBOUNCE_MS = 200
 
-export function TransactionsScreen({ onBack }: TransactionsScreenProps) {
-  const { pop, push } = useNavigationStack()
-  const handleBack = onBack ?? pop
+export function TransactionsScreen() {
+  const { push } = useNavigationStack()
+  const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedQuery(query)
+    }, SEARCH_DEBOUNCE_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [query])
 
   const groups = useMemo(() => {
     const now = new Date()
-    const items = [...buildMockTransactions(now)].sort(
+    const allItems = [...buildMockTransactions(now)].sort(
       (a, b) => b.occurredAt - a.occurredAt,
     )
+    const items = searchTransactions(allItems, debouncedQuery)
     const map = new Map<string, typeof items>()
     for (const tx of items) {
       const key = groupKeyForTransaction(tx.occurredAt, now)
@@ -40,7 +48,10 @@ export function TransactionsScreen({ onBack }: TransactionsScreenProps) {
       label: formatTransactionSectionLabel(transactions[0]!.occurredAt, now),
       transactions,
     }))
-  }, [])
+  }, [debouncedQuery])
+
+  const isSearching = debouncedQuery.trim().length > 0
+  const hasResults = groups.length > 0
 
   const openGetStatement = () => {
     push({
@@ -52,30 +63,40 @@ export function TransactionsScreen({ onBack }: TransactionsScreenProps) {
   return (
     <div className="min-h-dvh bg-layer-floor-1">
       <div className="flex flex-col">
-        <div className="px-5 pr-6 pt-6">
-          <GhostButton onClick={handleBack} aria-label="Back">
-            <span className="flex items-center gap-2">
-              <ChevronCircleLeft size="lg" className="text-action-primary" />
-              <span className="text-body-m font-semibold text-action-primary">Back</span>
-            </span>
-          </GhostButton>
-
-          <div className="flex items-center gap-3 pb-3 pt-3">
-            <div className="min-w-0 flex-1">
-              <Typography variant="heading-l-accent" color="primary" as="h1">
-                Transactions
-              </Typography>
-            </div>
-            <button
-              type="button"
-              onClick={openGetStatement}
-              className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-neutral-secondary text-primary"
-              aria-label="Get statement"
-            >
-              <Download size="sm" aria-hidden />
-            </button>
-          </div>
+        <div className="px-6 py-3">
+          <Typography variant="heading-l-accent" color="primary" as="h1">
+            Transactions
+          </Typography>
         </div>
+
+        <div className="flex items-start pr-6">
+          <div className="min-w-0 flex-1 pl-6 pr-3">
+            <TextField
+              type="search"
+              size="lg"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search"
+              fullWidth
+            />
+          </div>
+          <button
+            type="button"
+            onClick={openGetStatement}
+            className="inline-flex size-14 shrink-0 items-center justify-center rounded-compact bg-neutral-secondary text-primary"
+            aria-label="Get statement"
+          >
+            <Download size="lg" aria-hidden />
+          </button>
+        </div>
+
+        {isSearching && !hasResults ? (
+          <div className="px-6 py-4">
+            <Typography variant="body-m-regular" color="secondary" as="p">
+              No transactions found
+            </Typography>
+          </div>
+        ) : null}
 
         {groups.map((group) => (
           <section key={group.key} aria-label={group.label}>
@@ -86,6 +107,7 @@ export function TransactionsScreen({ onBack }: TransactionsScreenProps) {
                   <TransactionRow
                     transaction={tx}
                     separator={index < group.transactions.length - 1}
+                    searchQuery={isSearching ? debouncedQuery : undefined}
                   />
                 </li>
               ))}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import type { CardType } from "@/features/home/home.types"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
-import { useNavigationStack } from "@/shared/navigation"
 import { CardControlsLoadingScreen } from "./CardControlsLoadingScreen"
 import { CardControlsScreen } from "./CardControlsScreen"
 
@@ -13,7 +12,6 @@ export interface CardControlsGateProps {
 }
 
 export function CardControlsGate({ cardType, lastFour }: CardControlsGateProps) {
-  const { pop } = useNavigationStack()
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -30,7 +28,7 @@ export function CardControlsGate({ cardType, lastFour }: CardControlsGateProps) 
       deferContentMount
       className="min-h-dvh bg-layer-floor-1"
       aria-label={revealed ? undefined : "Loading card controls"}
-      skeleton={<CardControlsLoadingScreen onBack={pop} />}
+      skeleton={<CardControlsLoadingScreen />}
     >
       <CardControlsScreen cardType={cardType} lastFour={lastFour} />
     </SkeletonReveal>

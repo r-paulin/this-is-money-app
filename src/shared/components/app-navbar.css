@@ -1,0 +1,73 @@
+/* Figma WebViewTop 7338:61333 — fixed frosted toolbar */
+
+:root {
+  --app-navbar-toolbar-height: 56px;
+  --app-navbar-offset: calc(
+    var(--app-navbar-toolbar-height) + env(safe-area-inset-top, 0px)
+  );
+}
+
+.app-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top, 0px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.app-navbar__toolbar {
+  position: relative;
+  display: flex;
+  min-height: var(--app-navbar-toolbar-height);
+  max-height: var(--app-navbar-toolbar-height);
+  align-items: center;
+  padding-inline: 12px;
+}
+
+.app-navbar__title-row {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 68px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.app-navbar__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.app-navbar__back-slot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 48px;
+  min-width: 48px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-navbar__back-spacer {
+  min-height: 48px;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+/* Scrollable nav layers sit below fixed navbar */
+.nav-layer {
+  padding-top: var(--app-navbar-offset);
+}

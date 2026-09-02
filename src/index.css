@@ -4,6 +4,7 @@
 @import "@bolteu/kalep-react/src/components/Datepicker/Datepicker.css";
 @import "./shared/styles/tokens.css";
 @import "./shared/styles/navigation.css";
+@import "./shared/components/app-navbar.css";
 
 @tailwind base;
 @tailwind components;

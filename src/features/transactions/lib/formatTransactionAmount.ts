@@ -1,4 +1,6 @@
-/** Format euro amounts for transaction list end slot. */
+import type { TransactionKind } from "../data/mccThemes"
+
+/** General euro display (e.g. recipient subtitles). */
 export function formatEurFromCents(cents: number): string {
   const abs = Math.abs(cents) / 100
   return new Intl.NumberFormat("de-DE", {
@@ -9,17 +11,29 @@ export function formatEurFromCents(cents: number): string {
   }).format(abs)
 }
 
-export function formatSignedTransactionAmount(opts: {
-  amountCents: number
-  kind: "purchase" | "ride_payout" | "atm" | "refund" | "declined"
-}): { text: string; tone: "primary" | "credit" | "declined" } {
-  const formatted = formatEurFromCents(opts.amountCents)
+/** Figma transaction list amount: €12.00 (symbol prefix, dot decimals). */
+export function formatTransactionListEurFromCents(cents: number): string {
+  const abs = Math.abs(cents) / 100
+  return `€${abs.toFixed(2)}`
+}
 
-  if (opts.kind === "declined") {
+export type TransactionAmountTone = "primary" | "credit" | "declined" | "missing"
+
+export function formatSignedTransactionAmount(opts: {
+  amountCents?: number | null
+  kind: TransactionKind
+}): { text: string; tone: TransactionAmountTone } {
+  if (opts.amountCents == null) {
+    return { text: "--", tone: "missing" }
+  }
+
+  const formatted = formatTransactionListEurFromCents(opts.amountCents)
+
+  if (opts.kind === "declined" || opts.kind === "failed" || opts.kind === "reversal") {
     return { text: formatted, tone: "declined" }
   }
 
-  if (opts.kind === "ride_payout" || opts.kind === "refund" || opts.amountCents > 0) {
+  if (opts.kind === "ride_payout" || opts.kind === "refund" || opts.kind === "transfer_in") {
     return { text: `+${formatted}`, tone: "credit" }
   }
 

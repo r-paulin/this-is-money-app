@@ -22,4 +22,7 @@ export type NavigationContextValue = {
   setDragOffset: (offset: number) => void
   isDragging: boolean
   setIsDragging: (dragging: boolean) => void
+  /** When set, AppNavbar back invokes this instead of pop(). */
+  navbarBackHandler: (() => void) | null
+  setNavbarBackHandler: (handler: (() => void) | null) => void
 }

@@ -62,13 +62,12 @@ export function PinReminderGate() {
       deferContentMount
       className="min-h-dvh bg-layer-floor-1"
       aria-label={skeletonRevealed ? undefined : "Loading PIN reminder"}
-      skeleton={<PinReminderContent loading onBack={pop} />}
+      skeleton={<PinReminderContent loading />}
     >
       <PinReminderContent
         pin={pin}
         pinRevealed={pinRevealed}
         secondsRemaining={secondsRemaining}
-        onBack={pop}
       />
     </SkeletonReveal>
   )

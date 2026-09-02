@@ -1,5 +1,4 @@
-import { GhostButton, Typography } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { Typography } from "@bolteu/kalep-react"
 import { useEffect, useRef } from "react"
 import pinReminderCard from "../assets/pin-reminder-card.png"
 import {
@@ -9,15 +8,13 @@ import {
   PIN_BOX_MIN_HEIGHT,
   PIN_CARD_HEIGHT,
   PIN_CARD_WIDTH,
-  PIN_REMINDER_BACK_ICON_SIZE,
-  PIN_REMINDER_BACK_LINE_HEIGHT,
   PIN_REMINDER_COUNTDOWN_SECONDS,
   PIN_REMINDER_SUBTITLE_LINE_HEIGHT,
   PIN_REMINDER_TITLE,
   PIN_REMINDER_TITLE_LINE_HEIGHT,
 } from "../lib/pinReminder.constants"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
-import { SkeletonBar, SkeletonCircle } from "@/shared/components/skeleton/SkeletonPlaceholders"
+import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import "./pin-reveal.css"
 import "@/shared/styles/text-stagger.css"
 
@@ -26,22 +23,6 @@ export interface PinReminderContentProps {
   pin?: string
   pinRevealed?: boolean
   secondsRemaining?: number
-  onBack?: () => void
-}
-
-function BackIconSlot({ loading }: { loading: boolean }) {
-  return (
-    <span
-      className="relative flex shrink-0 items-center justify-center"
-      style={{ width: PIN_REMINDER_BACK_ICON_SIZE, height: PIN_REMINDER_BACK_ICON_SIZE }}
-    >
-      {loading ? (
-        <SkeletonCircle size={PIN_REMINDER_BACK_ICON_SIZE} />
-      ) : (
-        <ChevronCircleLeft size="lg" className="text-action-primary" />
-      )}
-    </span>
-  )
 }
 
 function CardIllustrationSlot({ loading }: { loading: boolean }) {
@@ -182,45 +163,9 @@ export function PinReminderContent({
   pin,
   pinRevealed = false,
   secondsRemaining = PIN_REMINDER_COUNTDOWN_SECONDS,
-  onBack,
 }: PinReminderContentProps) {
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
-      <div className="px-6 py-3">
-        <GhostButton onClick={() => onBack?.()} aria-label="Back">
-          <span
-            className="relative flex items-center gap-2"
-            style={{ minHeight: PIN_REMINDER_BACK_LINE_HEIGHT }}
-          >
-            <BackIconSlot loading={loading} />
-            <span
-              className="relative block"
-              style={{
-                minHeight: PIN_REMINDER_BACK_LINE_HEIGHT,
-                lineHeight: `${PIN_REMINDER_BACK_LINE_HEIGHT}px`,
-              }}
-            >
-              <span
-                className={
-                  loading
-                    ? "invisible text-body-m font-semibold text-action-primary"
-                    : "text-body-m font-semibold text-action-primary"
-                }
-              >
-                Back
-              </span>
-              {loading ? (
-                <SkeletonBar
-                  width={56}
-                  height={14}
-                  className="absolute left-0 top-1/2 -translate-y-1/2"
-                />
-              ) : null}
-            </span>
-          </span>
-        </GhostButton>
-      </div>
-
       <div className="flex flex-1 flex-col items-center pt-[140px]">
         <CardIllustrationSlot loading={loading} />
         <div className="w-full pt-6">

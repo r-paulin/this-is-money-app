@@ -1,4 +1,12 @@
+/**
+ * App design tokens (Layer 2).
+ * Layer 1: @bolteu/design-tokens via Kalep Tailwind plugins.
+ * Components should use Kalep semantic classes or the aliases below — never raw hex in TSX.
+ * See specs/tokens/token-reference.md
+ */
+
 :root {
+  /* Content & surfaces (aliases over Kalep) */
   --content-primary: var(--color-content-primary);
   --content-secondary: var(--color-content-secondary);
   --content-tertiary: var(--color-content-tertiary);
@@ -7,10 +15,12 @@
   --layer-floor-1: var(--color-layer-floor-1);
   --device-bg: var(--color-special-brand-alt);
 
+  /* Typography */
   --font-family: "Inter Variable", "Inter", system-ui, sans-serif;
   --font-weight-regular: 450;
   --font-weight-semibold: 650;
 
+  /* Device shell (preview frame only) */
   --shell-width: 100%;
   --device-bezel-outer: #a0b39f;
   --device-bezel-inner: #000000;
@@ -20,6 +30,44 @@
   --safe-area-top: env(safe-area-inset-top);
   --safe-area-bottom: env(safe-area-inset-bottom);
   --app-h: 100dvh;
+
+  /* Kalep dimension scale (Figma --dimension-*) */
+  --dimension-0: 0px;
+  --dimension-100: 4px;
+  --dimension-150: 6px;
+  --dimension-200: 8px;
+  --dimension-250: 10px;
+  --dimension-300: 12px;
+  --dimension-400: 16px;
+
+  /* List item (Figma Ⓒ List Item 8107:97972) */
+  --list-item-vr-padding: var(--dimension-300);
+  --list-item-start-gap: var(--dimension-400);
+  --list-item-end-gap: var(--dimension-300);
+  --list-item-label-py: 2px;
+
+  /* Radius */
+  --radius-compact: var(--dimension-200);
+  --radius-card: 12px;
+
+  /* MCC icon (Figma _ MCC 138:7229) */
+  --mcc-icon-padding: var(--dimension-250);
+  --mcc-icon-glyph-size: 20px;
+  --mcc-badge-size: 16px;
+  --mcc-badge-offset: var(--dimension-150);
+
+  /* MCC theme fills (Figma _ MCC 138:7229) */
+  --mcc-groceries: #e7315a;
+  --mcc-food: #e75c00;
+  --mcc-travel: #744ee5;
+  --mcc-transport: #057cea;
+  --mcc-medical: #2b8659;
+  --mcc-shopping: #0052cc;
+  --mcc-money: #2a9c64;
+  --mcc-utilities: #455a64;
+  --mcc-government: #3f2d0f;
+  --mcc-fuel: #6d4c41;
+  --mcc-decline: #ce0019;
 }
 
 @media (min-width: 768px) {

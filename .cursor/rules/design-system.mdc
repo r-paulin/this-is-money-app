@@ -1,0 +1,47 @@
+---
+description: Design tokens, Kalep usage, and LLM-readable specs — no raw hex in UI code
+alwaysApply: true
+globs: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css", "tailwind.config.ts"]
+---
+
+# Design system
+
+## Read first
+
+- `specs/README.md` — index
+- `specs/tokens/token-reference.md` — CSS variables and Tailwind aliases
+- `AGENTS.md` — agent checklist
+
+## Token layers
+
+1. **Kalep / `@bolteu/design-tokens`** — `text-primary`, `bg-neutral-secondary`, Kalep `Text`, `ListItemLayout`, etc.
+2. **App tokens** — `src/shared/styles/tokens.css` + `tailwind.config.ts` extensions (`bg-mcc-*`, `rounded-compact`, `p-mcc-pad`)
+3. **Feature maps** — e.g. `mccThemes.ts` references token class names only
+
+## Rules
+
+- **No raw hex in TSX** — use semantic or `bg-mcc-*` classes
+- **No arbitrary Tailwind colors** — `bg-[#e7315a]` → `bg-mcc-groceries`
+- **No arbitrary radius** — `rounded-[8px]` → `rounded-compact`
+- **New tokens** — add to `tokens.css`, extend Tailwind, document in `specs/tokens/token-reference.md`
+- **MCC icons** — follow `specs/components/mcc-icon.md` (`TransactionCategoryIcon`)
+
+## Allowed hex locations
+
+- `src/shared/styles/tokens.css` (definitions)
+- `wallet-stack.css`, `paymentCard.config.ts` (gradients / chrome)
+- SVG assets
+
+## Verification
+
+```bash
+npm run token-audit
+npm run design-system:drift
+```
+
+## Figma references
+
+| Component | Node |
+|-----------|------|
+| List item | `8114:196360` |
+| MCC icon | `138:7229` |

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { useWalletCards } from "@/features/home/useWalletCards"
 import type { CardType } from "@/features/home/home.types"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
-import { useNavigationStack } from "@/shared/navigation"
+import { useNavbarBack, useNavigationStack } from "@/shared/navigation"
 import { generateNewLastFour } from "../lib/generateNewLastFour"
 import {
   DEFAULT_DELIVERY_ADDRESS,
@@ -97,6 +97,8 @@ export function ReplaceCardGate({ cardType }: ReplaceCardGateProps) {
     pop()
   }, [pop, step])
 
+  useNavbarBack(step === "reason" || step === "delivery" ? handleBack : null)
+
   const handleGotIt = useCallback(() => {
     completeReplace(cardType, newLastFour)
     popToRoot()
@@ -116,7 +118,6 @@ export function ReplaceCardGate({ cardType }: ReplaceCardGateProps) {
         address={address}
         onAddressChange={handleAddressChange}
         onSubmit={handleDeliverySubmit}
-        onBack={handleBack}
         error={deliveryError}
       />
     )
@@ -128,13 +129,12 @@ export function ReplaceCardGate({ cardType }: ReplaceCardGateProps) {
       deferContentMount
       className="min-h-dvh bg-layer-floor-1"
       aria-label={skeletonRevealed ? undefined : "Loading replace card"}
-      skeleton={<ReplaceCardReasonContent loading onBack={pop} />}
+      skeleton={<ReplaceCardReasonContent loading />}
     >
       <div className="flex min-h-dvh flex-col bg-layer-floor-1">
         <ReplaceCardReasonContent
           selectedReason={selectedReason}
           onReasonChange={setSelectedReason}
-          onBack={handleBack}
         />
         <div className="px-6 pb-6 pt-3">
           <Button size="lg" variant="primary" onClick={handleContinue} fullWidth>

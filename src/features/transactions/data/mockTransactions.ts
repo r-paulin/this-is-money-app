@@ -5,8 +5,8 @@ export interface Transaction {
   merchant: string
   /** Unix ms */
   occurredAt: number
-  /** Minor units (cents). Sign is implied by kind for display. */
-  amountCents: number
+  /** Minor units (cents). Sign is implied by kind for display. Omit for `--` amount. */
+  amountCents?: number | null
   currency: "EUR"
   mcc: number
   kind: TransactionKind
@@ -88,6 +88,87 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       currency: "EUR",
       mcc: 5411,
       kind: "declined",
+    },
+    {
+      id: "tx-decline-transfer",
+      merchant: "Élodie Moreau",
+      occurredAt: onDay(0, 9, 56),
+      amountCents: -5000,
+      currency: "EUR",
+      mcc: 6011,
+      kind: "declined",
+    },
+    {
+      id: "tx-transfer-out",
+      merchant: "John Walker",
+      occurredAt: onDay(0, 9, 30),
+      amountCents: -7500,
+      currency: "EUR",
+      mcc: 6011,
+      kind: "transfer_out",
+    },
+    {
+      id: "tx-transfer-in",
+      merchant: "Anna Kask",
+      occurredAt: onDay(0, 9, 15),
+      amountCents: 3200,
+      currency: "EUR",
+      mcc: 6011,
+      kind: "transfer_in",
+    },
+    {
+      id: "tx-auth-hertz",
+      merchant: "Hertz",
+      occurredAt: onDay(0, 8, 45),
+      amountCents: -15000,
+      currency: "EUR",
+      mcc: 7512,
+      kind: "authorization",
+    },
+    {
+      id: "tx-reversal-hertz",
+      merchant: "Hertz",
+      occurredAt: onDay(0, 8, 50),
+      amountCents: -15000,
+      currency: "EUR",
+      mcc: 7512,
+      kind: "reversal",
+    },
+    {
+      id: "tx-failed-no-mcc",
+      merchant: "",
+      occurredAt: onDay(0, 8, 40),
+      amountCents: -2500,
+      currency: "EUR",
+      mcc: 0,
+      kind: "failed",
+    },
+    {
+      id: "tx-failed-groceries",
+      merchant: "Maxima",
+      occurredAt: onDay(0, 8, 35),
+      amountCents: -1890,
+      currency: "EUR",
+      mcc: 5411,
+      kind: "failed",
+    },
+    {
+      id: "tx-unknown-mcc",
+      merchant: "Mystery Shop",
+      occurredAt: onDay(0, 8, 25),
+      amountCents: -999,
+      currency: "EUR",
+      mcc: 9999,
+      kind: "purchase",
+    },
+    {
+      id: "tx-missing-amount",
+      merchant: "Pending merchant",
+      occurredAt: onDay(0, 8, 15),
+      amountCents: null,
+      currency: "EUR",
+      mcc: 5812,
+      kind: "purchase",
     },
     {
       id: "tx-atm-swed",

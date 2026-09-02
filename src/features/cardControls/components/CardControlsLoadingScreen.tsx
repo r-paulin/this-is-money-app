@@ -6,27 +6,13 @@ import {
 
 const LOADING_LIST_COUNT = 3
 
-export interface CardControlsLoadingScreenProps {
-  onBack: () => void
-}
-
-export function CardControlsLoadingScreen({ onBack }: CardControlsLoadingScreenProps) {
+export function CardControlsLoadingScreen() {
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
-      <div className="min-h-[306px] shrink-0">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center gap-2 px-5 pt-6"
-          aria-label="Back"
-        >
-          <SkeletonCircle />
-          <SkeletonBar width={56} />
-        </button>
-
+      <div className="min-h-[250px] shrink-0">
         <div className="flex justify-center px-6 pb-6 pt-4">
           <div
-            className="h-[218px] w-full max-w-[21.5625rem] rounded-[12px] bg-neutral-secondary"
+            className="h-[218px] w-full max-w-[21.5625rem] rounded-card bg-neutral-secondary"
             aria-hidden
           />
         </div>

@@ -16,6 +16,7 @@ import Pass from "@bolteu/kalep-react-icons/dist/Pass"
 import Refuel from "@bolteu/kalep-react-icons/dist/Refuel"
 import ShoppingBag from "@bolteu/kalep-react-icons/dist/ShoppingBag"
 import Train from "@bolteu/kalep-react-icons/dist/Train"
+import badgeDeclined from "../assets/badge-declined.svg"
 import badgeInflow from "../assets/badge-inflow.svg"
 import badgeOutflow from "../assets/badge-outflow.svg"
 import iconElectric from "../assets/icon-electric.svg"
@@ -32,32 +33,56 @@ import {
 type IconComponent = ComponentType<SVGProps<SVGSVGElement> & { size?: string | number }>
 
 type ThemeIcon =
-  | { type: "kalep"; Icon: IconComponent; size: "sm" | "md" }
-  | { type: "asset"; src: string; sizePx: number }
+  | { type: "kalep"; Icon: IconComponent }
+  | { type: "asset"; src: string }
+
+/** Figma `_ MCC` (138:7229): see specs/components/mcc-icon.md */
+const MCC_ICON_SIZE_PX = 20
+const MCC_BADGE_SIZE_PX = 16
 
 /** Icons per Figma `_ MCC` (138:7229). */
 const THEME_ICONS: Record<MccThemeId, ThemeIcon> = {
-  groceries: { type: "kalep", Icon: Basket, size: "sm" },
-  restaurants: { type: "kalep", Icon: Food, size: "sm" },
-  entertainment_bars: { type: "kalep", Icon: NightLife, size: "sm" },
-  entertainment: { type: "kalep", Icon: Pass, size: "sm" },
-  travel: { type: "kalep", Icon: Airplane, size: "sm" },
-  travel_cruise: { type: "kalep", Icon: Boat, size: "sm" },
-  travel_rentals: { type: "kalep", Icon: Carsharing, size: "sm" },
-  travel_hotel: { type: "asset", src: iconHouseUser, sizePx: 16 },
-  transport_bus: { type: "kalep", Icon: Bus, size: "sm" },
-  transport_train: { type: "kalep", Icon: Train, size: "sm" },
-  travel_parking: { type: "asset", src: iconParking, sizePx: 16 },
-  medical: { type: "kalep", Icon: Medical, size: "sm" },
-  shopping: { type: "kalep", Icon: ShoppingBag, size: "sm" },
-  money: { type: "kalep", Icon: Cash, size: "sm" },
-  bolt: { type: "kalep", Icon: LogoBolt, size: "md" },
-  utilities: { type: "asset", src: iconElectric, sizePx: 16 },
-  government: { type: "kalep", Icon: Flag, size: "sm" },
-  fuel: { type: "kalep", Icon: Refuel, size: "sm" },
-  auto: { type: "asset", src: iconRepair, sizePx: 16 },
-  other: { type: "kalep", Icon: Card, size: "sm" },
-  decline: { type: "kalep", Icon: Decline, size: "md" },
+  groceries: { type: "kalep", Icon: Basket },
+  restaurants: { type: "kalep", Icon: Food },
+  entertainment_bars: { type: "kalep", Icon: NightLife },
+  entertainment: { type: "kalep", Icon: Pass },
+  travel: { type: "kalep", Icon: Airplane },
+  travel_cruise: { type: "kalep", Icon: Boat },
+  travel_rentals: { type: "kalep", Icon: Carsharing },
+  travel_hotel: { type: "asset", src: iconHouseUser },
+  transport_bus: { type: "kalep", Icon: Bus },
+  transport_train: { type: "kalep", Icon: Train },
+  travel_parking: { type: "asset", src: iconParking },
+  medical: { type: "kalep", Icon: Medical },
+  shopping: { type: "kalep", Icon: ShoppingBag },
+  money: { type: "kalep", Icon: Cash },
+  bolt: { type: "kalep", Icon: LogoBolt },
+  utilities: { type: "asset", src: iconElectric },
+  government: { type: "kalep", Icon: Flag },
+  fuel: { type: "kalep", Icon: Refuel },
+  auto: { type: "asset", src: iconRepair },
+  other: { type: "kalep", Icon: Card },
+  decline: { type: "kalep", Icon: Decline },
+}
+
+function MccBadge({ src }: { src: string }) {
+  return (
+    <span
+      className="absolute -bottom-mcc-badge-offset -right-mcc-badge-offset flex size-mcc-badge items-center justify-center"
+      aria-hidden
+    >
+      <span className="-scale-y-100 flex-none">
+        <img
+          src={src}
+          alt=""
+          width={MCC_BADGE_SIZE_PX}
+          height={MCC_BADGE_SIZE_PX}
+          className="block aspect-square size-4"
+          draggable={false}
+        />
+      </span>
+    </span>
+  )
 }
 
 export interface TransactionCategoryIconProps {
@@ -74,40 +99,38 @@ export function TransactionCategoryIcon({
   const theme = resolveThemeForTransaction({ mcc, kind, themeOverride })
   const icon = THEME_ICONS[theme.id]
   const badge = badgeForKind(kind)
+  const usesNeutralDeclinedStyle =
+    kind === "declined" || (kind === "failed" && theme.id !== "decline")
+
+  const circleClass = usesNeutralDeclinedStyle ? "bg-neutral-secondary" : theme.bgClass
+  const iconClass = usesNeutralDeclinedStyle ? "text-secondary" : theme.iconClass
 
   return (
-    <span className="relative inline-flex size-9 shrink-0 items-center justify-center">
-      <span
-        className={`flex size-9 items-center justify-center rounded-full ${theme.bgClass}`}
-        aria-hidden
-      >
-        {icon.type === "kalep" ? (
-          <icon.Icon size={icon.size} className={theme.iconClass} />
-        ) : (
-          <img
-            src={icon.src}
-            alt=""
-            width={icon.sizePx}
-            height={icon.sizePx}
-            className="block"
-            draggable={false}
-          />
-        )}
-      </span>
-      {badge ? (
-        <span
-          className="absolute -bottom-1 -right-1 flex size-4 -scale-y-100 items-center justify-center"
-          aria-hidden
-        >
-          <img
-            src={badge === "inbound" ? badgeInflow : badgeOutflow}
-            alt=""
-            width={16}
-            height={16}
-            className="block size-4"
-            draggable={false}
-          />
-        </span>
+    <span
+      className={`relative flex size-10 shrink-0 items-center justify-center overflow-visible rounded-full p-mcc-pad ${circleClass}`}
+      aria-hidden
+    >
+      {icon.type === "kalep" ? (
+        <icon.Icon
+          size="sm"
+          className={`block size-5 shrink-0 ${iconClass}`}
+        />
+      ) : (
+        <img
+          src={icon.src}
+          alt=""
+          width={MCC_ICON_SIZE_PX}
+          height={MCC_ICON_SIZE_PX}
+          className={`block aspect-square size-5 shrink-0 ${usesNeutralDeclinedStyle ? "opacity-60" : ""}`}
+          draggable={false}
+        />
+      )}
+      {badge === "declined" ? (
+        <MccBadge src={badgeDeclined} />
+      ) : badge === "inbound" ? (
+        <MccBadge src={badgeInflow} />
+      ) : badge === "outbound" ? (
+        <MccBadge src={badgeOutflow} />
       ) : null}
     </span>
   )

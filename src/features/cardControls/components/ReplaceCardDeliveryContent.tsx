@@ -1,13 +1,10 @@
-import { Button, GhostButton, ListItemLayout, TextField, Typography } from "@bolteu/kalep-react"
-import ChevronCircleLeft from "@bolteu/kalep-react-icons/dist/ChevronCircleLeft"
+import { Button, ListItemLayout, TextField, Typography } from "@bolteu/kalep-react"
 import type { DeliveryAddressForm } from "../lib/replaceCard.constants"
-import { REPLACE_CARD_BACK_LINE_HEIGHT } from "../lib/replaceCard.constants"
 
 export interface ReplaceCardDeliveryContentProps {
   address: DeliveryAddressForm
   onAddressChange: (field: keyof DeliveryAddressForm, value: string) => void
   onSubmit: () => void
-  onBack?: () => void
   error?: string | null
 }
 
@@ -15,28 +12,15 @@ export function ReplaceCardDeliveryContent({
   address,
   onAddressChange,
   onSubmit,
-  onBack,
   error,
 }: ReplaceCardDeliveryContentProps) {
   return (
     <div className="min-h-dvh bg-layer-floor-1">
       <div className="flex flex-col">
-        <div className="px-5 pr-6 pt-6">
-          <GhostButton onClick={() => onBack?.()} aria-label="Back">
-            <span
-              className="flex items-center gap-2"
-              style={{ minHeight: REPLACE_CARD_BACK_LINE_HEIGHT }}
-            >
-              <ChevronCircleLeft size="lg" className="text-action-primary" />
-              <span className="text-body-m font-semibold text-action-primary">Back</span>
-            </span>
-          </GhostButton>
-
-          <div className="pb-4 pt-6">
-            <Typography variant="heading-l-accent" color="primary" as="h1">
-              Where should we send your card?
-            </Typography>
-          </div>
+        <div className="px-6 py-3">
+          <Typography variant="heading-l-accent" color="primary" as="h1">
+            Where should we send your card?
+          </Typography>
         </div>
 
         <div className="flex flex-col gap-0 px-6">

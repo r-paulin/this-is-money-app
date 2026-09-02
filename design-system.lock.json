@@ -1,0 +1,29 @@
+{
+  "packages": {
+    "@bolteu/design-tokens": {
+      "version": "2.1.1",
+      "tarball": "bolteu-design-tokens-2.1.1.tgz",
+      "sha256": "bb1ac8c1adebd804c8fc8bde141cc8ed221d52c63d02d43ed1e15d59b7360fd4"
+    },
+    "@bolteu/kalep-icons-svg": {
+      "version": "2.6.1",
+      "tarball": "bolteu-kalep-icons-svg-2.6.1.tgz",
+      "sha256": "aa08de3e55141b12c6f2313f3a75aae9da4fcde3efd9f69f8c5273a56a8346e3"
+    },
+    "@bolteu/kalep-react": {
+      "version": "3.5.1",
+      "tarball": "bolteu-kalep-react-3.5.1.tgz",
+      "sha256": "76b4d0fdda3ba3b584bd5c9c3836d94a5faf9c592231ae38d5bd86303533c69f"
+    },
+    "@bolteu/kalep-react-icons": {
+      "version": "2.6.2",
+      "tarball": "bolteu-kalep-react-icons-2.6.2.tgz",
+      "sha256": "e28851fb881ab9e4fa71699639e09902e83be9a039c28303b66f23cc1f5294bb"
+    },
+    "@bolteu/kalep-tailwind": {
+      "version": "3.2.0",
+      "tarball": "bolteu-kalep-tailwind-3.2.0.tgz",
+      "sha256": "6cb81e4f6a16dfaf01f9d8659b4acc3b5a7c2017daca70db5daeb7b4b9c696db"
+    }
+  }
+}

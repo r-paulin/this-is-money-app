@@ -5,6 +5,7 @@ import { WalletCardsProvider } from "@/features/home/WalletCardsProvider"
 import { useWalletCards } from "@/features/home/useWalletCards"
 import type { CardType, HomeMenuItemId } from "@/features/home/home.types"
 import { TransactionsGate } from "@/features/transactions"
+import { SendMoneyGate } from "@/features/sendMoney"
 import { NavigationProvider, useNavigationStack } from "@/shared/navigation"
 
 function HomeRoute() {
@@ -29,6 +30,13 @@ function HomeRoute() {
         push({
           key: "transactions",
           render: () => <TransactionsGate />,
+        })
+        return
+      }
+      if (id === "send-money") {
+        push({
+          key: "send-money",
+          render: () => <SendMoneyGate />,
         })
         return
       }

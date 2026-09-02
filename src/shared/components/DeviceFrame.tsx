@@ -194,7 +194,7 @@ export function DeviceFrame({
             style={btnPowerStyle}
             aria-hidden
           />
-          <DeviceShellOutlet className="w-full min-h-dvh bg-layer-floor-1 md:absolute md:left-1/2 md:top-1/2 md:w-[var(--device-screen-w)] md:h-[var(--device-screen-h)] md:min-h-0 md:rounded-[var(--device-screen-radius)] md:overflow-hidden md:[transform:translate(-50%,-50%)_translateZ(0)]">
+          <DeviceShellOutlet className="w-full min-h-dvh bg-layer-floor-1 md:absolute md:left-1/2 md:top-1/2 md:w-[var(--device-screen-w)] md:h-[var(--device-screen-h)] md:min-h-0 md:rounded-device-screen md:overflow-hidden md:[transform:translate(-50%,-50%)_translateZ(0)]">
             {children}
           </DeviceShellOutlet>
         </div>

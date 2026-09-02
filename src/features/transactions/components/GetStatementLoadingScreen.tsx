@@ -7,25 +7,9 @@ import {
 const PERIOD_ROW_COUNT = 4
 const FORMAT_ROW_COUNT = 2
 
-export interface GetStatementLoadingScreenProps {
-  onBack: () => void
-}
-
-export function GetStatementLoadingScreen({ onBack }: GetStatementLoadingScreenProps) {
+export function GetStatementLoadingScreen() {
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
-      <div className="px-5 pr-6 pt-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center gap-2"
-          aria-label="Back"
-        >
-          <SkeletonCircle size={24} />
-          <SkeletonBar width={56} height={14} />
-        </button>
-      </div>
-
       <div className="px-6 py-3">
         <SkeletonBar width="60%" height={32} className="rounded" />
       </div>
