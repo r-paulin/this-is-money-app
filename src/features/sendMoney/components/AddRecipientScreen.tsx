@@ -22,7 +22,7 @@ import type {
   RecipientFormField,
   RecipientFormValues,
 } from "../sendMoney.types"
-import { AmountPlaceholderScreen } from "./AmountPlaceholderScreen"
+import { AmountGate } from "./AmountGate"
 import { CountryPickerScreen } from "./CountryPickerScreen"
 import { RecipientFormFields } from "./RecipientFormFields"
 
@@ -182,7 +182,7 @@ export function AddRecipientScreen({
 
     push({
       key: `send-money-amount:${recipient.id}`,
-      render: () => <AmountPlaceholderScreen recipient={recipient} />,
+      render: () => <AmountGate recipient={recipient} />,
     })
   }
 

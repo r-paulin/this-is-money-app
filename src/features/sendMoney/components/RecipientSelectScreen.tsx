@@ -9,7 +9,7 @@ import {
 import { getDefaultRecipients, isRecipientEligible } from "../lib/scoreRecipients"
 import { searchRecipients } from "../lib/searchRecipients"
 import { AddRecipientRow } from "./AddRecipientRow"
-import { AmountPlaceholderScreen } from "./AmountPlaceholderScreen"
+import { AmountGate } from "./AmountGate"
 import { AddRecipientGate } from "./AddRecipientGate"
 import { RecipientRow } from "./RecipientRow"
 
@@ -59,7 +59,7 @@ export function RecipientSelectScreen() {
     (recipient: Recipient) => {
       push({
         key: `send-money-amount:${recipient.id}`,
-        render: () => <AmountPlaceholderScreen recipient={recipient} />,
+        render: () => <AmountGate recipient={recipient} />,
       })
     },
     [push],

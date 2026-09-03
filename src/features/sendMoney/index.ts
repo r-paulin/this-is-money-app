@@ -4,3 +4,6 @@ export { RecipientSelectErrorContent } from "./components/RecipientSelectErrorCo
 export { AddRecipientGate } from "./components/AddRecipientGate"
 export { AddRecipientScreen } from "./components/AddRecipientScreen"
 export { CountryPickerScreen } from "./components/CountryPickerScreen"
+export { AmountGate } from "./components/AmountGate"
+export { ReviewPlaceholderScreen } from "./components/ReviewPlaceholderScreen"
+export type { TransferDraft } from "./sendMoney.types"

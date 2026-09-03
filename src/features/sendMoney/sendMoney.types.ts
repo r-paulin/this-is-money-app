@@ -33,3 +33,10 @@ export type RecipientFormErrors = Partial<Record<RecipientFormField, string>>
 
 export const RECIPIENT_RETENTION_DAYS = 180
 export const DEFAULT_RECIPIENT_LIST_MAX = 10
+
+export interface TransferDraft {
+  recipient: Recipient
+  amountCents: number
+  feeCents: number
+  reference?: string
+}
