@@ -1,8 +1,11 @@
-import { TextField, Typography } from "@bolteu/kalep-react"
 import Alert from "@bolteu/kalep-react-icons/dist/Alert"
 import ChevronDown from "@bolteu/kalep-react-icons/dist/ChevronDown"
 import Clear from "@bolteu/kalep-react-icons/dist/Clear"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
+import {
+  FormPickerField,
+  InlineLabelTextField,
+} from "@/shared/components/InlineLabelTextField"
 import { useAfterNavigationTransition } from "@/shared/navigation/useAfterNavigationTransition"
 import type { TransferCountry } from "../data/countries"
 import { formatIbanDisplay } from "../lib/iban"
@@ -34,23 +37,14 @@ export function RecipientFormFields({
 
   return (
     <div className="flex flex-col gap-4 px-6 pt-4">
-      <button
-        type="button"
-        className="flex min-h-14 w-full items-center gap-4 rounded-compact border-0 bg-neutral-secondary px-4 py-2 text-left"
+      <FormPickerField
+        label="Bank country"
+        value={country.name}
         onClick={onCountryClick}
-        aria-label={`Country, ${country.name}. Change country`}
-      >
-        <CountryFlag country={country} />
-        <span className="flex min-w-0 flex-1 flex-col">
-          <Typography as="span" variant="body-s-compact-regular" color="secondary">
-            Country
-          </Typography>
-          <Typography as="span" variant="body-m-compact-regular" color="primary" noWrap>
-            {country.name}
-          </Typography>
-        </span>
-        <ChevronDown size="lg" className="shrink-0 text-primary" aria-hidden />
-      </button>
+        ariaLabel={`Bank country, ${country.name}. Change country`}
+        startSlot={<CountryFlag country={country} />}
+        endSlot={<ChevronDown size="lg" className="shrink-0 text-primary" aria-hidden />}
+      />
 
       {country.transferRail === "SEPA" ? (
         <RecipientTextField
@@ -59,6 +53,7 @@ export function RecipientFormFields({
           value={values.iban}
           error={errors.iban}
           focusWhenReady={navigationReady}
+          placeholder="Enter or paste the IBAN"
           autoCapitalize="characters"
           onChange={(value) => onChange("iban", formatIbanDisplay(value))}
           onBlur={() => onBlur("iban")}
@@ -120,6 +115,7 @@ interface RecipientTextFieldProps {
   value: string
   error?: string
   focusWhenReady?: boolean
+  placeholder?: string
   autoCapitalize?: "none" | "off" | "sentences" | "on" | "words" | "characters"
   autoComplete?: string
   inputMode?: "text" | "numeric"
@@ -135,6 +131,7 @@ function RecipientTextField({
   value,
   error,
   focusWhenReady = false,
+  placeholder,
   autoCapitalize,
   autoComplete,
   inputMode,
@@ -144,19 +141,13 @@ function RecipientTextField({
   onClear,
 }: RecipientTextFieldProps) {
   const [focused, setFocused] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (!focusWhenReady) return
-    inputRef.current?.focus({ preventScroll: true })
-  }, [focusWhenReady])
 
   return (
-    <TextField
-      ref={inputRef}
+    <InlineLabelTextField
       id={`recipient-${field}`}
       label={label}
       value={value}
+      placeholder={placeholder}
       error={Boolean(error)}
       helperText={
         error ? (
@@ -170,27 +161,32 @@ function RecipientTextField({
       autoComplete={autoComplete}
       inputMode={inputMode}
       maxLength={maxLength}
-      size="lg"
-      fullWidth
+      focusWhenReady={focusWhenReady}
       onFocus={() => setFocused(true)}
       onBlur={() => {
         setFocused(false)
         onBlur()
       }}
       onChange={(event) => onChange(event.target.value)}
-      renderEndSlot={() =>
-        focused && value ? (
-          <button
-            type="button"
-            className="flex size-8 items-center justify-center rounded-full border-0 bg-transparent p-0"
-            aria-label={`Clear ${label.toLowerCase()}`}
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={onClear}
-          >
-            <Clear size="md" className="text-tertiary" />
-          </button>
-        ) : null
-      }
+      renderEndSlot={() => (
+        <button
+          type="button"
+          className={[
+            "flex size-8 items-center justify-center rounded-full border-0 bg-transparent p-0",
+            "transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            focused && value
+              ? "opacity-100"
+              : "pointer-events-none opacity-0",
+          ].join(" ")}
+          aria-label={`Clear ${label.toLowerCase()}`}
+          aria-hidden={!(focused && value)}
+          tabIndex={focused && value ? 0 : -1}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={onClear}
+        >
+          <Clear size="md" className="text-tertiary" />
+        </button>
+      )}
     />
   )
 }

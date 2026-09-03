@@ -34,9 +34,26 @@ export type RecipientFormErrors = Partial<Record<RecipientFormField, string>>
 export const RECIPIENT_RETENTION_DAYS = 180
 export const DEFAULT_RECIPIENT_LIST_MAX = 10
 
+export type PayeeVerificationStatus =
+  | "FULL_MATCH"
+  | "PARTIAL_MATCH"
+  | "PARTIAL_MATCH_INCORRECT_TYPE"
+  | "NOT_MATCHED"
+  | "UNAVAILABLE"
+
+export interface PayeeVerification {
+  status: PayeeVerificationStatus
+  resolvedBankName?: string
+  /** Bank's version of the account name, masked for close-match warnings. */
+  maskedAccountName?: string
+}
+
 export interface TransferDraft {
   recipient: Recipient
   amountCents: number
   feeCents: number
   reference?: string
+  payeeVerification: PayeeVerification
+  /** Set when the review screen mounts — used for idempotent create-transfer. */
+  requestId?: string
 }

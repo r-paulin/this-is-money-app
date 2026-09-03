@@ -79,28 +79,28 @@ export function CountryPickerScreen({
   }
 
   return (
-    <div className="flex h-[calc(100dvh-var(--app-navbar-offset))] min-h-0 flex-col overflow-hidden bg-layer-floor-1">
-      <div className="shrink-0 px-6 py-3">
-        <Typography variant="heading-l-accent" color="primary" as="h1">
-          Country
-        </Typography>
-      </div>
+    <div className="min-h-dvh bg-layer-floor-1">
+      <div className="flex flex-col pb-6">
+        <div className="px-6 py-3">
+          <Typography variant="heading-l-accent" color="primary" as="h1">
+            Country
+          </Typography>
+        </div>
 
-      <div className="shrink-0 px-6 pb-4">
-        <TextField
-          ref={inputRef}
-          type="search"
-          size="lg"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search country"
-          clearTextLabel="Clear country search"
-          autoComplete="off"
-          fullWidth
-        />
-      </div>
+        <div className="px-6 pb-2">
+          <TextField
+            ref={inputRef}
+            type="search"
+            size="lg"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search country"
+            clearTextLabel="Clear country search"
+            autoComplete="off"
+            fullWidth
+          />
+        </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {coverageLoading ? <CountryRowsSkeleton /> : null}
         {!coverageLoading && visibleCountries.length > 0 ? (
           <ul className="m-0 list-none p-0" aria-busy={isSearching}>

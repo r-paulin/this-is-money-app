@@ -16,6 +16,7 @@ Machine- and human-readable design documentation for this app. **Read these befo
 - [Token reference](tokens/token-reference.md) — CSS variables and Tailwind aliases
 - [MCC icon](components/mcc-icon.md) — transaction category circles
 - [List item](patterns/list-item.md) — transaction / recipient rows
+- [Text field](patterns/text-field.md) — inline-label form inputs (not search)
 - [Navigation](patterns/navigation.md) — push vs modal (see also `.cursor/rules/ios-navigation.mdc`)
 
 ## Enforcement
@@ -29,3 +30,4 @@ npm run design-system:drift  # vendor tarball versions unchanged
 
 - List item: `8114:196360` (Ⓒ List Item `8107:97972`)
 - MCC icon: `138:7229`
+- Text field (inline label): `7507:106517`

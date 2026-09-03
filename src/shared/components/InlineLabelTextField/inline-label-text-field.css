@@ -1,0 +1,55 @@
+/* Inline-label text field — floating label motion (Figma 7507:106517) */
+
+.inline-label-text-field__content {
+  position: relative;
+  height: 2.5rem;
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.inline-label-text-field__label {
+  position: absolute;
+  inset-inline: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%) scale(1.143);
+  transform-origin: left center;
+  transition:
+    top 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.inline-label-text-field__content[data-floated="true"] .inline-label-text-field__label {
+  top: 0;
+  transform: translateY(0) scale(1);
+  transform-origin: left top;
+}
+
+.inline-label-text-field__input {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.inline-label-text-field__content[data-floated="true"] .inline-label-text-field__input {
+  opacity: 1;
+}
+
+.inline-label-text-field__end-slot {
+  flex: none;
+  align-self: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inline-label-text-field__label,
+  .inline-label-text-field__input {
+    transition: none;
+  }
+}

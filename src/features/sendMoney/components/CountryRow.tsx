@@ -19,25 +19,23 @@ export function CountryRow({
   onSelect,
 }: CountryRowProps) {
   return (
-    <div className={country.supported ? undefined : "opacity-60"}>
-      <ListItemLayout
-        primary={primary}
-        secondary={country.supported ? undefined : "Not supported"}
-        separator={separator}
-        paddingStart={6}
-        paddingEnd={6}
-        onClick={() => onSelect(country)}
-        primaryTypographyProps={{ variant: "body-m-compact-regular" }}
-        secondaryTypographyProps={{ variant: "body-s-regular" }}
-        renderStartSlot={() => <CountryFlag country={country} />}
-        renderEndSlot={() =>
-          selected ? (
-            <Typography as="span" variant="body-l-accent" color="primary" aria-label="Selected">
-              ✓
-            </Typography>
-          ) : null
-        }
-      />
-    </div>
+    <ListItemLayout
+      primary={primary}
+      secondary={country.supported ? undefined : "Not supported"}
+      separator={separator}
+      paddingStart={6}
+      paddingEnd={6}
+      onClick={() => onSelect(country)}
+      primaryTypographyProps={{ variant: "body-m-compact-regular", color: "primary" }}
+      secondaryTypographyProps={{ variant: "body-s-regular", color: "secondary" }}
+      renderStartSlot={() => <CountryFlag country={country} />}
+      renderEndSlot={() =>
+        selected ? (
+          <Typography as="span" variant="body-l-accent" color="primary" aria-label="Selected">
+            ✓
+          </Typography>
+        ) : null
+      }
+    />
   )
 }

@@ -25,6 +25,7 @@ globs: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css", "tailwind.config.ts"]
 - **No arbitrary radius** — `rounded-[8px]` → `rounded-compact`
 - **New tokens** — add to `tokens.css`, extend Tailwind, document in `specs/tokens/token-reference.md`
 - **MCC icons** — follow `specs/components/mcc-icon.md` (`TransactionCategoryIcon`)
+- **Form text fields** — use `InlineLabelTextField` / `FormPickerField` (`specs/patterns/text-field.md`); not Kalep label-above `TextField`
 
 ## Allowed hex locations
 
@@ -45,3 +46,4 @@ npm run design-system:drift
 |-----------|------|
 | List item | `8114:196360` |
 | MCC icon | `138:7229` |
+| Text field (inline label) | `7507:106517` |

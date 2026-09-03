@@ -23,10 +23,12 @@ import {
   isOverSpendable,
   validateTransferAmountOnSubmit,
 } from "../lib/transferLimits"
+import { resolveMockPayeeVerification } from "../lib/mockPayeeVerification"
 import type { Recipient, TransferDraft } from "../sendMoney.types"
+import { AddRecipientScreen } from "./AddRecipientScreen"
 import { AmountField } from "./AmountField"
 import { ReferenceField } from "./ReferenceField"
-import { ReviewPlaceholderScreen } from "./ReviewPlaceholderScreen"
+import { ReviewAndSendScreen } from "./ReviewAndSendScreen"
 import "./send-money-amount.css"
 
 const MIN_AMOUNT_CENTS = 1
@@ -48,7 +50,7 @@ export function AmountScreen({
   balanceError,
   onRetryBalance,
 }: AmountScreenProps) {
-  const { push } = useNavigationStack()
+  const { push, pop } = useNavigationStack()
   const snackbar = useSnackbar()
   const navigationReady = useAfterNavigationTransition()
 
@@ -173,11 +175,27 @@ export function AmountScreen({
       amountCents,
       feeCents: feeQuote?.status === "ready" ? feeQuote.feeCents : 0,
       reference: reference.trim() ? reference.trim() : undefined,
+      payeeVerification: resolveMockPayeeVerification(recipient),
+    }
+
+    const handleEditRecipient = () => {
+      pop()
+      push({
+        key: `send-money-edit-recipient:${recipient.id}`,
+        render: () => (
+          <AddRecipientScreen
+            prefillName={recipient.rawName}
+            prefillIban={recipient.iban}
+          />
+        ),
+      })
     }
 
     push({
       key: `send-money-review:${recipient.id}`,
-      render: () => <ReviewPlaceholderScreen draft={draft} />,
+      render: () => (
+        <ReviewAndSendScreen draft={draft} onEditRecipient={handleEditRecipient} />
+      ),
     })
   }
 

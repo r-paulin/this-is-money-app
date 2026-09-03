@@ -1,4 +1,5 @@
-import { Button, ListItemLayout, TextField, Typography } from "@bolteu/kalep-react"
+import { Button, ListItemLayout, Typography } from "@bolteu/kalep-react"
+import { InlineLabelTextField } from "@/shared/components/InlineLabelTextField"
 import type { DeliveryAddressForm } from "../lib/replaceCard.constants"
 
 export interface ReplaceCardDeliveryContentProps {
@@ -23,35 +24,42 @@ export function ReplaceCardDeliveryContent({
           </Typography>
         </div>
 
-        <div className="flex flex-col gap-0 px-6">
-          <TextField
+        <div className="flex flex-col gap-4 px-6">
+          <InlineLabelTextField
             disabled
-            label="Country *"
+            required
+            label="Country"
             value="Canada"
             onChange={() => undefined}
           />
-          <TextField
-            label="Street address *"
+          <InlineLabelTextField
+            required
+            label="Street address"
             value={address.streetAddress}
             onChange={(event) => onAddressChange("streetAddress", event.target.value)}
           />
-          <TextField
+          <InlineLabelTextField
             label="Apartment, suite, unit"
             value={address.apartment}
             onChange={(event) => onAddressChange("apartment", event.target.value)}
           />
-          <TextField
-            label="City *"
+          <InlineLabelTextField
+            required
+            label="City"
             value={address.city}
             onChange={(event) => onAddressChange("city", event.target.value)}
           />
-          <TextField
-            label="State / Province / Region *"
+          <InlineLabelTextField
+            required
+            label="State / Province / Region"
             value={address.stateProvince}
-            onChange={(event) => onAddressChange("stateProvince", event.target.value)}
+            onChange={(event) =>
+              onAddressChange("stateProvince", event.target.value)
+            }
           />
-          <TextField
-            label="Postal code *"
+          <InlineLabelTextField
+            required
+            label="Postal code"
             value={address.postalCode}
             onChange={(event) => onAddressChange("postalCode", event.target.value)}
           />
