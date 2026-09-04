@@ -1,7 +1,10 @@
+export type RecipientType = "individual" | "business"
+
 export interface Recipient {
   id: string
   rawName: string
   iban: string
+  recipientType?: RecipientType
   lastAmountCents: number
   lastTransferredAt: number
   transferCount90d: number
@@ -54,6 +57,7 @@ export interface TransferDraft {
   feeCents: number
   reference?: string
   payeeVerification: PayeeVerification
-  /** Set when the review screen mounts — used for idempotent create-transfer. */
+  /** Set per submit attempt — used for idempotent create-transfer. */
   requestId?: string
+  markTrusted?: boolean
 }

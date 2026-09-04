@@ -1,10 +1,11 @@
-import { Button, ListItemLayout, Typography, useSnackbar } from "@bolteu/kalep-react"
+import { Button, ListItemLayout, Typography } from "@bolteu/kalep-react"
 import Alert from "@bolteu/kalep-react-icons/dist/Alert"
 import CheckCircle from "@bolteu/kalep-react-icons/dist/CheckCircle"
 import HelpCircle from "@bolteu/kalep-react-icons/dist/HelpCircle"
 import InfoCircle from "@bolteu/kalep-react-icons/dist/InfoCircle"
 import Verified from "@bolteu/kalep-react-icons/dist/Verified"
-import { useCallback, useRef, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
+import { useNavigationStack } from "@/shared/navigation"
 import { formatEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { formatRecipientDisplayName } from "../lib/formatRecipientName"
 import {
@@ -13,13 +14,13 @@ import {
   formatReviewTotalCents,
 } from "../lib/formatTransferReview"
 import { formatIbanDisplay } from "../lib/iban"
-import { createMockTransfer } from "../lib/mockCreateTransfer"
 import {
   getNameConfirmedMessage,
   getPartialMatchBannerMessage,
   getReviewScreenRules,
 } from "../lib/reviewScreenLogic"
 import type { TransferDraft } from "../sendMoney.types"
+import { TransferResultScreen } from "./TransferResultScreen"
 import "./send-money-review.css"
 
 export interface ReviewAndSendScreenProps {
@@ -290,11 +291,17 @@ export function ReviewAndSendScreen({
   draft,
   onEditRecipient,
 }: ReviewAndSendScreenProps) {
-  const snackbar = useSnackbar()
-  const requestIdRef = useRef<string>(
-    draft.requestId ?? crypto.randomUUID(),
-  )
+  const { push, isTransitioning, stack } = useNavigationStack()
+  const hasSubmittedRef = useRef(false)
   const { recipient, amountCents, feeCents, reference, payeeVerification } = draft
+  const reviewKey = `send-money-review:${recipient.id}`
+  const isReviewTop = stack[stack.length - 1]?.key === reviewKey
+
+  useEffect(() => {
+    if (isReviewTop) {
+      hasSubmittedRef.current = false
+    }
+  }, [isReviewTop])
   const rules = getReviewScreenRules(payeeVerification.status)
   const [markTrusted, setMarkTrusted] = useState(recipient.isTrusted)
   const displayName = formatRecipientDisplayName(recipient.rawName)
@@ -305,42 +312,23 @@ export function ReviewAndSendScreen({
   const trustedToggleEnabled =
     recipient.isTrusted || rules.trustedToggleEnabled
   const trustedToggleChecked = recipient.isTrusted || markTrusted
-  const [isSending, setIsSending] = useState(false)
 
-  const handleSend = useCallback(async () => {
-    if (isSending) return
+  const handleSend = useCallback(() => {
+    if (hasSubmittedRef.current || isTransitioning) return
+    hasSubmittedRef.current = true
 
-    setIsSending(true)
-    try {
-      const result = await createMockTransfer({
-        requestId: requestIdRef.current,
-        amountCents,
-        feeCents,
-        recipientId: recipient.id,
-        markTrusted: trustedToggleChecked,
-      })
-
-      if (result.duplicate) {
-        return
-      }
-
-      snackbar.add({
-        description: `Sent ${formatEurFromCents(amountCents)} to ${displayName}`,
-        dismissible: false,
-        timeout: 4000,
-      })
-    } finally {
-      setIsSending(false)
+    const requestId = crypto.randomUUID()
+    const draftWithRequest: TransferDraft = {
+      ...draft,
+      requestId,
+      markTrusted: trustedToggleChecked,
     }
-  }, [
-    amountCents,
-    displayName,
-    feeCents,
-    isSending,
-    recipient.id,
-    snackbar,
-    trustedToggleChecked,
-  ])
+
+    push({
+      key: `send-money-result:${requestId}`,
+      render: () => <TransferResultScreen draft={draftWithRequest} />,
+    })
+  }, [draft, isTransitioning, push, trustedToggleChecked])
 
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
@@ -434,7 +422,6 @@ export function ReviewAndSendScreen({
               variant="primary"
               fullWidth
               onClick={onEditRecipient}
-              disabled={isSending}
             >
               Edit recipient
             </Button>
@@ -442,8 +429,6 @@ export function ReviewAndSendScreen({
               size="lg"
               variant="secondary"
               fullWidth
-              loading={isSending}
-              disabled={isSending}
               onClick={handleSend}
             >
               Send anyway
@@ -454,8 +439,6 @@ export function ReviewAndSendScreen({
             size="lg"
             variant="primary"
             fullWidth
-            loading={isSending}
-            disabled={isSending}
             onClick={handleSend}
           >
             Confirm and send

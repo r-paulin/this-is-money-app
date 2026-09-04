@@ -13,6 +13,11 @@ export function AddRecipientLoadingScreen() {
         </div>
       </div>
 
+      <div className="flex min-h-12 items-center gap-4 px-6">
+        <SkeletonBar width={88} height={20} className="rounded" />
+        <SkeletonBar width={72} height={20} className="rounded" />
+      </div>
+
       <div className="flex flex-col gap-4 px-6 pt-4">
         {Array.from({ length: 3 }, (_, index) => (
           <SkeletonBar key={index} width="100%" height={56} className="rounded-compact" />

@@ -45,8 +45,11 @@ export function NavigationProvider({
   const [navbarBackHandler, setNavbarBackHandler] = useState<(() => void) | null>(
     null,
   )
+  const [isNavigationLocked, setNavigationLocked] = useState(false)
   const pendingPopRef = useRef(false)
   const pendingPopToRootRef = useRef(false)
+  const pendingPopToIndexRef = useRef<number | null>(null)
+  const pendingAfterTransitionRef = useRef<(() => void) | null>(null)
 
   const push = useCallback(
     (entry: ScreenEntry) => {
@@ -60,25 +63,50 @@ export function NavigationProvider({
   )
 
   const pop = useCallback(() => {
+    if (isNavigationLocked) return
     if (stack.length <= 1 || isTransitioning || isDragging) return
 
     pendingPopRef.current = true
     setDirection("pop")
     setIsTransitioning(true)
-  }, [isDragging, isTransitioning, stack.length])
+  }, [isDragging, isNavigationLocked, isTransitioning, stack.length])
+
+  const popTo = useCallback(
+    (key: string) => {
+      if (isNavigationLocked) return
+      if (stack.length <= 1 || isTransitioning || isDragging) return
+
+      const targetIndex = stack.findIndex((entry) => entry.key === key)
+      if (targetIndex < 0 || targetIndex >= stack.length - 1) return
+
+      pendingPopToIndexRef.current = targetIndex
+      setDirection("pop")
+      setIsTransitioning(true)
+    },
+    [isDragging, isNavigationLocked, isTransitioning, stack],
+  )
 
   const popToRoot = useCallback(() => {
+    if (isNavigationLocked) return
     if (stack.length <= 1 || isTransitioning || isDragging) return
 
     pendingPopToRootRef.current = true
     setDirection("pop")
     setIsTransitioning(true)
-  }, [isDragging, isTransitioning, stack.length])
+  }, [isDragging, isNavigationLocked, isTransitioning, stack.length])
+
+  const runAfterTransition = useCallback((action: () => void) => {
+    pendingAfterTransitionRef.current = action
+  }, [])
 
   const completeTransition = useCallback(() => {
     if (pendingPopToRootRef.current) {
       pendingPopToRootRef.current = false
       setStack((current) => [current[0]])
+    } else if (pendingPopToIndexRef.current != null) {
+      const targetIndex = pendingPopToIndexRef.current
+      pendingPopToIndexRef.current = null
+      setStack((current) => current.slice(0, targetIndex + 1))
     } else if (pendingPopRef.current) {
       pendingPopRef.current = false
       setStack((current) => current.slice(0, -1))
@@ -88,6 +116,12 @@ export function NavigationProvider({
     setIsTransitioning(false)
     setDragOffset(0)
     setIsDragging(false)
+
+    const pendingAction = pendingAfterTransitionRef.current
+    if (pendingAction) {
+      pendingAfterTransitionRef.current = null
+      pendingAction()
+    }
   }, [])
 
   const value = useMemo(
@@ -95,8 +129,12 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      popTo,
       popToRoot,
-      canPop: stack.length > 1,
+      runAfterTransition,
+      canPop: stack.length > 1 && !isNavigationLocked,
+      isNavigationLocked,
+      setNavigationLocked,
       isTransitioning,
       direction,
       completeTransition,
@@ -112,7 +150,10 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      popTo,
       popToRoot,
+      runAfterTransition,
+      isNavigationLocked,
       isTransitioning,
       direction,
       completeTransition,

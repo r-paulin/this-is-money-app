@@ -11,8 +11,13 @@ export type NavigationContextValue = {
   stack: ScreenEntry[]
   push: (entry: ScreenEntry) => void
   pop: () => void
+  popTo: (key: string) => void
   popToRoot: () => void
+  /** Runs action after the current pop/popTo/popToRoot animation completes. */
+  runAfterTransition: (action: () => void) => void
   canPop: boolean
+  isNavigationLocked: boolean
+  setNavigationLocked: (locked: boolean) => void
   isTransitioning: boolean
   direction: TransitionDirection | null
   completeTransition: () => void

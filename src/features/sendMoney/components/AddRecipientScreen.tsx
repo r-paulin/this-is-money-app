@@ -21,6 +21,7 @@ import type {
   RecipientFormErrors,
   RecipientFormField,
   RecipientFormValues,
+  RecipientType,
 } from "../sendMoney.types"
 import { AmountGate } from "./AmountGate"
 import { CountryPickerScreen } from "./CountryPickerScreen"
@@ -49,6 +50,7 @@ export function AddRecipientScreen({
 }: AddRecipientScreenProps) {
   const { push } = useNavigationStack()
   const [country, setCountry] = useState(() => initialCountry(prefillIban))
+  const [recipientType, setRecipientType] = useState<RecipientType>("individual")
   const [schemaLoading, setSchemaLoading] = useState(false)
   const [values, setValues] = useState<RecipientFormValues>({
     iban: prefillIban,
@@ -137,6 +139,12 @@ export function AddRecipientScreen({
     }, FORM_SCHEMA_LOADING_MS)
   }, [country.code, values.iban])
 
+  const handleRecipientTypeChange = useCallback((type: RecipientType) => {
+    if (type === recipientType) return
+    ;(document.activeElement as HTMLElement | null)?.blur()
+    setRecipientType(type)
+  }, [recipientType])
+
   const openCountryPicker = useCallback(() => {
     push({
       key: `send-money-country:${country.code}`,
@@ -171,6 +179,7 @@ export function AddRecipientScreen({
       id: `new-${country.code}-${accountReference}`,
       rawName: values.accountHolderName.trim(),
       iban: accountReference,
+      recipientType,
       lastAmountCents: 0,
       lastTransferredAt: Date.now(),
       transferCount90d: 0,
@@ -206,8 +215,10 @@ export function AddRecipientScreen({
           ) : (
             <RecipientFormFields
               country={country}
+              recipientType={recipientType}
               values={values}
               errors={errors}
+              onRecipientTypeChange={handleRecipientTypeChange}
               onCountryClick={openCountryPicker}
               onChange={updateField}
               onBlur={validateField}
@@ -234,11 +245,17 @@ export function AddRecipientScreen({
 function RecipientFormSkeleton({ country }: { country: TransferCountry }) {
   const fieldCount = country.transferRail === "SEPA" ? 2 : 4
   return (
-    <div className="flex flex-col gap-4 px-6 pt-4" aria-label="Loading recipient form">
-      <SkeletonBar width="100%" height={56} className="rounded-compact" />
-      {Array.from({ length: fieldCount }, (_, index) => (
-        <SkeletonBar key={index} width="100%" height={56} className="rounded-compact" />
-      ))}
+    <div className="flex flex-col" aria-label="Loading recipient form">
+      <div className="flex min-h-12 items-center gap-4 px-6">
+        <SkeletonBar width={88} height={20} className="rounded" />
+        <SkeletonBar width={72} height={20} className="rounded" />
+      </div>
+      <div className="flex flex-col gap-4 px-6 pt-4">
+        <SkeletonBar width="100%" height={56} className="rounded-compact" />
+        {Array.from({ length: fieldCount }, (_, index) => (
+          <SkeletonBar key={index} width="100%" height={56} className="rounded-compact" />
+        ))}
+      </div>
     </div>
   )
 }

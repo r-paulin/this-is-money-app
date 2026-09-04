@@ -1,0 +1,55 @@
+/* iOS-style Individual / Business tab switching — uses --nav-duration / --nav-ease from navigation.css */
+
+.recipient-type-tabs {
+  position: relative;
+  border-bottom: 1px solid var(--border-neutral-secondary, rgba(0, 10, 7, 0.08));
+}
+
+.recipient-type-tabs__list {
+  position: relative;
+}
+
+.recipient-type-tabs__indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background-color: var(--content-primary, #191f1c);
+  transition:
+    left var(--nav-duration) var(--nav-ease),
+    width var(--nav-duration) var(--nav-ease);
+  pointer-events: none;
+}
+
+.recipient-type-form-panel {
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+}
+
+.recipient-type-form-panel__track {
+  display: flex;
+  width: 200%;
+  transition: transform var(--nav-duration) var(--nav-ease);
+  will-change: transform;
+}
+
+.recipient-type-form-panel__track--business {
+  transform: translateX(-50%);
+}
+
+.recipient-type-form-panel__pane {
+  width: 50%;
+  flex: 0 0 50%;
+  min-width: 0;
+}
+
+.recipient-type-form-panel__pane[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recipient-type-tabs__indicator,
+  .recipient-type-form-panel__track {
+    transition: none;
+  }
+}
