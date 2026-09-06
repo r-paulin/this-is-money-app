@@ -70,6 +70,14 @@ export function TransactionRow({ transaction, separator, searchQuery }: Transact
       secondaryLabel
     )
 
+  const serviceFeeLabel =
+    transaction.serviceFeeCents != null && transaction.serviceFeeCents > 0
+      ? `, Service fee included: ${formatTransactionListEurFromCents(transaction.serviceFeeCents)}`
+      : ""
+  const accessibleLabel = status
+    ? `${title}, ${timestamp}, ${status}, ${amount.text}${serviceFeeLabel}`
+    : `${title}, ${timestamp}, ${amount.text}${serviceFeeLabel}`
+
   return (
     <ListItemLayout
       primary={
@@ -104,7 +112,7 @@ export function TransactionRow({ transaction, separator, searchQuery }: Transact
           </Typography>
         </div>
       )}
-      aria-label={title}
+      aria-label={accessibleLabel}
     />
   )
 }

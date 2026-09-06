@@ -47,23 +47,14 @@
   display: inline-flex;
   align-items: center;
   cursor: pointer;
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 
 .send-money-trusted-toggle.is-disabled {
   cursor: not-allowed;
   opacity: 0.45;
-}
-
-.send-money-trusted-toggle__input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .send-money-trusted-toggle__track {
@@ -89,15 +80,15 @@
   transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.send-money-trusted-toggle__input:checked + .send-money-trusted-toggle__track {
+.send-money-trusted-toggle.is-checked .send-money-trusted-toggle__track {
   background: var(--color-bg-action-primary, #0e8345);
 }
 
-.send-money-trusted-toggle__input:checked + .send-money-trusted-toggle__track::after {
+.send-money-trusted-toggle.is-checked .send-money-trusted-toggle__track::after {
   transform: translateX(20px);
 }
 
-.send-money-trusted-toggle__input:focus-visible + .send-money-trusted-toggle__track {
+.send-money-trusted-toggle:focus-visible .send-money-trusted-toggle__track {
   outline: 2px solid var(--color-border-action-primary, #0e8345);
   outline-offset: 2px;
 }

@@ -77,6 +77,7 @@ export function TransactionsScreen() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search"
+              aria-label="Search transactions"
               fullWidth
             />
           </div>

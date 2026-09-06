@@ -1,0 +1,24 @@
+@keyframes send-money-result-illustration-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.send-money-result__illustration {
+  opacity: 0;
+}
+
+.send-money-result__illustration.is-visible {
+  animation: send-money-result-illustration-fade-in 400ms cubic-bezier(0.32, 0.72, 0, 1)
+    forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .send-money-result__illustration.is-visible {
+    animation: none;
+    opacity: 1;
+  }
+}

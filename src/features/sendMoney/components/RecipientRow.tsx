@@ -35,6 +35,10 @@ export function RecipientRow({
   onSelect,
 }: RecipientRowProps) {
   const displayName = formatRecipientListName(recipient.rawName)
+  const subtitle = formatRecipientSubtitle(recipient, now)
+  const accessibleLabel = recipient.isTrusted
+    ? `${displayName}, ${subtitle}, trusted`
+    : `${displayName}, ${subtitle}`
   const primary =
     searchQuery && searchQuery.trim().length > 0 ? (
       highlightNameMatch(recipient.rawName, searchQuery)
@@ -45,7 +49,7 @@ export function RecipientRow({
   return (
     <ListItemLayout
       primary={primary}
-      secondary={formatRecipientSubtitle(recipient, now)}
+      secondary={subtitle}
       separator={separator}
       paddingStart={6}
       paddingEnd={6}
@@ -55,7 +59,7 @@ export function RecipientRow({
       )}
       primaryTypographyProps={{ variant: "body-m-compact-regular" }}
       secondaryTypographyProps={{ variant: "body-s-regular" }}
-      aria-label={displayName}
+      aria-label={accessibleLabel}
     />
   )
 }

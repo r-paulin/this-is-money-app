@@ -188,25 +188,26 @@ function TrustedAccountBanner({
             </Typography>
           </div>
           <div className="shrink-0 pl-3">
-            <label
+            <button
+              type="button"
+              role="switch"
               className={[
                 "send-money-trusted-toggle",
+                checked ? "is-checked" : "",
                 enabled ? "" : "is-disabled",
               ]
                 .filter(Boolean)
                 .join(" ")}
+              aria-checked={checked}
+              aria-label="Make this a trusted account"
+              disabled={!enabled}
+              onClick={() => {
+                if (!enabled) return
+                onCheckedChange(!checked)
+              }}
             >
-              <input
-                type="checkbox"
-                role="switch"
-                className="send-money-trusted-toggle__input"
-                checked={checked}
-                disabled={!enabled}
-                onChange={(event) => onCheckedChange(event.target.checked)}
-                aria-label="Make this a trusted account"
-              />
               <span className="send-money-trusted-toggle__track" aria-hidden />
-            </label>
+            </button>
           </div>
         </div>
       </div>
@@ -310,7 +311,7 @@ export function ReviewAndSendScreen({
     payeeVerification.resolvedBankName ??
     resolveMockBankNameFallback(recipient.iban)
   const trustedToggleEnabled =
-    recipient.isTrusted || rules.trustedToggleEnabled
+    rules.trustedToggleEnabled && !recipient.isTrusted
   const trustedToggleChecked = recipient.isTrusted || markTrusted
 
   const handleSend = useCallback(() => {

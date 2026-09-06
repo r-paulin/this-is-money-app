@@ -1,6 +1,5 @@
 import { Button, ListItemLayout, Typography } from "@bolteu/kalep-react"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { TransactionsGate } from "@/features/transactions"
 import { formatEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import {
   useNavigationStack,
@@ -25,6 +24,7 @@ import {
 import type { TransferDraft } from "../sendMoney.types"
 import { AddRecipientScreen } from "./AddRecipientScreen"
 import { TransferResultLoadingContent } from "./TransferResultLoadingContent"
+import "./send-money-result.css"
 
 export interface TransferResultScreenProps {
   draft: TransferDraft
@@ -59,8 +59,15 @@ function ResultDetailRow({ label, value, separator = true }: ResultDetailRowProp
 }
 
 export function TransferResultScreen({ draft }: TransferResultScreenProps) {
-  const { push, pop, popTo, popToRoot, reducedMotion, runAfterTransition } =
-    useNavigationStack()
+  const {
+    push,
+    pop,
+    popTo,
+    popToRoot,
+    reducedMotion,
+    runAfterTransition,
+    setNavigationLocked,
+  } = useNavigationStack()
   const requestIdRef = useRef(draft.requestId ?? crypto.randomUUID())
   const [result, setResult] = useState<MockCreateTransferResult | null>(null)
   const hapticPlayedRef = useRef(false)
@@ -78,35 +85,35 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
 
   const isLoading = uiState === "loading"
 
-  useNavigationLock(isLoading)
+  // Keep the confirmation screen up until the user taps an explicit action.
+  useNavigationLock(true)
 
-  const goToTransactions = useCallback(() => {
-    runAfterTransition(() => {
-      push({
-        key: "transactions",
-        render: () => <TransactionsGate />,
-      })
-    })
-    popToRoot()
-  }, [popToRoot, push, runAfterTransition])
+  const releaseNavigationLock = useCallback(() => {
+    setNavigationLocked(false)
+  }, [setNavigationLocked])
 
   const goToRecipientSelect = useCallback(() => {
+    releaseNavigationLock()
     popTo("send-money")
-  }, [popTo])
+  }, [popTo, releaseNavigationLock])
 
   const goToAmount = useCallback(() => {
+    releaseNavigationLock()
     popTo(`send-money-amount:${recipient.id}`)
-  }, [popTo, recipient.id])
+  }, [popTo, recipient.id, releaseNavigationLock])
 
   const goHome = useCallback(() => {
+    releaseNavigationLock()
     popToRoot()
-  }, [popToRoot])
+  }, [popToRoot, releaseNavigationLock])
 
   const goToReview = useCallback(() => {
+    releaseNavigationLock()
     pop()
-  }, [pop])
+  }, [pop, releaseNavigationLock])
 
   const handleEditRecipient = useCallback(() => {
+    releaseNavigationLock()
     runAfterTransition(() => {
       push({
         key: `send-money-edit-recipient:${recipient.id}`,
@@ -119,12 +126,20 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
       })
     })
     popTo(`send-money-amount:${recipient.id}`)
-  }, [popTo, push, recipient.id, recipient.iban, recipient.rawName, runAfterTransition])
+  }, [
+    popTo,
+    push,
+    recipient.id,
+    recipient.iban,
+    recipient.rawName,
+    releaseNavigationLock,
+    runAfterTransition,
+  ])
 
   const handlePrimaryAction = useCallback(() => {
     switch (uiState) {
       case "submitted":
-        goToTransactions()
+        goHome()
         break
       case "invalid_recipient":
         handleEditRecipient()
@@ -141,7 +156,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
   }, [
     goToAmount,
     goToReview,
-    goToTransactions,
+    goHome,
     handleEditRecipient,
     uiState,
   ])
@@ -189,7 +204,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
 
     switch (uiState) {
       case "submitted":
-        goToTransactions()
+        goHome()
         break
       case "invalid_recipient":
       case "insufficient":
@@ -201,9 +216,9 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
       default:
         break
     }
-  }, [goHome, goToReview, goToTransactions, isLoading, uiState])
+  }, [goHome, goToReview, isLoading, uiState])
 
-  useNavbarBack(isLoading ? () => {} : navbarBackHandler)
+  useNavbarBack(isLoading ? null : navbarBackHandler)
 
   const failureCopy =
     result?.status === "failed" ? mapTransferFailureToUi(result.kind) : null
@@ -219,36 +234,41 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
     uiState === "insufficient"
 
   return (
-    <div className="flex min-h-dvh flex-col bg-layer-floor-1">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-layer-floor-1">
       {isLoading ? (
         <TransferResultLoadingContent />
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center px-6 pb-4">
-          <img
-            src={uiState === "submitted" ? moneyBillSuccess : moneyBillAlert}
-            alt=""
-            width={200}
-            height={148}
-            className="shrink-0 object-contain"
-            aria-hidden
-          />
+        <div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden">
+          <div className="flex flex-col items-center px-6">
+            <img
+              src={uiState === "submitted" ? moneyBillSuccess : moneyBillAlert}
+              alt=""
+              width={200}
+              height={148}
+              className={[
+                "send-money-result__illustration shrink-0 object-contain",
+                "is-visible",
+              ].join(" ")}
+              aria-hidden
+            />
 
-          <div className="w-full pt-6 text-center">
-            <Typography variant="heading-l-accent" color="primary" as="h1">
-              {uiState === "submitted"
-                ? `You’ve sent ${formatEurFromCents(amountCents)}`
-                : failureCopy?.heading}
-            </Typography>
-          </div>
+            <div className="w-full pt-6 text-center">
+              <Typography variant="heading-l-accent" color="primary" as="h1">
+                {uiState === "submitted"
+                  ? `You’ve sent ${formatEurFromCents(amountCents)}`
+                  : failureCopy?.heading}
+              </Typography>
+            </div>
 
-          <div className="w-full px-2 pt-1 text-center">
-            <Typography variant="body-m-regular" color="secondary" as="p">
-              {uiState === "submitted" ? arrivalCopy : failureCopy?.body}
-            </Typography>
+            <div className="w-full pt-1 text-center">
+              <Typography variant="body-m-regular" color="secondary" as="p">
+                {uiState === "submitted" ? arrivalCopy : failureCopy?.body}
+              </Typography>
+            </div>
           </div>
 
           {uiState === "submitted" ? (
-            <div className="w-full pt-2">
+            <div className="w-full shrink-0 pt-2">
               <ResultDetailRow label="Recipient" value={displayName} />
               <ResultDetailRow
                 label="IBAN"
@@ -268,7 +288,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
       )}
 
       {!isLoading ? (
-        <div className="sticky bottom-0 flex flex-col gap-3 bg-layer-floor-1 px-6 py-4">
+        <div className="shrink-0 flex flex-col gap-3 bg-layer-floor-1 px-6 py-4">
           <Button size="lg" variant="primary" fullWidth onClick={handlePrimaryAction}>
             {uiState === "submitted"
               ? "Done"

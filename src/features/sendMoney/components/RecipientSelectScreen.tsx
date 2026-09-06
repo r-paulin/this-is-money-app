@@ -67,13 +67,8 @@ export function RecipientSelectScreen() {
 
   const openAddRecipient = useCallback(
     (prefillName?: string, prefillIban?: string) => {
-      const prefillKey = prefillIban
-        ? `:iban:${prefillIban}`
-        : prefillName
-          ? `:name:${prefillName}`
-          : ""
       push({
-        key: `send-money-add-recipient${prefillKey}`,
+        key: "send-money-add-recipient",
         render: () => (
           <AddRecipientGate
             prefillName={prefillName}
@@ -121,6 +116,7 @@ export function RecipientSelectScreen() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by name or bank account"
+            aria-label="Search recipients"
             fullWidth
           />
         </div>

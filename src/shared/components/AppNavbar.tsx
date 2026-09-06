@@ -6,15 +6,19 @@ import "./app-navbar.css"
 const NAVBAR_TITLE = "Bolt Card"
 
 export function AppNavbar() {
-  const { canPop, pop, navbarBackHandler } = useNavigationStack()
+  const { canPop, pop, navbarBackHandler, isNavigationLocked } =
+    useNavigationStack()
 
-  const showBack = canPop || navbarBackHandler !== null
+  const showBack = navbarBackHandler !== null || (!isNavigationLocked && canPop)
 
   const handleBack = () => {
     if (navbarBackHandler) {
       navbarBackHandler()
       return
     }
+
+    if (isNavigationLocked) return
+
     if (canPop) {
       pop()
     }

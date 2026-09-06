@@ -71,6 +71,7 @@ export function usePullToRefresh({
     mountedRef.current = true
     return () => {
       mountedRef.current = false
+      refreshingRef.current = false
     }
   }, [])
 
@@ -118,7 +119,10 @@ export function usePullToRefresh({
     setPullDistance(COMMIT_THRESHOLD_PX)
     setPillVisibility("enter")
     await waitForNextFrame()
-    if (!mountedRef.current) return
+    if (!mountedRef.current) {
+      refreshingRef.current = false
+      return
+    }
     setPillVisibility("visible")
 
     const refreshStartedAt = Date.now()
@@ -129,14 +133,20 @@ export function usePullToRefresh({
       // Prototype: ignore refresh errors and still hide the pill.
     }
 
-    if (!mountedRef.current) return
+    if (!mountedRef.current) {
+      refreshingRef.current = false
+      return
+    }
 
     const elapsed = Date.now() - refreshStartedAt
     if (elapsed < MIN_PILL_VISIBLE_MS) {
       await wait(MIN_PILL_VISIBLE_MS - elapsed)
     }
 
-    if (!mountedRef.current) return
+    if (!mountedRef.current) {
+      refreshingRef.current = false
+      return
+    }
 
     if (prefersReducedMotion()) {
       resetPull()
@@ -149,7 +159,10 @@ export function usePullToRefresh({
     setPullDistance(0)
     await wait(PILL_EXIT_MS)
 
-    if (!mountedRef.current) return
+    if (!mountedRef.current) {
+      refreshingRef.current = false
+      return
+    }
     resetPull()
     refreshingRef.current = false
   }, [onRefresh, resetPull])

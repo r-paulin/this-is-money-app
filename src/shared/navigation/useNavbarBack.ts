@@ -6,7 +6,8 @@ export function useNavbarBack(handler: (() => void) | null) {
   const { setNavbarBackHandler } = useNavigationStack()
 
   useEffect(() => {
-    setNavbarBackHandler(handler)
+    // Store function in state — must wrap in updater or React invokes the handler.
+    setNavbarBackHandler(() => handler)
     return () => setNavbarBackHandler(null)
   }, [handler, setNavbarBackHandler])
 }
