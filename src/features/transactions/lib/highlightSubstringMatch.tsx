@@ -55,7 +55,7 @@ export function highlightSubstringMatch(text: string, query: string): ReactNode 
   return (
     <>
       {before ? <span className="text-secondary">{before}</span> : null}
-      <span className="font-semibold text-primary">{match}</span>
+      <span className="text-primary">{match}</span>
       {after ? <span className="text-secondary">{after}</span> : null}
     </>
   )

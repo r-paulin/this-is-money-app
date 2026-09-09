@@ -93,7 +93,7 @@ export function highlightNameMatch(
       const restText = segment.slice(matchLength)
       nodes.push(
         <span key={`${segment}-match`}>
-          <span className="font-semibold text-primary">{matchText}</span>
+          <span className="text-primary">{matchText}</span>
           {restText ? <span className="text-secondary">{restText}</span> : null}
         </span>,
       )

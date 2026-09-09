@@ -12,13 +12,16 @@ import { AddRecipientRow } from "./AddRecipientRow"
 import { AmountGate } from "./AmountGate"
 import { AddRecipientGate } from "./AddRecipientGate"
 import { RecipientRow } from "./RecipientRow"
+import { RecipientSearchSkeletonList } from "./RecipientSearchSkeletonList"
 
 const SEARCH_DEBOUNCE_MS = 200
+const SEARCH_SKELETON_MS = 400
 
 export function RecipientSelectScreen() {
   const { push } = useNavigationStack()
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
+  const [isSearchLoading, setIsSearchLoading] = useState(false)
 
   const [now] = useState(() => Date.now())
   const allRecipients = useMemo(() => buildMockRecipients(now), [now])
@@ -39,6 +42,21 @@ export function RecipientSelectScreen() {
     return () => window.clearTimeout(timer)
   }, [query])
 
+  useEffect(() => {
+    const trimmed = debouncedQuery.trim()
+    if (!trimmed) {
+      setIsSearchLoading(false)
+      return
+    }
+
+    setIsSearchLoading(true)
+    const timer = window.setTimeout(() => {
+      setIsSearchLoading(false)
+    }, SEARCH_SKELETON_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [debouncedQuery])
+
   const searchResult = useMemo(() => {
     if (!debouncedQuery.trim()) {
       return {
@@ -50,6 +68,7 @@ export function RecipientSelectScreen() {
   }, [debouncedQuery, defaultRecipients, allRecipients, now])
 
   const isSearching = debouncedQuery.trim().length > 0
+  const showSearchSkeleton = isSearching && isSearchLoading
   const showAddFirst = !isSearching
   const addRowVariant = isSearching ? searchResult.addRowVariant : "default"
   const addRowPrefill = searchResult.addRowPrefill
@@ -139,34 +158,42 @@ export function RecipientSelectScreen() {
             </li>
           ) : null}
 
-          {listRecipients.map((recipient, index) => {
-            const isLast =
-              index === listRecipients.length - 1 &&
-              (!isSearching || addRowVariant === "send-to-iban" || addRowVariant === "no-results")
+          {showSearchSkeleton ? (
+            <RecipientSearchSkeletonList />
+          ) : (
+            <>
+              {listRecipients.map((recipient, index) => {
+                const isLast =
+                  index === listRecipients.length - 1 &&
+                  (!isSearching ||
+                    addRowVariant === "send-to-iban" ||
+                    addRowVariant === "no-results")
 
-            return (
-              <li key={recipient.id}>
-                <RecipientRow
-                  recipient={recipient}
-                  separator={!isLast}
-                  searchQuery={isSearching ? debouncedQuery : undefined}
-                  now={now}
-                  onSelect={openAmount}
-                />
-              </li>
-            )
-          })}
+                return (
+                  <li key={recipient.id}>
+                    <RecipientRow
+                      recipient={recipient}
+                      separator={!isLast}
+                      searchQuery={isSearching ? debouncedQuery : undefined}
+                      now={now}
+                      onSelect={openAmount}
+                    />
+                  </li>
+                )
+              })}
 
-          {isSearching && showAddRow && !showAddFirst ? (
-            <li>
-              <AddRecipientRow
-                variant={addRowVariant}
-                separator={false}
-                ibanFormatted={ibanFormatted}
-                onSelect={handleAddRecipient}
-              />
-            </li>
-          ) : null}
+              {isSearching && showAddRow && !showAddFirst ? (
+                <li>
+                  <AddRecipientRow
+                    variant={addRowVariant}
+                    separator={false}
+                    ibanFormatted={ibanFormatted}
+                    onSelect={handleAddRecipient}
+                  />
+                </li>
+              ) : null}
+            </>
+          )}
         </ul>
       </div>
     </div>
