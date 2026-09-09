@@ -136,7 +136,9 @@ function RecipientFormPanel({
             label="IBAN"
             value={values.iban}
             error={errors.iban}
-            focusWhenReady={navigationReady}
+            focusWhenReady={
+              navigationReady && recipientType === "individual" && isActive
+            }
             placeholder="Enter or paste the IBAN"
             autoCapitalize="characters"
             onChange={(value) => onChange("iban", formatIbanDisplay(value))}

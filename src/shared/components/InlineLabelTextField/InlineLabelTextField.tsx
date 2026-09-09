@@ -1,6 +1,12 @@
 import { TextField } from "@bolteu/kalep-react"
 import type { TextFieldProps, TextFieldRenderProps } from "@bolteu/kalep-react"
-import { useEffect, useState, type InputHTMLAttributes, type ReactNode } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react"
 import "./inline-label-text-field.css"
 
 const INPUT_CLASS =
@@ -58,11 +64,14 @@ export function InlineLabelTextField({
 }: InlineLabelTextFieldProps) {
   const [focused, setFocused] = useState(false)
   const floated = focused || value.length > 0
+  const didAutoFocusRef = useRef(false)
 
   useEffect(() => {
-    if (!focusWhenReady || !id) return
+    if (!focusWhenReady || !id || didAutoFocusRef.current) return
     const input = document.getElementById(id)
-    input?.focus({ preventScroll: true })
+    if (!input) return
+    didAutoFocusRef.current = true
+    input.focus({ preventScroll: true })
   }, [focusWhenReady, id])
 
   return (

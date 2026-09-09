@@ -9,14 +9,14 @@
   position: relative;
 }
 
-.recipient-type-tabs__indicator {
+.recipient-type-tabs__tab--selected::after {
+  content: "";
   position: absolute;
+  left: 0;
+  right: 0;
   bottom: 0;
   height: 3px;
   background-color: var(--content-primary, #191f1c);
-  transition:
-    left var(--nav-duration) var(--nav-ease),
-    width var(--nav-duration) var(--nav-ease);
   pointer-events: none;
 }
 
@@ -48,7 +48,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .recipient-type-tabs__indicator,
   .recipient-type-form-panel__track {
     transition: none;
   }

@@ -61,6 +61,7 @@ export function AddRecipientScreen({
   })
   const [errors, setErrors] = useState<RecipientFormErrors>({})
   const schemaTimerRef = useRef<number | null>(null)
+  const suppressBlurValidationRef = useRef(false)
 
   useEffect(() => {
     return () => {
@@ -93,6 +94,11 @@ export function AddRecipientScreen({
   }
 
   const validateField = (field: RecipientFormField) => {
+    if (suppressBlurValidationRef.current) {
+      suppressBlurValidationRef.current = false
+      return
+    }
+
     if (country.transferRail !== "SEPA") return
 
     if (field === "accountHolderName") {
@@ -141,6 +147,7 @@ export function AddRecipientScreen({
 
   const handleRecipientTypeChange = useCallback((type: RecipientType) => {
     if (type === recipientType) return
+    suppressBlurValidationRef.current = true
     ;(document.activeElement as HTMLElement | null)?.blur()
     setRecipientType(type)
   }, [recipientType])
