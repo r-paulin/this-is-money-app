@@ -1,0 +1,20 @@
+@keyframes card-control-shimmer {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.card-control-shimmer > * {
+  animation: card-control-shimmer 1200ms ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-control-shimmer > * {
+    animation: none;
+  }
+}

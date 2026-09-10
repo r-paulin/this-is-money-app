@@ -1,7 +1,25 @@
 import dotPattern from "./assets/dot-pattern.svg"
 
 /** Dot mesh for virtual cards — Figma 6582:49108 pattern layer. */
-export function PaymentCardDotPattern({ full = false }: { full?: boolean }) {
+export function PaymentCardDotPattern({
+  full = false,
+  controls = false,
+}: {
+  full?: boolean
+  /** Figma 8533:110437 — 308×194 pattern centered on controls card. */
+  controls?: boolean
+}) {
+  if (controls) {
+    return (
+      <img
+        src={dotPattern}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[194px] w-[308px] max-w-none -translate-x-1/2 -translate-y-1/2 object-cover"
+      />
+    )
+  }
+
   const positionClass = full
     ? "left-[calc(50%+0.5px)] top-[calc(50%-0.5px)]"
     : "left-[calc(50%+0.5px)] top-[calc(50%+50.5px)]"

@@ -25,14 +25,23 @@ const BASE_COLORS = {
 export const DESIGN_WIDTH = 345
 export const DESIGN_HEIGHT_CUT = 80
 export const DESIGN_HEIGHT_FULL = 218
+/** Figma 8533:110437 — Card controls hub card face. */
+export const DESIGN_WIDTH_CONTROLS = 300
+export const DESIGN_HEIGHT_CONTROLS = 180
 /** Full stack depth: 2 cut cards minus both 24px overlaps (to balance panel top). */
 export const DESIGN_HEIGHT_CUT_EXTENDED = 136
 export const CUT_CARD_OVERLAP_PX = 24
+
+export type PaymentCardVariant = "default" | "controls"
 
 export type PaymentCardProps = {
   virtual?: boolean
   lastFour?: string
   locked?: boolean
+  /** When false, PAN is omitted from the card face (Card controls hub caption shows it instead). */
+  showLastFour?: boolean
+  /** Controls hub uses Figma 8533:110437 layout (300×180, logo top-right, no badge). */
+  variant?: PaymentCardVariant
   className?: string
 }
 
