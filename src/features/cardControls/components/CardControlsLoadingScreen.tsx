@@ -3,7 +3,7 @@ import {
   DESIGN_HEIGHT_CONTROLS,
   DESIGN_WIDTH_CONTROLS,
 } from "@/shared/components/PaymentCard/paymentCard.config"
-import { CARD_CONTROLS_SKELETON_ROW_COUNT } from "../data/cardControlItems"
+import { CARD_CONTROLS_LOADING_SKELETON_COUNT } from "../data/cardControlItems"
 import { CardControlSkeletonRow } from "./CardControlSkeletonRow"
 import "./card-controls-shimmer.css"
 
@@ -18,19 +18,15 @@ export function CardControlsLoadingScreen() {
               style={{ width: DESIGN_WIDTH_CONTROLS, height: DESIGN_HEIGHT_CONTROLS }}
             />
           </div>
-          <div
-            className="card-control-shimmer mt-4 flex items-center justify-center gap-4"
-            aria-hidden
-          >
-            <SkeletonBar width={79} height={14} />
-            <SkeletonBar width={55} height={14} />
+          <div className="card-control-shimmer mt-4 flex justify-center" aria-hidden>
+            <SkeletonBar width={215} height={20} />
           </div>
         </div>
       </div>
 
       <ul className="m-0 list-none p-0">
-        {Array.from({ length: CARD_CONTROLS_SKELETON_ROW_COUNT }, (_, index) => {
-          const isLast = index === CARD_CONTROLS_SKELETON_ROW_COUNT - 1
+        {Array.from({ length: CARD_CONTROLS_LOADING_SKELETON_COUNT }, (_, index) => {
+          const isLast = index === CARD_CONTROLS_LOADING_SKELETON_COUNT - 1
 
           return (
             <li key={index}>

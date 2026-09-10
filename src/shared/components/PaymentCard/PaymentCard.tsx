@@ -1,5 +1,6 @@
 import { Typography } from "@bolteu/kalep-react"
 import Lock from "@bolteu/kalep-react-icons/dist/Lock"
+import { useEffect, useState } from "react"
 import "./payment-card.css"
 import boltLogo from "./assets/bolt-logo.svg"
 import visaBusiness from "./assets/visa-business.svg"
@@ -11,6 +12,8 @@ import {
   type PaymentCardProps,
 } from "./paymentCard.config"
 
+const LOCK_OVERLAY_FADE_MS = 200
+
 export function PaymentCard({
   virtual = false,
   lastFour = "4231",
@@ -21,6 +24,25 @@ export function PaymentCard({
 }: PaymentCardProps) {
   const label = getBadgeLabel(virtual)
   const isControls = variant === "controls"
+  const [overlayMounted, setOverlayMounted] = useState(locked)
+  const [overlayVisible, setOverlayVisible] = useState(locked)
+
+  useEffect(() => {
+    if (locked) {
+      setOverlayMounted(true)
+      const frame = window.requestAnimationFrame(() => {
+        setOverlayVisible(true)
+      })
+      return () => window.cancelAnimationFrame(frame)
+    }
+
+    setOverlayVisible(false)
+    const timer = window.setTimeout(() => {
+      setOverlayMounted(false)
+    }, LOCK_OVERLAY_FADE_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [locked])
 
   const sizeClassName = isControls
     ? "h-[180px] w-[300px] max-w-[300px]"
@@ -81,9 +103,14 @@ export function PaymentCard({
         </div>
       ) : null}
 
-      {locked ? (
+      {overlayMounted ? (
         <div
-          className="payment-card-lock-overlay absolute inset-0 z-10 flex items-center justify-center"
+          className={[
+            "payment-card-lock-overlay absolute inset-0 z-10 flex items-center justify-center",
+            overlayVisible ? "is-visible" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
           aria-hidden
         >
           <Lock

@@ -1,6 +1,7 @@
 import { ListItemLayout, Typography, useSnackbar } from "@bolteu/kalep-react"
+import { IconSwap } from "@/shared/components/IconSwap"
 import { PaymentCard } from "@/shared/components/PaymentCard"
-import { SwapSlot, TextSwap } from "@/shared/components/TextSwap"
+import { TextSwap } from "@/shared/components/TextSwap"
 import { useNavigationStack } from "@/shared/navigation"
 import ChevronForward from "@bolteu/kalep-react-icons/dist/ChevronForward"
 import LockOutlined from "@bolteu/kalep-react-icons/dist/LockOutlined"
@@ -10,43 +11,35 @@ import {
   CARD_CONTROL_ITEMS,
   CARD_CONTROLS_TRANSITION_MS,
   CARD_LOCKED_SNACKBAR_MESSAGE,
+  getLockSecondary,
+  isLockSwitchOn,
+  showLockedRowIcon,
+  usesLockIcon,
   type CardControlActionId,
+  type LockPhase,
 } from "../data/cardControlItems"
 import { DEFAULT_CARD_LAST_FOUR } from "../lib/generateCardDetails"
 import type { CardType } from "@/features/home/home.types"
-import { CardControlSkeletonRow } from "./CardControlSkeletonRow"
 import { CardDetailsGate } from "./CardDetailsGate"
 import { PinReminderGate } from "./PinReminderGate"
 import { ReplaceCardGate } from "./ReplaceCardGate"
-
-type LockPhase = "unlocked" | "locking" | "locked" | "unlocking"
-type LockIconKey = "unlocked" | "locked"
 
 export interface CardControlsScreenProps {
   cardType: CardType
   lastFour?: string
 }
 
-function getLockLabel(phase: LockPhase): string {
-  switch (phase) {
-    case "unlocked":
-      return "Card unlocked"
-    case "locking":
-      return "Locking card..."
-    case "locked":
-      return "Card locked"
-    case "unlocking":
-      return "Unlocking card..."
-  }
+function getLockIconSwapState(phase: LockPhase): "a" | "b" {
+  return usesLockIcon(phase) ? "b" : "a"
 }
 
-function getLockIconKey(phase: LockPhase): LockIconKey {
-  if (phase === "locked" || phase === "unlocking") return "locked"
-  return "unlocked"
+function getRowIconSwapState(phase: LockPhase, isDisabled: boolean): "a" | "b" {
+  return showLockedRowIcon(phase) && isDisabled ? "b" : "a"
 }
 
-function isLockSwitchOn(phase: LockPhase): boolean {
-  return phase === "locking" || phase === "locked"
+function isRowDisabled(phase: LockPhase, disabledWhenLocked?: boolean): boolean {
+  if (!disabledWhenLocked) return false
+  return phase === "locking" || phase === "locked" || phase === "unlocking"
 }
 
 export function CardControlsScreen({
@@ -117,7 +110,7 @@ export function CardControlsScreen({
   }
 
   const isTransitioning = lockPhase === "locking" || lockPhase === "unlocking"
-  const isLocked = lockPhase === "locked" || lockPhase === "unlocking"
+  const showLockOverlay = lockPhase === "locked" || lockPhase === "unlocking"
   const cardLabel = cardType === "virtual" ? "Virtual card" : "Physical card"
 
   return (
@@ -126,27 +119,19 @@ export function CardControlsScreen({
         <div className="flex flex-col items-center px-6 pb-6 pt-4">
           <PaymentCard
             virtual={cardType === "virtual"}
-            locked={isLocked}
+            locked={showLockOverlay}
             lastFour={lastFour}
             showLastFour={false}
             variant="controls"
           />
 
           <div className="mt-4 flex items-end justify-center gap-4">
-            {lockPhase === "locked" || lockPhase === "unlocking" ? (
-              <Typography variant="body-s-compact-accent" color="primary" as="p" align="center">
-                Locked — payments will be declined
-              </Typography>
-            ) : (
-              <>
-                <Typography variant="body-s-compact-accent" color="primary" as="p">
-                  {cardLabel}
-                </Typography>
-                <Typography variant="body-s-compact-accent" color="secondary" as="p">
-                  ···· {lastFour}
-                </Typography>
-              </>
-            )}
+            <Typography variant="body-s-compact-regular" color="secondary" as="p">
+              {cardLabel}
+            </Typography>
+            <Typography variant="body-s-compact-accent" color="primary" as="p">
+              ···· {lastFour}
+            </Typography>
           </div>
         </div>
 
@@ -154,26 +139,14 @@ export function CardControlsScreen({
           {CARD_CONTROL_ITEMS.map((item, index) => {
             const isLast = index === CARD_CONTROL_ITEMS.length - 1
             const isLock = item.id === "lock"
-            const isDisabled = lockPhase === "locked" && item.disabledWhenLocked
-            const showSkeleton = isTransitioning && !isLock
-
-            if (showSkeleton) {
-              return (
-                <li key={item.id}>
-                  <CardControlSkeletonRow separator={!isLast} shimmer />
-                </li>
-              )
-            }
-
-            const lockIconKey = getLockIconKey(lockPhase)
-            const iconClassName = isDisabled ? "text-tertiary" : "text-secondary"
+            const isDisabled = isRowDisabled(lockPhase, item.disabledWhenLocked)
 
             return (
               <li key={item.id}>
                 <ListItemLayout
                   primary={
                     isLock ? (
-                      <TextSwap value={getLockLabel(lockPhase)} />
+                      item.primary
                     ) : isDisabled ? (
                       <Typography variant="body-m-compact-regular" color="secondary" as="span">
                         {item.primary}
@@ -183,7 +156,11 @@ export function CardControlsScreen({
                     )
                   }
                   secondary={
-                    item.secondary ? (
+                    isLock ? (
+                      <Typography variant="body-s-regular" color="secondary" as="span">
+                        <TextSwap value={getLockSecondary(lockPhase)} />
+                      </Typography>
+                    ) : item.secondary ? (
                       <Typography variant="body-s-regular" color="secondary" as="span">
                         {item.secondary}
                       </Typography>
@@ -196,26 +173,30 @@ export function CardControlsScreen({
                   selectionMode={isLock ? "switch" : undefined}
                   onClick={
                     isLock
-                      ? handleLockToggle
+                      ? isTransitioning
+                        ? undefined
+                        : handleLockToggle
                       : isDisabled
-                        ? showLockedSnackbar
+                        ? lockPhase === "locked"
+                          ? showLockedSnackbar
+                          : undefined
                         : () => handleAction(item.id)
                   }
                   renderStartSlot={() =>
                     isLock ? (
-                      <SwapSlot value={lockIconKey} className="inline-flex items-center">
-                        {(key) =>
-                          key === "locked" ? (
-                            <LockOutlined size="lg" className="text-secondary" />
-                          ) : (
-                            <UnlockOutlined size="lg" className="text-secondary" />
-                          )
-                        }
-                      </SwapSlot>
-                    ) : isDisabled ? (
-                      <LockOutlined size="lg" className={iconClassName} />
+                      <IconSwap
+                        active={getLockIconSwapState(lockPhase)}
+                        className="inline-flex items-center"
+                        iconA={<UnlockOutlined size="lg" className="text-secondary" />}
+                        iconB={<LockOutlined size="lg" className="text-secondary" />}
+                      />
                     ) : (
-                      <item.icon size="lg" className={iconClassName} />
+                      <IconSwap
+                        active={getRowIconSwapState(lockPhase, isDisabled)}
+                        className="inline-flex items-center"
+                        iconA={<item.icon size="lg" className="text-secondary" />}
+                        iconB={<LockOutlined size="lg" className="text-secondary" />}
+                      />
                     )
                   }
                   renderEndSlot={

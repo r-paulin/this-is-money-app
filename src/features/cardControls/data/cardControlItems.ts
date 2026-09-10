@@ -15,6 +15,8 @@ export type CardControlActionId =
   | "spending-limits"
   | "replace"
 
+export type LockPhase = "unlocked" | "locking" | "locked" | "unlocking"
+
 export interface CardControlItem {
   id: CardControlActionId
   primary: string
@@ -29,7 +31,7 @@ export interface CardControlItem {
 export const CARD_CONTROL_ITEMS: CardControlItem[] = [
   {
     id: "lock",
-    primary: "Card unlocked",
+    primary: "Lock card",
     icon: UnlockOutlined,
     hasSwitch: true,
   },
@@ -65,10 +67,38 @@ export const CARD_CONTROL_ITEMS: CardControlItem[] = [
   },
 ]
 
-export const CARD_CONTROLS_SKELETON_ROW_COUNT = 4
+/** Initial gate loading skeleton rows — Figma 8533:110978–110980. */
+export const CARD_CONTROLS_LOADING_SKELETON_COUNT = 3
 
-/** Lock/unlock transition duration — matches shimmer loop (1200ms ease-in-out). */
+/** Lock/unlock in-flight duration before overlay / disabled state settles. */
 export const CARD_CONTROLS_TRANSITION_MS = 1200
 
 export const CARD_LOCKED_SNACKBAR_MESSAGE =
   "Card locked. This feature isn't available while your card is locked."
+
+export function getLockSecondary(phase: LockPhase): string {
+  switch (phase) {
+    case "unlocked":
+      return "Lock card to stop payments"
+    case "locking":
+      return "Locking card..."
+    case "locked":
+      return "Unlock your card to use it again"
+    case "unlocking":
+      return "Unlocking card..."
+  }
+}
+
+export function isLockSwitchOn(phase: LockPhase): boolean {
+  return phase === "locking" || phase === "locked"
+}
+
+/** Lock icon on the lock row and disabled rows while frozen or unlocking. */
+export function usesLockIcon(phase: LockPhase): boolean {
+  return phase === "locking" || phase === "locked" || phase === "unlocking"
+}
+
+/** Disabled row start icons stay locked until the card overlay clears. */
+export function showLockedRowIcon(phase: LockPhase): boolean {
+  return phase === "locked" || phase === "unlocking"
+}
