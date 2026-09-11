@@ -69,6 +69,13 @@ function resolveStatus(recipient: Recipient): PayeeVerification["status"] {
 
 /** Mock Airwallex Verify a beneficiary account (Confirmation of Payee). */
 export function resolveMockPayeeVerification(recipient: Recipient): PayeeVerification {
+  if (recipient.isLinkedBankAccount) {
+    return {
+      status: "FULL_MATCH",
+      resolvedBankName: "Revolut Bank UAB",
+    }
+  }
+
   const status = resolveStatus(recipient)
   const resolvedBankName = resolveMockBankName(recipient.iban)
 

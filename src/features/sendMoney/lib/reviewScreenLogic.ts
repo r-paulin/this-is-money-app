@@ -6,6 +6,10 @@ export type ReviewBannerKind =
   | "cop-warning"
   | "cop-danger"
   | "name-confirmed"
+  | "linked-profile"
+
+export const LINKED_DRIVER_PROFILE_MESSAGE =
+  "Linked to your Bolt Driver profile"
 
 export type ReviewCtaMode = "confirm" | "edit-and-send"
 
@@ -22,7 +26,16 @@ const PARTIAL_STATUSES: PayeeVerificationStatus[] = [
 
 export function getReviewScreenRules(
   status: PayeeVerificationStatus,
+  isLinkedBankAccount = false,
 ): ReviewScreenRules {
+  if (isLinkedBankAccount) {
+    return {
+      bannerKind: "linked-profile",
+      trustedToggleEnabled: false,
+      ctaMode: "confirm",
+    }
+  }
+
   if (status === "NOT_MATCHED") {
     return {
       bannerKind: "cop-danger",

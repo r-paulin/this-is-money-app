@@ -39,6 +39,14 @@ describe("mockPayeeVerification", () => {
     )
   })
 
+  it("resolves linked bank accounts to Revolut with FULL_MATCH", () => {
+    const verification = resolveMockPayeeVerification(
+      makeRecipient({ id: "linked-account", isLinkedBankAccount: true }),
+    )
+    assert.equal(verification.status, "FULL_MATCH")
+    assert.equal(verification.resolvedBankName, "Revolut Bank UAB")
+  })
+
   it("defaults to FULL_MATCH with resolved bank name", () => {
     const verification = resolveMockPayeeVerification(
       makeRecipient({ iban: "FR1420041010050500013M02606" }),

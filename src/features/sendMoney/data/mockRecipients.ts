@@ -15,7 +15,7 @@ export function buildMockRecipients(now = Date.now()): Recipient[] {
     {
       id: "linked-account",
       rawName: "REINIS PAULIŅŠ",
-      iban: "LV80BANK0000435195001",
+      iban: "LT223250037594680000",
       lastAmountCents: 0,
       lastTransferredAt: minutesAgo(30, now),
       transferCount90d: 18,

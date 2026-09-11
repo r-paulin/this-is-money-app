@@ -44,6 +44,13 @@ describe("reviewScreenLogic", () => {
     assert.equal(rules.ctaMode, "confirm")
   })
 
+  it("linked bank account shows driver profile status and hides trusted toggle", () => {
+    const rules = getReviewScreenRules("FULL_MATCH", true)
+    assert.equal(rules.bannerKind, "linked-profile")
+    assert.equal(rules.trustedToggleEnabled, false)
+    assert.equal(rules.ctaMode, "confirm")
+  })
+
   it("name confirmed message uses bank name or fallback", () => {
     assert.equal(
       getNameConfirmedMessage("BNP Paribas"),

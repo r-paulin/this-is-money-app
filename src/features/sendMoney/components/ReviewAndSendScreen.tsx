@@ -3,6 +3,7 @@ import Alert from "@bolteu/kalep-react-icons/dist/Alert"
 import CheckCircle from "@bolteu/kalep-react-icons/dist/CheckCircle"
 import HelpCircle from "@bolteu/kalep-react-icons/dist/HelpCircle"
 import InfoCircle from "@bolteu/kalep-react-icons/dist/InfoCircle"
+import User from "@bolteu/kalep-react-icons/dist/User"
 import Verified from "@bolteu/kalep-react-icons/dist/Verified"
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { useNavigationStack } from "@/shared/navigation"
@@ -18,6 +19,7 @@ import {
   getNameConfirmedMessage,
   getPartialMatchBannerMessage,
   getReviewScreenRules,
+  LINKED_DRIVER_PROFILE_MESSAGE,
 } from "../lib/reviewScreenLogic"
 import type { TransferDraft } from "../sendMoney.types"
 import { TransferResultScreen } from "./TransferResultScreen"
@@ -231,11 +233,26 @@ interface RecipientCopStatusProps {
   bankName: string
 }
 
+function LinkedDriverProfileStatus() {
+  return (
+    <div className="flex items-center gap-2 pt-1">
+      <User size="sm" className="shrink-0 text-positive-primary" aria-hidden />
+      <Typography variant="body-s-regular" color="positive-primary" as="p">
+        {LINKED_DRIVER_PROFILE_MESSAGE}
+      </Typography>
+    </div>
+  )
+}
+
 function RecipientCopStatus({
   rules,
   payeeVerification,
   bankName,
 }: RecipientCopStatusProps) {
+  if (rules.bannerKind === "linked-profile") {
+    return <LinkedDriverProfileStatus />
+  }
+
   if (rules.bannerKind === "name-confirmed") {
     return (
       <div className="flex items-center gap-2 pt-1">
@@ -303,7 +320,10 @@ export function ReviewAndSendScreen({
       hasSubmittedRef.current = false
     }
   }, [isReviewTop])
-  const rules = getReviewScreenRules(payeeVerification.status)
+  const rules = getReviewScreenRules(
+    payeeVerification.status,
+    recipient.isLinkedBankAccount,
+  )
   const [markTrusted, setMarkTrusted] = useState(recipient.isTrusted)
   const displayName = formatRecipientDisplayName(recipient.rawName)
   const ibanDisplay = formatIbanDisplay(recipient.iban)
@@ -408,11 +428,13 @@ export function ReviewAndSendScreen({
           </div>
         </div>
 
-        <TrustedAccountBanner
-          enabled={trustedToggleEnabled}
-          checked={trustedToggleChecked}
-          onCheckedChange={setMarkTrusted}
-        />
+        {!recipient.isLinkedBankAccount ? (
+          <TrustedAccountBanner
+            enabled={trustedToggleEnabled}
+            checked={trustedToggleChecked}
+            onCheckedChange={setMarkTrusted}
+          />
+        ) : null}
       </div>
 
       <div className="sticky bottom-0 flex flex-col gap-3 bg-layer-floor-1 px-6 py-4">

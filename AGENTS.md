@@ -17,6 +17,10 @@ npm run design-system:drift
 
 After bumping `vendor-tarballs/*.tgz`, run `npm run design-system:drift -- --update`.
 
+## Ponytail
+
+Prefer the least code that works — see `.cursor/rules/ponytail.mdc` and https://ponytail.dev/. Reuse existing helpers, skip speculative abstractions, and do not add dependencies when the platform or an already-installed package covers it.
+
 ## Navigation
 
 Hierarchical screens use `useNavigationStack()` — see `.cursor/rules/ios-navigation.mdc` and `specs/patterns/navigation.md`.

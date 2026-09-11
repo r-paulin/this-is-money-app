@@ -6,8 +6,8 @@ import {
   useNavbarBack,
   useNavigationLock,
 } from "@/shared/navigation"
-import moneyBillAlert from "../assets/money-bill-alert.png"
-import moneyBillSuccess from "../assets/money-bill-success.png"
+import failedTransferVideo from "../assets/failed-transfer-light.mp4"
+import successfulTransferVideo from "../assets/successful-transfer-light.mp4"
 import { formatRecipientDisplayName } from "../lib/formatRecipientName"
 import { formatReviewReference } from "../lib/formatTransferReview"
 import { formatIbanDisplay } from "../lib/iban"
@@ -24,6 +24,7 @@ import {
 import type { TransferDraft } from "../sendMoney.types"
 import { AddRecipientScreen } from "./AddRecipientScreen"
 import { TransferResultLoadingContent } from "./TransferResultLoadingContent"
+import { TransferResultVideo } from "./TransferResultVideo"
 import "./send-money-result.css"
 
 export interface TransferResultScreenProps {
@@ -239,20 +240,17 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
         <TransferResultLoadingContent />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden">
-          <div className="flex flex-col items-center px-6">
-            <img
-              src={uiState === "submitted" ? moneyBillSuccess : moneyBillAlert}
-              alt=""
-              width={200}
-              height={148}
-              className={[
-                "send-money-result__illustration shrink-0 object-contain",
-                "is-visible",
-              ].join(" ")}
-              aria-hidden
+          <div className="flex flex-col items-center">
+            <TransferResultVideo
+              src={
+                uiState === "submitted"
+                  ? successfulTransferVideo
+                  : failedTransferVideo
+              }
+              reducedMotion={reducedMotion}
             />
 
-            <div className="w-full pt-6 text-center">
+            <div className="w-full px-6 pt-6 text-center">
               <Typography variant="heading-l-accent" color="primary" as="h1">
                 {uiState === "submitted"
                   ? `You’ve sent ${formatEurFromCents(amountCents)}`
@@ -260,7 +258,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
               </Typography>
             </div>
 
-            <div className="w-full pt-1 text-center">
+            <div className="w-full px-6 pt-1 text-center">
               <Typography variant="body-m-regular" color="secondary" as="p">
                 {uiState === "submitted" ? arrivalCopy : failureCopy?.body}
               </Typography>
