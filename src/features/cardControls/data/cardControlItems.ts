@@ -93,9 +93,9 @@ export function isLockSwitchOn(phase: LockPhase): boolean {
   return phase === "locking" || phase === "locked"
 }
 
-/** Lock icon on the lock row and disabled rows while frozen or unlocking. */
+/** Lock icon on the lock row while locking or locked (mirrors unlock icon during unlocking). */
 export function usesLockIcon(phase: LockPhase): boolean {
-  return phase === "locking" || phase === "locked" || phase === "unlocking"
+  return phase === "locking" || phase === "locked"
 }
 
 /** Disabled row start icons stay locked until the card overlay clears. */
