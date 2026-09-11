@@ -33,6 +33,16 @@ describe("formatSignedTransactionAmount", () => {
     assert.equal(result.tone, "primary")
   })
 
+  it("does not double-prefix debits when cents are stored negative", () => {
+    const result = formatSignedTransactionAmount({
+      amountCents: -10_000,
+      kind: "purchase",
+    })
+
+    assert.equal(result.text, "-€100.00")
+    assert.equal(result.tone, "primary")
+  })
+
   it("returns placeholder when amount is missing", () => {
     const result = formatSignedTransactionAmount({
       amountCents: null,

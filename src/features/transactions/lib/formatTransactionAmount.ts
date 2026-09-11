@@ -27,7 +27,7 @@ export function formatSignedTransactionAmount(opts: {
     return { text: "--", tone: "missing" }
   }
 
-  const formatted = formatTransactionListEurFromCents(opts.amountCents)
+  const formatted = formatTransactionListEurFromCents(Math.abs(opts.amountCents))
 
   if (opts.kind === "declined" || opts.kind === "failed" || opts.kind === "reversal") {
     return { text: formatted, tone: "declined" }

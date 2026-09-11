@@ -67,7 +67,6 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
     popToRoot,
     reducedMotion,
     runAfterTransition,
-    setNavigationLocked,
   } = useNavigationStack()
   const requestIdRef = useRef(draft.requestId ?? crypto.randomUUID())
   const [result, setResult] = useState<MockCreateTransferResult | null>(null)
@@ -86,35 +85,26 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
 
   const isLoading = uiState === "loading"
 
-  // Keep the confirmation screen up until the user taps an explicit action.
-  useNavigationLock(true)
-
-  const releaseNavigationLock = useCallback(() => {
-    setNavigationLocked(false)
-  }, [setNavigationLocked])
+  // Block back / swipe while the transfer is resolving.
+  useNavigationLock(isLoading)
 
   const goToRecipientSelect = useCallback(() => {
-    releaseNavigationLock()
     popTo("send-money")
-  }, [popTo, releaseNavigationLock])
+  }, [popTo])
 
   const goToAmount = useCallback(() => {
-    releaseNavigationLock()
     popTo(`send-money-amount:${recipient.id}`)
-  }, [popTo, recipient.id, releaseNavigationLock])
+  }, [popTo, recipient.id])
 
   const goHome = useCallback(() => {
-    releaseNavigationLock()
     popToRoot()
-  }, [popToRoot, releaseNavigationLock])
+  }, [popToRoot])
 
   const goToReview = useCallback(() => {
-    releaseNavigationLock()
     pop()
-  }, [pop, releaseNavigationLock])
+  }, [pop])
 
   const handleEditRecipient = useCallback(() => {
-    releaseNavigationLock()
     runAfterTransition(() => {
       push({
         key: `send-money-edit-recipient:${recipient.id}`,
@@ -127,15 +117,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
       })
     })
     popTo(`send-money-amount:${recipient.id}`)
-  }, [
-    popTo,
-    push,
-    recipient.id,
-    recipient.iban,
-    recipient.rawName,
-    releaseNavigationLock,
-    runAfterTransition,
-  ])
+  }, [popTo, push, recipient.id, recipient.iban, recipient.rawName, runAfterTransition])
 
   const handlePrimaryAction = useCallback(() => {
     switch (uiState) {
