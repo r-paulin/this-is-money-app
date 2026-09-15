@@ -9,6 +9,8 @@ export type {
   FormPickerFieldProps,
   InlineLabelTextFieldProps,
 } from "./InlineLabelTextField"
+export { GroupedSection } from "./GroupedSection"
+export type { GroupedSectionProps } from "./GroupedSection"
 export { PullToRefresh } from "./PullToRefresh"
 export type { PullToRefreshProps } from "./PullToRefresh"
 export { SkeletonReveal } from "./SkeletonReveal"

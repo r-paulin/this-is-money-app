@@ -1,0 +1,102 @@
+.home-header {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    var(--color-layer-floor-1) 0%,
+    var(--color-layer-floor-1) 55%,
+    var(--color-layer-floor-0-grouped) 100%
+  );
+}
+
+.home-header__content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--dimension-400);
+  padding: var(--dimension-1000) 0 var(--dimension-600) 0;
+}
+
+.home-header__inner {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 0 var(--dimension-600);
+}
+
+.home-header__label {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.home-header__label > * {
+  width: 100%;
+  margin: 0;
+  letter-spacing: -0.176px;
+  font-feature-settings:
+    "cv03" on,
+    "cv04" on,
+    "lnum" on,
+    "pnum" on;
+}
+
+.home-header__balance {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.home-header__balance-amount {
+  width: 100%;
+  margin: 0;
+  color: var(--content-primary);
+  font-family: var(--font-family);
+  font-size: var(--display-m-font-size);
+  font-style: normal;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--display-m-line-height);
+  letter-spacing: var(--display-m-letter-spacing);
+  font-variant-numeric: lining-nums proportional-nums;
+  font-feature-settings:
+    "cv03" on,
+    "cv04" on;
+}
+
+.home-header__actions {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding-top: var(--dimension-400);
+}
+
+.home-header__notification-wrap {
+  width: 100%;
+  padding: 0 var(--dimension-600);
+  box-sizing: border-box;
+}
+
+.home-header__notification {
+  border-radius: var(--dimension-300);
+  padding: var(--dimension-300);
+}
+
+.home-header__notification--positive {
+  background-color: var(--color-bg-action-secondary);
+}
+
+.home-header__separator {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 16px;
+  display: block;
+  pointer-events: none;
+}

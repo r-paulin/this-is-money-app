@@ -68,18 +68,20 @@ const THEME_ICONS: Record<MccThemeId, ThemeIcon> = {
 function MccBadge({ src }: { src: string }) {
   return (
     <span
-      className="absolute -bottom-mcc-badge-offset -right-mcc-badge-offset flex size-mcc-badge items-center justify-center"
+      className="absolute -bottom-mcc-badge-offset -right-mcc-badge-offset flex size-mcc-badge items-center justify-center overflow-visible"
       aria-hidden
     >
       <span className="-scale-y-100 flex-none">
-        <img
-          src={src}
-          alt=""
-          width={MCC_BADGE_SIZE_PX}
-          height={MCC_BADGE_SIZE_PX}
-          className="block aspect-square size-4"
-          draggable={false}
-        />
+        <span className="relative block size-mcc-badge">
+          <img
+            src={src}
+            alt=""
+            width={MCC_BADGE_SIZE_PX}
+            height={MCC_BADGE_SIZE_PX}
+            className="absolute inset-0 block size-full max-w-none"
+            draggable={false}
+          />
+        </span>
       </span>
     </span>
   )

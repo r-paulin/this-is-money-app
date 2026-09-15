@@ -1,0 +1,138 @@
+.home-banner {
+  min-height: 190px;
+}
+
+.home-banner__title-row {
+  padding: var(--dimension-400) var(--dimension-700) var(--dimension-300) var(--dimension-500);
+}
+
+.home-banner__content-row {
+  display: flex;
+  align-items: flex-end;
+  padding-left: var(--dimension-500);
+  width: 100%;
+}
+
+.home-banner__text-col {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  padding-bottom: var(--dimension-500);
+}
+
+.home-banner__body-wrap {
+  padding-bottom: var(--dimension-300);
+  padding-right: var(--dimension-300);
+}
+
+.home-banner__media-wrap {
+  flex-shrink: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: flex-end;
+}
+
+.home-banner__media {
+  width: 100px;
+  height: 92px;
+  object-fit: contain;
+  object-position: right bottom;
+  border-bottom-right-radius: var(--dimension-400);
+}
+
+/* Figma 8719:76150 — Ghost Button Only Icon: 24px Clear at 6px inset, 44px tap target */
+.home-banner__close-hit {
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-sizing: border-box;
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 6px 6px 0 0;
+  overflow: hidden;
+}
+
+.banner-slider__viewport {
+  position: relative;
+  overflow: hidden;
+  padding: var(--dimension-300) 0 var(--dimension-600);
+}
+
+.banner-slider__viewport--single {
+  padding: var(--dimension-300);
+}
+
+.banner-slider__viewport--single .banner-slider__track::before,
+.banner-slider__viewport--single .banner-slider__track::after {
+  display: none;
+}
+
+.banner-slider__track {
+  display: flex;
+  gap: var(--dimension-300);
+  align-items: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--dimension-300);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.banner-slider__track::before,
+.banner-slider__track::after {
+  content: "";
+  flex: 0 0 var(--dimension-300);
+}
+
+.banner-slider__track::-webkit-scrollbar {
+  display: none;
+}
+
+.banner-slider__slide {
+  scroll-snap-align: start;
+  flex: 1 0 0;
+  min-width: 300px;
+  display: flex;
+}
+
+.banner-slider__slide--single {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.banner-slider__slide--multi {
+  flex: 0 0 300px;
+  width: 300px;
+}
+
+.banner-slider__dots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  height: 16px;
+  gap: var(--dimension-100);
+  align-items: center;
+  padding-bottom: 8px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.banner-slider__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--dimension-100);
+  background-color: var(--color-bg-active-neutral-secondary, rgba(0, 31, 24, 0.13));
+}
+
+.banner-slider__dot--active {
+  width: 24px;
+  height: 8px;
+  background-color: var(--color-bg-action-primary, #2b8659);
+}

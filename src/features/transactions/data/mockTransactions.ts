@@ -13,6 +13,14 @@ export interface Transaction {
   themeOverride?: MccThemeId
   /** Optional service fee in cents (ATM) */
   serviceFeeCents?: number
+  /** Detail screen — optional overrides for mock content */
+  merchantLocation?: string
+  status?: "completed" | "on_the_way" | "overdue"
+  reference?: string
+  transferId?: string
+  recipientName?: string
+  bankName?: string
+  senderName?: string
 }
 
 function atLocal(year: number, monthIndex: number, day: number, hour: number, minute: number) {

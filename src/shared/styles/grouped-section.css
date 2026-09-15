@@ -1,0 +1,30 @@
+/** Grouped Bolt section — white card on floor-0-grouped with 8px separators (Figma Section). */
+.grouped-section__wrap {
+  background-color: var(--color-layer-floor-0-grouped);
+}
+
+.grouped-section__separator {
+  height: var(--dimension-200);
+  flex-shrink: 0;
+}
+
+.grouped-section__card {
+  background-color: var(--color-layer-floor-1);
+  border-radius: var(--radius-grouped);
+  overflow: hidden;
+}
+
+.grouped-section__padding-top--8 {
+  height: var(--dimension-200);
+  flex-shrink: 0;
+}
+
+.grouped-section__padding-top--24 {
+  height: var(--dimension-600);
+  flex-shrink: 0;
+}
+
+.grouped-section__padding-bottom--8 {
+  height: var(--dimension-200);
+  flex-shrink: 0;
+}

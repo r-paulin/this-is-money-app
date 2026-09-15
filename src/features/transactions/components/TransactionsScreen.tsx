@@ -3,6 +3,7 @@ import Download from "@bolteu/kalep-react-icons/dist/Download"
 import { useEffect, useMemo, useState } from "react"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { useNavigationStack } from "@/shared/navigation"
+import { useOpenTransactionDetail } from "../useOpenTransactionDetail"
 import { buildMockTransactions } from "../data/mockTransactions"
 import {
   formatTransactionSectionLabel,
@@ -16,6 +17,7 @@ const SEARCH_DEBOUNCE_MS = 200
 
 export function TransactionsScreen() {
   const { push } = useNavigationStack()
+  const openTransactionDetail = useOpenTransactionDetail()
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
 
@@ -109,6 +111,7 @@ export function TransactionsScreen() {
                     transaction={tx}
                     separator={index < group.transactions.length - 1}
                     searchQuery={isSearching ? debouncedQuery : undefined}
+                    onSelect={openTransactionDetail}
                   />
                 </li>
               ))}

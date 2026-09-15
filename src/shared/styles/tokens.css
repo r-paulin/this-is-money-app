@@ -20,6 +20,11 @@
   --font-weight-regular: 450;
   --font-weight-semibold: 650;
 
+  /* Display M (Figma home balance) */
+  --display-m-font-size: 48px;
+  --display-m-line-height: 60px;
+  --display-m-letter-spacing: -1.056px;
+
   /* Device shell (preview frame only) */
   --shell-width: 100%;
   --device-bezel-outer: #a0b39f;
@@ -39,6 +44,10 @@
   --dimension-250: 10px;
   --dimension-300: 12px;
   --dimension-400: 16px;
+  --dimension-500: 20px;
+  --dimension-600: 24px;
+  --dimension-700: 28px;
+  --dimension-1000: 40px;
 
   /* List item (Figma Ⓒ List Item 8107:97972) */
   --list-item-vr-padding: var(--dimension-300);
@@ -49,12 +58,19 @@
   /* Radius */
   --radius-compact: var(--dimension-200);
   --radius-card: 12px;
+  --radius-grouped: var(--dimension-400);
+
+  /* Home card thumbnails (48×30) */
+  --card-thumb-green: #1a4d3a;
+  --card-thumb-black: #161616;
+  --card-thumb-locked: #9e9e9e;
+  --card-thumb-add: #e8e8e8;
 
   /* MCC icon (Figma _ MCC 138:7229) */
   --mcc-icon-padding: var(--dimension-250);
   --mcc-icon-glyph-size: 20px;
   --mcc-badge-size: 16px;
-  --mcc-badge-offset: var(--dimension-150);
+  --mcc-badge-offset: var(--dimension-100);
 
   /* MCC theme fills (Figma _ MCC 138:7229) */
   --mcc-groceries: #e7315a;

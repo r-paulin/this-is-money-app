@@ -14,6 +14,7 @@ export interface TransactionRowProps {
   transaction: Transaction
   separator: boolean
   searchQuery?: string
+  onSelect?: (transaction: Transaction) => void
 }
 
 function statusSuffix(kind: TransactionKind): string | null {
@@ -33,7 +34,12 @@ function statusSuffix(kind: TransactionKind): string | null {
   }
 }
 
-export function TransactionRow({ transaction, separator, searchQuery }: TransactionRowProps) {
+export function TransactionRow({
+  transaction,
+  separator,
+  searchQuery,
+  onSelect,
+}: TransactionRowProps) {
   const title = merchantTitle(transaction)
   const amount = formatSignedTransactionAmount({
     amountCents: transaction.amountCents,
@@ -80,6 +86,7 @@ export function TransactionRow({ transaction, separator, searchQuery }: Transact
 
   return (
     <ListItemLayout
+      onClick={onSelect ? () => onSelect(transaction) : undefined}
       primary={
         <span className="line-clamp-3 break-words">
           {primary}

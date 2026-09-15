@@ -1,5 +1,21 @@
 /* Threads-style floating refresh pill — Figma FloatingStatus 6599:79058 */
 
+/* Home scroll root — fill nav-layer content box (not 100dvh; device frame is shorter). */
+.nav-layer:has(> .pull-to-refresh) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pull-to-refresh {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  touch-action: pan-y;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
 .pull-to-refresh__pill-host {
   position: sticky;
   top: 12px;

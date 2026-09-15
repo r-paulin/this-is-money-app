@@ -8,6 +8,13 @@ const kalep = kalepConfig as Config
 /** bg-mcc-* only appear in mccThemes.ts (dynamic strings) — Tailwind won't emit them without safelist. */
 const mccBackgroundSafelist = [...new Set(MCC_THEMES.map((theme) => theme.bgClass))]
 
+const cardThumbColors = {
+  green: "var(--card-thumb-green)",
+  black: "var(--card-thumb-black)",
+  locked: "var(--card-thumb-locked)",
+  add: "var(--card-thumb-add)",
+}
+
 const mccBackgroundColors = {
   groceries: "var(--mcc-groceries)",
   food: "var(--mcc-food)",
@@ -38,6 +45,7 @@ export default {
         ...(kalep.theme?.extend?.borderRadius ?? {}),
         compact: "var(--radius-compact)",
         card: "var(--radius-card)",
+        grouped: "var(--radius-grouped)",
         "device-screen": "var(--device-screen-radius)",
       },
       spacing: {
@@ -51,6 +59,7 @@ export default {
       },
       backgroundColor: {
         ...(kalep.theme?.extend?.backgroundColor ?? {}),
+        "card-thumb": cardThumbColors,
         mcc: mccBackgroundColors,
       },
     },

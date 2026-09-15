@@ -1,9 +1,10 @@
-/* Figma WebViewTop 7338:61333 — fixed frosted toolbar */
+/* Figma WebViewTop 8719:79654 — status bar (59px) + toolbar (56px) */
 
 :root {
+  --app-navbar-status-bar-height: 59px;
   --app-navbar-toolbar-height: 56px;
   --app-navbar-offset: calc(
-    var(--app-navbar-toolbar-height) + env(safe-area-inset-top, 0px)
+    var(--app-navbar-status-bar-height) + var(--app-navbar-toolbar-height)
   );
 }
 
@@ -13,44 +14,92 @@
   left: 0;
   right: 0;
   z-index: 30;
-  padding-top: env(safe-area-inset-top, 0px);
+  display: flex;
+  flex-direction: column;
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-.app-navbar__toolbar {
-  position: relative;
+.app-navbar__status-bar {
+  box-sizing: border-box;
   display: flex;
-  min-height: var(--app-navbar-toolbar-height);
-  max-height: var(--app-navbar-toolbar-height);
+  height: var(--app-navbar-status-bar-height);
+  flex-shrink: 0;
   align-items: center;
-  padding-inline: 12px;
+  gap: 6px;
+  padding: 11px 16px;
 }
 
-.app-navbar__title-row {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  top: 50%;
+.app-navbar__status-time {
   display: flex;
+  height: 22px;
+  flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  padding-inline: 68px;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.app-navbar__title {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding-top: 2px;
+  font-size: 17px;
+  font-weight: 590;
+  line-height: 22px;
+  color: var(--content-primary);
   text-align: center;
+  white-space: nowrap;
 }
 
-.app-navbar__back-slot {
+.app-navbar__status-island {
+  width: 125px;
+  height: 37px;
+  flex-shrink: 0;
+}
+
+.app-navbar__status-levels {
+  display: flex;
+  height: 22px;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.app-navbar__status-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.app-navbar__status-icon--cellular {
+  width: 19.2px;
+  height: 12.226px;
+}
+
+.app-navbar__status-icon--wifi {
+  width: 17.142px;
+  height: 12.328px;
+}
+
+.app-navbar__status-icon--battery {
+  width: 27.328px;
+  height: 13px;
+}
+
+.app-navbar__toolbar {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  height: var(--app-navbar-toolbar-height);
+  min-height: var(--app-navbar-toolbar-height);
+  flex-direction: column;
+  flex-shrink: 0;
+  align-self: stretch;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 var(--dimension-300, 12px);
+}
+
+.app-navbar__icon-button {
   position: relative;
   z-index: 1;
   display: flex;
@@ -59,9 +108,11 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  border-radius: 9600px;
+  background-color: var(--layer-floor-1);
 }
 
-.app-navbar__back-spacer {
+.app-navbar__icon-button-spacer {
   min-height: 48px;
   min-width: 48px;
   flex-shrink: 0;

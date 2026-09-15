@@ -14,7 +14,7 @@
 │              ┌────┐
 │              │16px│ badge (inflow / outflow / declined)
 └──────────────└────┘
-     offset: 6px outside circle (-bottom-mcc-badge-offset)
+     offset: 4px outside circle (-bottom-mcc-badge-offset)
 ```
 
 ## Rules

@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "tsx --test src/features/sendMoney/lib/**/*.test.ts src/features/transactions/lib/**/*.test.ts",
+    "test": "tsx --test src/features/sendMoney/lib/**/*.test.ts src/features/transactions/lib/**/*.test.ts src/features/home/lib/**/*.test.ts",
     "token-audit": "tsx scripts/token-audit.ts",
     "design-system:drift": "tsx scripts/check-design-system-drift.ts",
     "preview": "vite preview",

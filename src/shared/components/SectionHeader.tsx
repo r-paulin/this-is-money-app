@@ -8,6 +8,11 @@ interface SectionHeaderProps {
   paddingBottom?: 8 | 12
   /** Home Services uses heading-s; date groups use heading-xs (default). */
   variant?: "heading-s-accent" | "heading-xs-accent"
+  /**
+   * Grouped home sections: no 24px top spacer (GroupedSection supplies inset).
+   * Activity title bottom 8px; Cards uses default 12 unless overridden.
+   */
+  grouped?: boolean
 }
 
 /** Figma Ⓒ Section Header — 24px top, title, bottom spacer, px-6. */
@@ -16,10 +21,11 @@ export function SectionHeader({
   children,
   paddingBottom = 12,
   variant = "heading-xs-accent",
+  grouped = false,
 }: SectionHeaderProps) {
   return (
     <div className="flex w-full flex-col items-start px-6">
-      <div className="h-6 w-full shrink-0" aria-hidden />
+      {grouped ? null : <div className="h-6 w-full shrink-0" aria-hidden />}
       <h2 id={id} className="m-0 w-full break-words">
         <Typography
           variant={variant}

@@ -24,10 +24,7 @@ export function PullToRefresh({
   return (
     <div
       ref={scrollRef}
-      className={[
-        "h-dvh touch-pan-y overflow-y-auto overscroll-y-contain bg-layer-floor-0-grouped",
-        className,
-      ]
+      className={["pull-to-refresh bg-layer-floor-0-grouped", className]
         .filter(Boolean)
         .join(" ")}
       aria-busy={isRefreshing}

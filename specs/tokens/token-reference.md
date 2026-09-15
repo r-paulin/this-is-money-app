@@ -30,7 +30,7 @@ Tailwind extensions: `tailwind.config.ts`
 | `--mcc-icon-padding` | `p-mcc-pad` | 10 |
 | `--mcc-icon-glyph-size` | `size-5` (20px) | 20 |
 | `--mcc-badge-size` | `size-mcc-badge` | 16 |
-| `--mcc-badge-offset` | `-bottom-mcc-badge-offset`, `-right-mcc-badge-offset` | 6 |
+| `--mcc-badge-offset` | `-bottom-mcc-badge-offset`, `-right-mcc-badge-offset` | 4 |
 
 ## MCC theme fills
 
@@ -50,10 +50,30 @@ Tailwind extensions: `tailwind.config.ts`
 
 Map MCC codes → theme in `src/features/transactions/data/mccThemes.ts` only.
 
+## Home card thumbnails
+
+| CSS variable | Tailwind |
+|--------------|----------|
+| `--card-thumb-green` | `bg-card-thumb-green` |
+| `--card-thumb-black` | `bg-card-thumb-black` |
+| `--card-thumb-locked` | `bg-card-thumb-locked` |
+| `--card-thumb-add` | `bg-card-thumb-add` |
+
+## Display M (home balance)
+
+| CSS variable | Value |
+|--------------|-------|
+| `--display-m-font-size` | 48px |
+| `--display-m-line-height` | 60px |
+| `--display-m-letter-spacing` | -1.056px |
+
+Use with `--font-weight-semibold` (650) and `--content-primary`.
+
 ## Radius
 
 | CSS variable | Tailwind |
 |--------------|----------|
 | `--radius-compact` | `rounded-compact` |
 | `--radius-card` | `rounded-card` |
+| `--radius-grouped` | `rounded-grouped` |
 | `--device-screen-radius` | `rounded-device-screen` (preview frame only) |

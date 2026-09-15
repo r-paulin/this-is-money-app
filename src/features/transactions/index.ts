@@ -1,3 +1,5 @@
 export { TransactionsGate } from "./components/TransactionsGate"
 export { TransactionsScreen } from "./components/TransactionsScreen"
 export { GetStatementGate } from "./components/GetStatementGate"
+export { TransactionDetailScreen } from "./components/TransactionDetailScreen"
+export { useOpenTransactionDetail } from "./useOpenTransactionDetail"
