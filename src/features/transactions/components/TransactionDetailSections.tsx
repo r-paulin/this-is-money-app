@@ -48,19 +48,30 @@ function CardPaymentSections({ view }: { view: CardPaymentDetailView }) {
         <DetailStackRow
           label="Merchant"
           value={
-            <div className="flex flex-col gap-0">
-              <Typography variant="body-m-compact-accent" color="primary" as="span">
-                {view.merchantName}
-              </Typography>
+            <>
+              {view.merchantName}
               {view.merchantLocation ? (
                 <Typography variant="body-s-regular" color="secondary" as="span">
                   {view.merchantLocation}
                 </Typography>
               ) : null}
-            </div>
+            </>
           }
         />
-        <DetailStackRow label="Status" value={view.status} separator={false} />
+        <DetailStackRow
+          label="Status"
+          value={
+            <>
+              {view.status}
+              {view.statusSubtext ? (
+                <Typography variant="body-s-regular" color="secondary" as="span">
+                  {view.statusSubtext}
+                </Typography>
+              ) : null}
+            </>
+          }
+          separator={false}
+        />
         <div className="transaction-detail__section-padding-bottom" aria-hidden />
       </div>
     </div>
@@ -79,14 +90,12 @@ function TransferSections({ view }: { view: TransferDetailView }) {
         <DetailStackRow
           label="IBAN"
           value={
-            <div className="flex flex-col gap-0">
-              <Typography variant="body-m-compact-accent" color="primary" as="span">
-                {view.ibanDisplay}
-              </Typography>
+            <>
+              {view.ibanDisplay}
               <Typography variant="body-s-regular" color="secondary" as="span">
                 {view.bankName}
               </Typography>
-            </div>
+            </>
           }
         />
         <ListItemSendAgainRow />

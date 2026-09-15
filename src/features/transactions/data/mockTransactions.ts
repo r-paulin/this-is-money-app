@@ -15,6 +15,9 @@ export interface Transaction {
   serviceFeeCents?: number
   /** Detail screen — optional overrides for mock content */
   merchantLocation?: string
+  /** Card payment detail status */
+  paymentStatus?: "completed" | "pending"
+  statusSubtext?: string
   status?: "completed" | "on_the_way" | "overdue"
   reference?: string
   transferId?: string
@@ -74,10 +77,20 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       id: "tx-fuel-esso",
       merchant: "Esso",
       occurredAt: onDay(0, 14, 22),
-      amountCents: 10000,
+      amountCents: 5000,
       currency: "EUR",
       mcc: 5541,
       kind: "purchase",
+    },
+    {
+      id: "tx-fuel-total-pending",
+      merchant: "TotalEnergies",
+      occurredAt: onDay(0, 15, 0),
+      amountCents: 5000,
+      currency: "EUR",
+      mcc: 5541,
+      kind: "purchase",
+      paymentStatus: "pending",
     },
     {
       id: "tx-food-leon",

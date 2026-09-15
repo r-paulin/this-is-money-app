@@ -41,20 +41,13 @@ export function DetailStackRow({
       paddingEnd={6}
       onClick={onClick}
       aria-label={ariaLabel}
+      primaryTypographyProps={{ variant: "body-m-compact-regular", color: "primary" }}
       secondary={
         <Typography variant="body-s-regular" color="secondary" as="span">
           {label}
         </Typography>
       }
-      primary={
-        typeof value === "string" ? (
-          <Typography variant="body-m-compact-accent" color="primary" as="span">
-            {value}
-          </Typography>
-        ) : (
-          value
-        )
-      }
+      primary={value}
       renderEndSlot={endSlot ? () => endSlot : undefined}
     />
   )

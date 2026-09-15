@@ -15,6 +15,7 @@ export interface CardPaymentDetailView {
   merchantName: string
   merchantLocation?: string
   status: string
+  statusSubtext?: string
 }
 
 export interface TransferDetailView {
@@ -61,6 +62,7 @@ function buildCardPaymentView(transaction: Transaction): CardPaymentDetailView {
     amountCents: transaction.amountCents,
     kind: transaction.kind,
   })
+  const paymentStatus = transaction.paymentStatus ?? "completed"
 
   return {
     variant: "card_payment",
@@ -70,7 +72,12 @@ function buildCardPaymentView(transaction: Transaction): CardPaymentDetailView {
     cardLabel: "VISA, ·· 4231",
     merchantName: merchantTitle(transaction),
     merchantLocation: transaction.merchantLocation ?? "Lyon, Auvergne-Rhône-Alpes",
-    status: transaction.status ?? "Completed",
+    status: paymentStatus === "pending" ? "Pending" : "Completed",
+    statusSubtext:
+      transaction.statusSubtext ??
+      (paymentStatus === "pending"
+        ? "Will be automatically reversed on 19 Nov 2026 if unclaimed by the merchant."
+        : undefined),
   }
 }
 
