@@ -1,0 +1,9 @@
+schema: spec-driven
+
+# Shown to AI when creating OpenSpec artifacts.
+context: |
+  Bolt Money (this-is-money-app): Vite + React 19 + TypeScript + Kalep design system.
+  Agent rules: AGENTS.md, .cursor/rules/ (ponytail, design-system, ios-navigation).
+  Design-system docs live in repo-root specs/ (tokens, components, patterns) — not OpenSpec.
+  OpenSpec change/spec artifacts live only under openspec/.
+  Prefer Kalep + semantic Tailwind; no raw hex in TSX. Hierarchical screens use useNavigationStack().
