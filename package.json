@@ -11,6 +11,7 @@
     "test": "tsx --test src/features/sendMoney/lib/**/*.test.ts src/features/transactions/lib/**/*.test.ts src/features/home/lib/**/*.test.ts",
     "token-audit": "tsx scripts/token-audit.ts",
     "design-system:drift": "tsx scripts/check-design-system-drift.ts",
+    "openspec": "openspec",
     "preview": "vite preview",
     "pages:deploy": "npm run build && wrangler pages deploy ./dist --project-name=this-is-money-app"
   },
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@fission-ai/openspec": "^1.13.2",
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
