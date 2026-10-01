@@ -65,8 +65,12 @@ export function CardsSection({
   const loading = cardsState === "loading"
 
   return (
-    <GroupedSection paddingBottom={8} aria-labelledby="cards-heading">
-      <SectionHeader id="cards-heading" grouped>
+    <GroupedSection
+      paddingTop={8}
+      paddingBottom={8}
+      aria-labelledby="cards-heading"
+    >
+      <SectionHeader id="cards-heading" grouped paddingBottom={8}>
         Cards
       </SectionHeader>
 

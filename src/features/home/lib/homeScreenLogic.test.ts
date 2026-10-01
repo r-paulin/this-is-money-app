@@ -38,6 +38,19 @@ describe("homeScreenLogic", () => {
     assert.deepEqual(filtered, ["GoogleWallet"])
   })
 
+  it("keeps GetPhysicalCard when physical is ordered", () => {
+    const filtered = filterEligibleBanners(
+      ["GoogleWallet", "GetPhysicalCard"],
+      true,
+    )
+    assert.deepEqual(filtered, ["GoogleWallet", "GetPhysicalCard"])
+  })
+
+  it("returns an empty list when no banners are eligible", () => {
+    assert.deepEqual(filterEligibleBanners([], false), [])
+    assert.deepEqual(filterEligibleBanners(["GetPhysicalCard"], false), [])
+  })
+
   it("shows physical offer row only when no physical card exists", () => {
     assert.equal(
       shouldShowPhysicalOffer([{ kind: "virtual", color: "green" }]),

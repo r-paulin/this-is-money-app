@@ -11,6 +11,12 @@ export function formatEurFromCents(cents: number): string {
   }).format(abs)
 }
 
+/** Figma home balance: € 100.00 (symbol prefix, thin space, dot decimals). */
+export function formatHomeBalanceEurFromCents(cents: number): string {
+  const abs = Math.abs(cents) / 100
+  return `€\u202F${abs.toFixed(2)}`
+}
+
 /** Figma transaction list amount: €12.00 (symbol prefix, dot decimals). */
 export function formatTransactionListEurFromCents(cents: number): string {
   const abs = Math.abs(cents) / 100

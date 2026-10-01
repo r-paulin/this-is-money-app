@@ -1,9 +1,17 @@
 import assert from "node:assert/strict"
 import { describe, it } from "node:test"
 import {
+  formatHomeBalanceEurFromCents,
   formatSignedTransactionAmount,
   formatTransactionListEurFromCents,
 } from "./formatTransactionAmount"
+
+describe("formatHomeBalanceEurFromCents", () => {
+  it("formats with euro prefix, thin space, and dot decimals", () => {
+    assert.equal(formatHomeBalanceEurFromCents(10_000), "€\u202F100.00")
+    assert.equal(formatHomeBalanceEurFromCents(1845), "€\u202F18.45")
+  })
+})
 
 describe("formatTransactionListEurFromCents", () => {
   it("formats with euro prefix and dot decimals", () => {

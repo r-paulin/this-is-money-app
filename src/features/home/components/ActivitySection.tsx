@@ -88,7 +88,7 @@ function SeeAllRow({ onSeeAll }: { onSeeAll: () => void }) {
       paddingEnd={6}
       onClick={onSeeAll}
       primaryTypographyProps={{
-        variant: "body-m-compact-regular",
+        variant: "body-m-compact-accent",
         color: "action-primary",
       }}
       aria-label="See all activity"
@@ -125,7 +125,11 @@ export function ActivitySection({
   const showSeeAll = bodyState === "maximum" && shouldShowSeeAll(transactionCount)
 
   return (
-    <GroupedSection aria-labelledby="activity-heading">
+    <GroupedSection
+      paddingTop={12}
+      paddingBottom={12}
+      aria-labelledby="activity-heading"
+    >
       <SectionHeader id="activity-heading" grouped paddingBottom={8}>
         {headerCopy}
       </SectionHeader>

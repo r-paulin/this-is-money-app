@@ -146,7 +146,7 @@ function ListItemSendAgainRow() {
       paddingEnd={6}
       onClick={() => console.info("[stub] Send again")}
       primaryTypographyProps={{
-        variant: "body-m-compact-regular",
+        variant: "body-m-compact-accent",
         color: "action-primary",
       }}
       aria-label="Send again"

@@ -11,6 +11,8 @@ export interface BannerSliderProps {
   onDismiss: (id: HomeBannerId) => void
 }
 
+const MULTI_GAP_PX = 12
+
 export function BannerSlider({
   bannerIds,
   physicalOrdered,
@@ -27,9 +29,7 @@ export function BannerSlider({
 
     const slide = track.querySelector<HTMLElement>("[data-banner-slide]")
     const slideWidth = slide?.offsetWidth ?? 1
-    const gap = 12
-    const edgeInset = 12
-    const index = Math.round((track.scrollLeft - edgeInset) / (slideWidth + gap))
+    const index = Math.round(track.scrollLeft / (slideWidth + MULTI_GAP_PX))
     setActiveIndex(Math.min(Math.max(index, 0), visible.length - 1))
   }, [single, visible.length])
 
@@ -47,7 +47,12 @@ export function BannerSlider({
       >
         <div
           ref={trackRef}
-          className="banner-slider__track"
+          className={[
+            "banner-slider__track",
+            single ? "" : "banner-slider__track--multi",
+          ]
+            .filter(Boolean)
+            .join(" ")}
           onScroll={handleScroll}
         >
           {visible.map((id) => (

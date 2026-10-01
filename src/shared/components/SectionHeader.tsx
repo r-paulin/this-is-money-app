@@ -9,13 +9,13 @@ interface SectionHeaderProps {
   /** Home Services uses heading-s; date groups use heading-xs (default). */
   variant?: "heading-s-accent" | "heading-xs-accent"
   /**
-   * Grouped home sections: no 24px top spacer (GroupedSection supplies inset).
-   * Activity title bottom 8px; Cards uses default 12 unless overridden.
+   * Grouped home sections: Figma Ⓒ Section Header still has 12px top pad;
+   * GroupedSection supplies the section-level inset (8/12) above that.
    */
   grouped?: boolean
 }
 
-/** Figma Ⓒ Section Header — 24px top, title, bottom spacer, px-6. */
+/** Figma Ⓒ Section Header — top spacer, title, bottom spacer, px-6. */
 export function SectionHeader({
   id,
   children,
@@ -25,7 +25,11 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="flex w-full flex-col items-start px-6">
-      {grouped ? null : <div className="h-6 w-full shrink-0" aria-hidden />}
+      {/* Ungrouped: 24px top. Grouped: 12px header PaddingTop (Figma). */}
+      <div
+        className={`w-full shrink-0 ${grouped ? "h-3" : "h-6"}`}
+        aria-hidden
+      />
       <h2 id={id} className="m-0 w-full break-words">
         <Typography
           variant={variant}

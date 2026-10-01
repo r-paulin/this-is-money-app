@@ -7,7 +7,11 @@ export const HOME_FETCH_TIMEOUT_MS = 10_000
 /** Default demo: Home (Full) / Active */
 export const MOCK_BALANCE_CENTS = 10_000
 
-export const MOCK_BANNER_IDS: HomeBannerId[] = ["GoogleWallet", "PayWithPhone"]
+export const MOCK_BANNER_IDS: HomeBannerId[] = [
+  "AppleWallet",
+  "PayWithPhone",
+  "PhysicalCardStatus",
+]
 
 export const MOCK_NOTIFICATION: HomeNotification | null = null
 

@@ -3,11 +3,31 @@ import "@/shared/styles/grouped-section.css"
 
 export interface GroupedSectionProps {
   children: ReactNode
-  /** Section top inset inside the white card (default 24px). */
-  paddingTop?: 8 | 24
-  /** Optional bottom inset inside the white card (Cards 8px). */
-  paddingBottom?: 8
+  /**
+   * Top inset inside the white card.
+   * Figma Activity: 12; Cards: 8; default 24 for non-home usages.
+   */
+  paddingTop?: 8 | 12 | 24
+  /**
+   * Bottom inset inside the white card.
+   * Figma Activity: 12; Cards: 8.
+   */
+  paddingBottom?: 8 | 12
   "aria-labelledby"?: string
+}
+
+const TOP_PAD_CLASS: Record<NonNullable<GroupedSectionProps["paddingTop"]>, string> = {
+  8: "grouped-section__padding-top--8",
+  12: "grouped-section__padding-top--12",
+  24: "grouped-section__padding-top--24",
+}
+
+const BOTTOM_PAD_CLASS: Record<
+  NonNullable<GroupedSectionProps["paddingBottom"]>,
+  string
+> = {
+  8: "grouped-section__padding-bottom--8",
+  12: "grouped-section__padding-bottom--12",
 }
 
 /** White grouped card on floor-0-grouped with 8px separators above and below. */
@@ -24,17 +44,10 @@ export function GroupedSection({
         className="grouped-section__card"
         aria-labelledby={ariaLabelledBy}
       >
-        <div
-          className={
-            paddingTop === 8
-              ? "grouped-section__padding-top--8"
-              : "grouped-section__padding-top--24"
-          }
-          aria-hidden
-        />
+        <div className={TOP_PAD_CLASS[paddingTop]} aria-hidden />
         {children}
-        {paddingBottom === 8 ? (
-          <div className="grouped-section__padding-bottom--8" aria-hidden />
+        {paddingBottom != null ? (
+          <div className={BOTTOM_PAD_CLASS[paddingBottom]} aria-hidden />
         ) : null}
       </section>
       <div className="grouped-section__separator" aria-hidden />

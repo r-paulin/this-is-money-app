@@ -1,0 +1,17 @@
+schema: spec-driven
+
+context: |
+  Bolt Money (this-is-money-app): React + Vite + TypeScript home banking UI.
+  Design system: Kalep (@bolteu/kalep-react) + semantic Tailwind + app tokens in
+  src/shared/styles/tokens.css. No raw hex or arbitrary Tailwind colors/radii in TSX.
+  Hierarchical screens use useNavigationStack(); forms use InlineLabelTextField.
+  Home banners live under src/features/home/ (HomeBanner, BannerSlider, homeBannerContent,
+  HomeScreenProvider dismiss state, MOCK_BANNER_IDS). Follow .cursor/rules/ponytail.mdc:
+  reuse existing helpers, fewest files, no unrequested abstractions or dependencies.
+  Verify with npm test, npm run build, npm run lint; UI tokens via npm run token-audit.
+
+rules:
+  proposal:
+    - Include a "Non-goals" section
+  tasks:
+    - Each task names the file(s) it touches

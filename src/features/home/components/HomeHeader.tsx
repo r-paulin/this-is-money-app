@@ -1,7 +1,7 @@
 import { Button, GhostButton, Typography } from "@bolteu/kalep-react"
 import ArrowCircleRight from "@bolteu/kalep-react-icons/dist/ArrowCircleRight"
 import { useEffect, useMemo } from "react"
-import { formatEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
+import { formatHomeBalanceEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import { useNumberPopIn } from "@/shared/components/useNumberPopIn"
@@ -24,7 +24,7 @@ export function HomeHeader({
   onSendMoney,
 }: HomeHeaderProps) {
   const formattedBalance = useMemo(
-    () => formatEurFromCents(balanceCents).replace(/\u00a0/g, "\u202F"),
+    () => formatHomeBalanceEurFromCents(balanceCents),
     [balanceCents],
   )
 
@@ -106,7 +106,7 @@ export function HomeHeader({
               <SkeletonBar width={140} height={40} className="rounded-full" />
             ) : (
               <Button
-                variant="primary"
+                variant="static-light"
                 size="md"
                 disabled={sendDisabled}
                 onClick={onSendMoney}
@@ -116,10 +116,14 @@ export function HomeHeader({
                     : undefined
                 }
               >
-                <span className="inline-flex items-center gap-2">
-                  Send money
-                  <ArrowCircleRight size="md" aria-hidden />
-                </span>
+                Send money
+                <ArrowCircleRight
+                  size="md"
+                  className={
+                    sendDisabled ? "text-static-tertiary-dark" : "text-action-primary"
+                  }
+                  aria-hidden
+                />
               </Button>
             )}
           </div>

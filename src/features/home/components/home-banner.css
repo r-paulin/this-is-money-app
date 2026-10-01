@@ -1,61 +1,124 @@
 .home-banner {
-  min-height: 190px;
+  --banner-dismiss-dur: 200ms;
+  --banner-dismiss-scale: 0.96;
+  /* Same iOS interactive curve as nav — HIG consistency over transitions.dev’s ease. */
+  --banner-dismiss-ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  min-height: 92px;
+  align-items: stretch;
+  border: 0.5px solid var(--border-separator, rgba(0, 64, 32, 0.03));
+  /* Dismiss toward the close control (top end). Subtle scale = deference. */
+  transform-origin: top right;
+  transform: scale(1);
+  opacity: 1;
 }
 
-.home-banner__title-row {
-  padding: var(--dimension-400) var(--dimension-700) var(--dimension-300) var(--dimension-500);
+[dir="rtl"] .home-banner {
+  transform-origin: top left;
 }
 
-.home-banner__content-row {
-  display: flex;
-  align-items: flex-end;
-  padding-left: var(--dimension-500);
-  width: 100%;
+/*
+  Banner dismiss — adapted from transitions.dev modal close for Apple HIG:
+  - Exit faster than typical present (~200ms vs ~250–350ms open).
+  - Scale 0.96 stays perceptible without theatrical motion.
+  - Pointer events off immediately to prevent double-dismiss.
+  - Reduced motion: opacity only (no scale).
+*/
+.home-banner.is-closing {
+  transform: scale(var(--banner-dismiss-scale));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--banner-dismiss-dur) var(--banner-dismiss-ease),
+    opacity var(--banner-dismiss-dur) var(--banner-dismiss-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-banner.is-closing {
+    transform: none;
+    transition: opacity 120ms linear;
+  }
 }
 
 .home-banner__text-col {
   display: flex;
   flex: 1 1 0;
   flex-direction: column;
+  justify-content: center;
   min-width: 0;
-  padding-bottom: var(--dimension-500);
+  padding-block: var(--dimension-400);
+  /* Figma Banner / Content: pl dimension/300 only — media is flush to the end */
+  padding-inline-start: var(--dimension-300);
+  padding-inline-end: 0;
 }
 
-.home-banner__body-wrap {
-  padding-bottom: var(--dimension-300);
-  padding-right: var(--dimension-300);
+.home-banner__body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-banner__body > span {
+  min-width: 0;
 }
 
 .home-banner__media-wrap {
   flex-shrink: 0;
   align-self: stretch;
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
+  width: 100px;
+  overflow: hidden;
+  border-start-end-radius: var(--dimension-300);
+  border-end-end-radius: var(--dimension-300);
 }
 
 .home-banner__media {
-  width: 100px;
-  height: 92px;
-  object-fit: contain;
-  object-position: right bottom;
-  border-bottom-right-radius: var(--dimension-400);
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 92px;
+  object-fit: cover;
+  object-position: center;
 }
 
-/* Figma 8719:76150 — Ghost Button Only Icon: 24px Clear at 6px inset, 44px tap target */
+/* Figma close: 32×32 hit target, filled circle over media */
 .home-banner__close-hit {
   position: absolute;
-  top: 0;
-  right: 0;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  z-index: 1;
   box-sizing: border-box;
   display: flex;
-  width: 44px;
-  height: 44px;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 6px 6px 0 0;
-  overflow: hidden;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
+.home-banner__close-fill {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--corner-radius-full, 9600px);
+  background-color: var(--layer-floor-1, var(--color-layer-floor-1, #fff));
+  padding: var(--dimension-50, 2px);
+}
+
+.home-banner__close-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Multi: no viewport side padding — gutters live on the track so peeks stay edge-to-edge. */
 .banner-slider__viewport {
   position: relative;
   overflow: hidden;
@@ -63,29 +126,23 @@
 }
 
 .banner-slider__viewport--single {
-  padding: var(--dimension-300);
-}
-
-.banner-slider__viewport--single .banner-slider__track::before,
-.banner-slider__viewport--single .banner-slider__track::after {
-  display: none;
+  padding: var(--dimension-300) var(--dimension-600);
 }
 
 .banner-slider__track {
   display: flex;
   gap: var(--dimension-300);
-  align-items: center;
+  align-items: stretch;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--dimension-300);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
-.banner-slider__track::before,
-.banner-slider__track::after {
-  content: "";
-  flex: 0 0 var(--dimension-300);
+/* dimension/600 start/end gutters (Figma multi section inset); padding so flex gap doesn't inflate them */
+.banner-slider__track--multi {
+  padding-inline: var(--dimension-600);
+  scroll-padding-inline: var(--dimension-600);
 }
 
 .banner-slider__track::-webkit-scrollbar {
@@ -94,8 +151,6 @@
 
 .banner-slider__slide {
   scroll-snap-align: start;
-  flex: 1 0 0;
-  min-width: 300px;
   display: flex;
 }
 
@@ -105,9 +160,11 @@
   width: 100%;
 }
 
+/* Figma Banner / Content min-width 345 — keeps ~3 lines of body readable beside 100px media */
 .banner-slider__slide--multi {
-  flex: 0 0 300px;
-  width: 300px;
+  flex: 0 0 345px;
+  width: 345px;
+  min-width: 345px;
 }
 
 .banner-slider__dots {
@@ -128,11 +185,11 @@
   width: 8px;
   height: 8px;
   border-radius: var(--dimension-100);
-  background-color: var(--color-bg-active-neutral-secondary, rgba(0, 31, 24, 0.13));
+  background-color: var(--color-bg-neutral-secondary, rgba(0, 45, 30, 0.07));
 }
 
 .banner-slider__dot--active {
   width: 24px;
   height: 8px;
-  background-color: var(--color-bg-action-primary, #2b8659);
+  background-color: var(--color-bg-active-neutral-secondary, rgba(0, 31, 24, 0.13));
 }
