@@ -55,6 +55,11 @@ function CardPaymentSections({ view }: { view: CardPaymentDetailView }) {
                   {view.merchantLocation}
                 </Typography>
               ) : null}
+              {view.merchantDescriptor ? (
+                <Typography variant="body-s-regular" color="secondary" as="span">
+                  Also appears as: {view.merchantDescriptor}
+                </Typography>
+              ) : null}
             </>
           }
         />

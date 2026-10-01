@@ -26,10 +26,13 @@ export interface GetStatementReadyContentProps {
    * the creating overlay). When true, plays the entrance sequence.
    */
   playEntrance?: boolean
+  /** Empty period is still a successful file, with both formats offered. */
+  periodEmpty?: boolean
 }
 
 export function GetStatementReadyContent({
   playEntrance = true,
+  periodEmpty = false,
 }: GetStatementReadyContentProps) {
   const snackbar = useSnackbar()
   const staggerRef = useRef<HTMLDivElement>(null)
@@ -77,6 +80,14 @@ export function GetStatementReadyContent({
   const showImage = playEntrance && imageVisible
   const showActions = playEntrance && actionsVisible
 
+  const confirmDownload = (label: string) => {
+    snackbar.add({
+      description: `${label} downloaded.`,
+      dismissible: true,
+      timeout: 3000,
+    })
+  }
+
   return (
     <div className="flex min-h-dvh flex-col bg-layer-floor-1">
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-6">
@@ -101,7 +112,9 @@ export function GetStatementReadyContent({
           <div className="px-2 pt-1">
             <Typography variant="body-m-regular" color="secondary" as="p" align="center">
               <span className="t-stagger-line t-stagger-line--2">
-                Your statement has been created and is ready to download
+                {periodEmpty
+                  ? "There was no activity in this period. The file is still ready to download."
+                  : "Your statement has been created and is ready to download"}
               </span>
             </Typography>
           </div>
@@ -115,20 +128,20 @@ export function GetStatementReadyContent({
             .filter(Boolean)
             .join(" ")}
         >
-          <Button
-            size="lg"
-            variant="primary"
-            fullWidth
-            onClick={() => {
-              snackbar.add({
-                description: "Statement downloaded.",
-                dismissible: true,
-                timeout: 3000,
-              })
-            }}
-          >
-            Download
-          </Button>
+          {periodEmpty ? (
+            <div className="flex flex-col gap-3">
+              <Button size="lg" variant="primary" fullWidth onClick={() => confirmDownload("PDF")}>
+                Download PDF
+              </Button>
+              <Button size="lg" variant="secondary" fullWidth onClick={() => confirmDownload("CSV")}>
+                Download CSV
+              </Button>
+            </div>
+          ) : (
+            <Button size="lg" variant="primary" fullWidth onClick={() => confirmDownload("Statement")}>
+              Download
+            </Button>
+          )}
         </div>
       </div>
     </div>

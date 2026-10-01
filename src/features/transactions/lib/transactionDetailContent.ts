@@ -2,7 +2,6 @@ import type { Transaction } from "../data/mockTransactions"
 import { formatEurFromCents, formatSignedTransactionAmount } from "./formatTransactionAmount"
 import { formatTransactionDetailDate } from "./formatTransactionDetailDate"
 import { getTransactionDetailVariant } from "./transactionDetailRoute"
-import { merchantTitle } from "./merchantTitle"
 
 export type TransferDetailStatus = "completed" | "on_the_way" | "overdue"
 
@@ -14,6 +13,7 @@ export interface CardPaymentDetailView {
   cardLabel: string
   merchantName: string
   merchantLocation?: string
+  merchantDescriptor?: string
   status: string
   statusSubtext?: string
 }
@@ -57,12 +57,74 @@ function transferIdFromTransaction(transaction: Transaction): string {
   return `P260820-${suffix || "K4M2QX9"}`
 }
 
+const DECLINE_SENTENCE: Record<NonNullable<Transaction["declineReason"]>, string> = {
+  insufficient_funds: "There was not enough balance to complete the payment.",
+  inactive_card: "This card is inactive or closed.",
+  expired_card: "This card has expired.",
+  suspected_fraud: "This payment was declined because it looked unusual.",
+  transaction_not_allowed: "This type of payment is not allowed.",
+  velocity_limit: "Too many payments were attempted in a short time.",
+  amount_limit: "This payment is above the amount limit.",
+  blocked_mcc: "This merchant category is blocked.",
+  blocked_region: "Payments in this region are blocked.",
+  invalid_card_details: "The card details are not valid.",
+  issuer_unavailable: "The card issuer is unavailable.",
+  technical_issue: "A technical issue stopped this payment.",
+  failed_verification: "Cardholder verification failed.",
+}
+
+function holdReleaseDate(occurredAt: number): string {
+  const date = new Date(occurredAt)
+  date.setDate(date.getDate() + 7)
+  return formatTransactionDetailDate(date.getTime()).split(",")[0] ?? ""
+}
+
+function cardMerchantName(transaction: Transaction): string {
+  if (transaction.merchant.trim().length > 0) return transaction.merchant
+  return "Unknown merchant"
+}
+
+function cardStatus(transaction: Transaction): { status: string; statusSubtext?: string } {
+  if (transaction.kind === "declined" || transaction.kind === "failed") {
+    const reason = transaction.declineReason
+    return {
+      status: "Declined",
+      statusSubtext: reason ? DECLINE_SENTENCE[reason] : undefined,
+    }
+  }
+  if (transaction.kind === "reversal") {
+    return { status: "Hold released", statusSubtext: "No money was taken." }
+  }
+  if (transaction.kind === "refund") {
+    return {
+      status: "Refunded",
+      statusSubtext: "The merchant refunded the payment.",
+    }
+  }
+  const pending =
+    transaction.kind === "authorization" || transaction.paymentStatus === "pending"
+  if (pending) {
+    return {
+      status: "Pending",
+      statusSubtext:
+        transaction.statusSubtext ??
+        `The merchant has placed a hold. It will be released on ${holdReleaseDate(transaction.occurredAt)} if the merchant does not collect the payment.`,
+    }
+  }
+  return { status: "Completed" }
+}
+
 function buildCardPaymentView(transaction: Transaction): CardPaymentDetailView {
   const amount = formatSignedTransactionAmount({
     amountCents: transaction.amountCents,
     kind: transaction.kind,
   })
-  const paymentStatus = transaction.paymentStatus ?? "completed"
+  const status = cardStatus(transaction)
+  const descriptor = transaction.merchantDescriptor?.trim()
+  const descriptorDiffers =
+    descriptor != null &&
+    descriptor.length > 0 &&
+    descriptor.toLowerCase() !== transaction.merchant.trim().toLowerCase()
 
   return {
     variant: "card_payment",
@@ -70,14 +132,13 @@ function buildCardPaymentView(transaction: Transaction): CardPaymentDetailView {
     amountTone: amount.tone,
     subtext: formatTransactionDetailDate(transaction.occurredAt),
     cardLabel: "VISA, ·· 4231",
-    merchantName: merchantTitle(transaction),
-    merchantLocation: transaction.merchantLocation ?? "Lyon, Auvergne-Rhône-Alpes",
-    status: paymentStatus === "pending" ? "Pending" : "Completed",
-    statusSubtext:
-      transaction.statusSubtext ??
-      (paymentStatus === "pending"
-        ? "Will be automatically reversed on 19 Nov 2026 if unclaimed by the merchant."
-        : undefined),
+    merchantName: cardMerchantName(transaction),
+    merchantLocation: transaction.locationOmitted
+      ? undefined
+      : transaction.merchantLocation?.trim() || "Location unavailable",
+    merchantDescriptor: descriptorDiffers ? descriptor : undefined,
+    status: status.status,
+    statusSubtext: status.statusSubtext,
   }
 }
 

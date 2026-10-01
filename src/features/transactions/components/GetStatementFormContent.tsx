@@ -33,6 +33,7 @@ export interface GetStatementFormContentProps {
   fileFormat: StatementFileFormat
   onFileFormatChange: (format: StatementFileFormat) => void
   creating: boolean
+  rangeError?: string | null
   onCreate: () => void
 }
 
@@ -48,6 +49,7 @@ export function GetStatementFormContent({
   fileFormat,
   onFileFormatChange,
   creating,
+  rangeError,
   onCreate,
 }: GetStatementFormContentProps) {
   const startInputRef = useRef<HTMLInputElement>(null)
@@ -210,6 +212,14 @@ export function GetStatementFormContent({
           )
         })}
       </ul>
+
+      {rangeError ? (
+        <div className="px-6 pt-2">
+          <Typography variant="body-s-regular" color="secondary" as="p">
+            {rangeError}
+          </Typography>
+        </div>
+      ) : null}
 
       {/* Button sits under the list (Figma 6875:54191), not pinned to viewport bottom */}
       <div className="px-6 py-4">

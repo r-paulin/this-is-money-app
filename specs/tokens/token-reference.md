@@ -38,12 +38,15 @@ Tailwind extensions: `tailwind.config.ts`
 |----------|--------------|----------------|
 | groceries | `--mcc-groceries` | `bg-mcc-groceries` |
 | food / restaurants | `--mcc-food` | `bg-mcc-food` |
+| entertainment | `--mcc-entertainment` | `bg-mcc-entertainment` |
 | travel | `--mcc-travel` | `bg-mcc-travel` |
 | transport | `--mcc-transport` | `bg-mcc-transport` |
 | medical | `--mcc-medical` | `bg-mcc-medical` |
 | shopping | `--mcc-shopping` | `bg-mcc-shopping` |
 | money | `--mcc-money` | `bg-mcc-money` |
 | utilities | `--mcc-utilities` | `bg-mcc-utilities` |
+| other | `--mcc-other` | `bg-mcc-other` |
+| cashback | `--mcc-cashback` | `bg-mcc-cashback` |
 | government | `--mcc-government` | `bg-mcc-government` |
 | fuel | `--mcc-fuel` | `bg-mcc-fuel` |
 | decline | `--mcc-decline` | `bg-mcc-decline` |

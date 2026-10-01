@@ -10,7 +10,7 @@ Form text inputs use an **inline / floating label** inside the field — not Kal
 |---------|-----------|
 | Form text input | `InlineLabelTextField` from `@/shared/components` |
 | Tappable picker row (country, etc.) | `FormPickerField` |
-| Search / filter bar | Kalep `TextField` with `type="search"` (unchanged) |
+| Search / filter bar | Kalep `TextField` with `type="search"` and `rounded-full` |
 
 **Do not** use raw Kalep `TextField` with `label` above the input for form fields.
 

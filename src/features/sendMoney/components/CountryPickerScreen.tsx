@@ -96,6 +96,7 @@ export function CountryPickerScreen({
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search country"
             clearTextLabel="Clear country search"
+            overrideClassName="!rounded-full"
             autoComplete="off"
             fullWidth
           />

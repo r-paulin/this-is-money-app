@@ -4,6 +4,7 @@ import "@/shared/styles/text-stagger.css"
 import "./statement-creating.css"
 
 const CREATING_HOLD_MS = 8000
+const LONG_WAIT_MS = 3000
 /** Matches --motion-duration-sm. Text fades before the screen leaves. */
 const TEXT_HIDE_MS = 200
 /** Matches --motion-duration-lg on the creating-screen exit. */
@@ -29,6 +30,12 @@ export function GetStatementCreatingContent({
 }: GetStatementCreatingContentProps) {
   const staggerRef = useRef<HTMLDivElement>(null)
   const [exiting, setExiting] = useState(false)
+  const [longWait, setLongWait] = useState(false)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setLongWait(true), LONG_WAIT_MS)
+    return () => window.clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const element = staggerRef.current
@@ -100,11 +107,15 @@ export function GetStatementCreatingContent({
       <Spinner size={600} color="text-[var(--color-special-brand)]" />
       <div ref={staggerRef} className="t-stagger w-full pt-6 text-center">
         <Typography variant="heading-m-accent" color="primary" as="h1" align="center">
-          <span className="t-stagger-line t-stagger-line--1">Creating statement…</span>
+          <span className="t-stagger-line t-stagger-line--1">
+            {longWait ? "Still working on your statement" : "Creating statement…"}
+          </span>
         </Typography>
         <div className="pt-2">
           <Typography variant="body-m-regular" color="secondary" as="p" align="center">
-            <span className="t-stagger-line t-stagger-line--2">This might take a moment</span>
+            <span className="t-stagger-line t-stagger-line--2">
+              {longWait ? "This is taking a little longer" : "This might take a moment"}
+            </span>
           </Typography>
         </div>
       </div>

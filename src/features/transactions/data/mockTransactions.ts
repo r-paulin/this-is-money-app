@@ -18,6 +18,23 @@ export interface Transaction {
   /** Card payment detail status */
   paymentStatus?: "completed" | "pending"
   statusSubtext?: string
+  declineReason?:
+    | "insufficient_funds"
+    | "inactive_card"
+    | "expired_card"
+    | "suspected_fraud"
+    | "transaction_not_allowed"
+    | "velocity_limit"
+    | "amount_limit"
+    | "blocked_mcc"
+    | "blocked_region"
+    | "invalid_card_details"
+    | "issuer_unavailable"
+    | "technical_issue"
+    | "failed_verification"
+  merchantDescriptor?: string
+  /** Online merchant: omit the location row instead of "Location unavailable". */
+  locationOmitted?: boolean
   status?: "completed" | "on_the_way" | "overdue"
   reference?: string
   transferId?: string
@@ -81,6 +98,10 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       currency: "EUR",
       mcc: 5541,
       kind: "purchase",
+      merchantLocation: "Tallinn, Estonia",
+      merchantDescriptor: "ESSO*1234",
+      reference: "Fuel stop",
+      transferId: "P260820-ESSO",
     },
     {
       id: "tx-fuel-total-pending",
@@ -109,6 +130,7 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       currency: "EUR",
       mcc: 5411,
       kind: "declined",
+      declineReason: "insufficient_funds",
     },
     {
       id: "tx-decline-transfer",
@@ -127,6 +149,8 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       currency: "EUR",
       mcc: 6011,
       kind: "transfer_out",
+      reference: "August rent",
+      transferId: "P260820-WALKER",
     },
     {
       id: "tx-transfer-in",
@@ -281,6 +305,7 @@ export function buildMockTransactions(now = new Date()): Transaction[] {
       currency: "EUR",
       mcc: 4900,
       kind: "purchase",
+      locationOmitted: true,
     },
     {
       id: "tx-auto",

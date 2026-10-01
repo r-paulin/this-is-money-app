@@ -75,12 +75,15 @@
   /* MCC theme fills (Figma _ MCC 138:7229) */
   --mcc-groceries: #e7315a;
   --mcc-food: #e75c00;
+  --mcc-entertainment: #e75c00;
   --mcc-travel: #744ee5;
   --mcc-transport: #057cea;
   --mcc-medical: #2b8659;
   --mcc-shopping: #0052cc;
   --mcc-money: #2a9c64;
   --mcc-utilities: #455a64;
+  --mcc-other: #455a64;
+  --mcc-cashback: #f09800;
   --mcc-government: #3f2d0f;
   --mcc-fuel: #6d4c41;
   --mcc-decline: #ce0019;

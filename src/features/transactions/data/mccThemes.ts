@@ -3,6 +3,7 @@ export type MccThemeId =
   | "restaurants"
   | "entertainment_bars"
   | "entertainment"
+  | "cashback"
   | "travel"
   | "travel_cruise"
   | "travel_rentals"
@@ -69,7 +70,7 @@ export const MCC_THEMES: readonly MccTheme[] = [
   {
     id: "entertainment",
     mccs: [7832, 7922],
-    bgClass: "bg-mcc-food",
+    bgClass: "bg-mcc-entertainment",
     iconClass: "text-static-key-light",
   },
   {
@@ -134,7 +135,7 @@ export const MCC_THEMES: readonly MccTheme[] = [
   },
   {
     id: "bolt",
-    mccs: [6011, 6012, 4829, 6536, 6537, 6538],
+    mccs: [],
     bgClass: "bg-mcc-money",
     iconClass: "text-static-key-light",
   },
@@ -165,12 +166,18 @@ export const MCC_THEMES: readonly MccTheme[] = [
   {
     id: "other",
     mccs: [],
-    bgClass: "bg-mcc-utilities",
+    bgClass: "bg-mcc-other",
+    iconClass: "text-static-key-light",
+  },
+  {
+    id: "cashback",
+    mccs: [],
+    bgClass: "bg-mcc-cashback",
     iconClass: "text-static-key-light",
   },
   {
     id: "decline",
-    mccs: [5912, 8011, 8021],
+    mccs: [],
     bgClass: "bg-mcc-decline",
     iconClass: "text-static-key-light",
   },
@@ -204,6 +211,23 @@ const LOOKUP_ORDER: readonly MccThemeId[] = [
   "other",
 ]
 
+export type CategoryMark =
+  | { kind: "arrow-in" }
+  | { kind: "arrow-out" }
+  | { kind: "theme"; theme: MccTheme }
+
+/** ATM stays an arrow mark. Everything else is the category circle plus a corner badge. */
+export function resolveCategoryMark(opts: {
+  mcc: number
+  kind: TransactionKind
+  themeOverride?: MccThemeId
+}): CategoryMark {
+  if (opts.kind === "atm") {
+    return { kind: "arrow-out" }
+  }
+  return { kind: "theme", theme: resolveThemeForTransaction(opts) }
+}
+
 export function resolveThemeForTransaction(opts: {
   mcc: number
   kind: TransactionKind
@@ -214,9 +238,6 @@ export function resolveThemeForTransaction(opts: {
   }
   if (opts.themeOverride) {
     return THEME_BY_ID[opts.themeOverride]
-  }
-  if (opts.kind === "failed" && opts.mcc === 0) {
-    return THEME_BY_ID.decline
   }
   if (opts.kind === "atm" || opts.kind === "transfer_out" || opts.kind === "transfer_in") {
     return THEME_BY_ID.money

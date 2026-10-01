@@ -25,6 +25,7 @@ export function TransactionDetailSummary({ transaction, view }: TransactionDetai
           mcc={transaction.mcc}
           kind={transaction.kind}
           themeOverride={transaction.themeOverride}
+          surface="detail"
         />
         <div className="transaction-detail__summary-amount">
           <Typography variant="heading-l-accent" color={amountColor(view.amountTone)} as="p" align="center">

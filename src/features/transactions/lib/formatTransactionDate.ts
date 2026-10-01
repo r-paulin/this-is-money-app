@@ -35,13 +35,12 @@ export function formatTransactionSectionLabel(occurredAt: number, now = new Date
 }
 
 const TIMESTAMP_FORMAT: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "short",
-  hour: "numeric",
+  hour: "2-digit",
   minute: "2-digit",
+  hourCycle: "h23",
 }
 
-/** Secondary line date/time — locale-aware, e.g. `11 Oct, 16:30` or `Oct 7, 7:05 PM`. */
+/** List secondary line — clock only, e.g. `16:30`. Day headers carry the date. */
 export function formatTransactionTimestamp(
   occurredAt: number,
   locales?: string | string[],

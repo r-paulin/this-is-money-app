@@ -14,7 +14,7 @@ export function RecipientSelectLoadingScreen() {
       </div>
 
       <div className="px-6 pb-4">
-        <SkeletonBar width="100%" height={56} className="rounded-lg" />
+        <SkeletonBar width="100%" height={56} className="rounded-full" />
       </div>
 
       <div className="px-6 pb-2 pt-1">

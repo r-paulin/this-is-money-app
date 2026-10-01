@@ -52,9 +52,11 @@ export function TransactionRow({
   const amountColor =
     amount.tone === "credit"
       ? "action-primary"
-      : amount.tone === "declined" || amount.tone === "missing"
-        ? "secondary"
-        : "primary"
+      : amount.tone === "declined"
+        ? "tertiary"
+        : amount.tone === "missing"
+          ? "secondary"
+          : "primary"
 
   const amountClass = amount.tone === "declined" ? "line-through" : undefined
 

@@ -137,6 +137,7 @@ export function RecipientSelectScreen() {
             placeholder="Search by name or bank account"
             aria-label="Search recipients"
             fullWidth
+            overrideClassName="!rounded-full"
           />
         </div>
 

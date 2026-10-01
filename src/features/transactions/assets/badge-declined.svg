@@ -1,7 +1,7 @@
-<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="declined">
-<path d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1Z" fill="var(--fill-0, #E03131)"/>
-<path d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1Z" stroke="var(--stroke-0, white)" stroke-width="2"/>
-<path d="M6.2 6.2L13.8 13.8" stroke="var(--stroke-1, white)" stroke-width="2" stroke-linecap="round"/>
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="decline">
+<path d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1Z" fill="#DE1929"/>
+<path d="M10 1C14.9706 1 19 5.02944 19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1Z" stroke="white" stroke-width="2"/>
+<path id="Union" fill-rule="evenodd" clip-rule="evenodd" d="M10.001 4.7998C12.8729 4.7998 15.2012 7.12812 15.2012 10C15.2012 12.8719 12.8729 15.2002 10.001 15.2002C7.1291 15.2002 4.80078 12.8719 4.80078 10C4.80078 7.12812 7.1291 4.7998 10.001 4.7998ZM6.82715 7.75293C6.37674 8.38787 6.11035 9.16208 6.11035 10C6.11035 12.1489 7.85209 13.8906 10.001 13.8906C10.8389 13.8906 11.6131 13.6242 12.248 13.1738L6.82715 7.75293ZM10.001 6.10938C9.16257 6.10938 8.38808 6.37626 7.75293 6.82715L13.1738 12.248C13.6247 11.6129 13.8916 10.8384 13.8916 10C13.8916 7.85111 12.1499 6.10938 10.001 6.10938Z" fill="white"/>
 </g>
 </svg>
