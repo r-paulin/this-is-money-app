@@ -208,7 +208,6 @@ export function HomeBanner({ id, onDismiss, className = "" }: HomeBannerProps) {
               className="home-banner__media"
               src={content.media.videoSrc}
               muted
-              defaultMuted
               autoPlay
               loop
               playsInline
