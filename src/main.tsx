@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client"
 import "./index.css"
 import { App } from "@/app/App"
 
+document.documentElement.dataset.platform = "ios"
+
 const params = new URLSearchParams(window.location.search)
 const theme = params.get("theme")
 if (theme === "dark") {

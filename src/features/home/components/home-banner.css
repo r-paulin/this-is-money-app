@@ -1,42 +1,23 @@
 .home-banner {
-  --banner-dismiss-dur: 200ms;
-  --banner-dismiss-scale: 0.96;
-  /* Same iOS interactive curve as nav — HIG consistency over transitions.dev’s ease. */
-  --banner-dismiss-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --banner-dismiss-dur: var(--motion-duration-sm);
+  --banner-dismiss-ease: var(--motion-ease-exit);
 
   min-height: 92px;
   align-items: stretch;
   border: 0.5px solid var(--border-separator, rgba(0, 64, 32, 0.03));
-  /* Dismiss toward the close control (top end). Subtle scale = deference. */
-  transform-origin: top right;
-  transform: scale(1);
   opacity: 1;
 }
 
-[dir="rtl"] .home-banner {
-  transform-origin: top left;
-}
-
-/*
-  Banner dismiss — adapted from transitions.dev modal close for Apple HIG:
-  - Exit faster than typical present (~200ms vs ~250–350ms open).
-  - Scale 0.96 stays perceptible without theatrical motion.
-  - Pointer events off immediately to prevent double-dismiss.
-  - Reduced motion: opacity only (no scale).
-*/
+/* Dismiss fades out. Pointer events turn off immediately to prevent a double dismiss. */
 .home-banner.is-closing {
-  transform: scale(var(--banner-dismiss-scale));
   opacity: 0;
   pointer-events: none;
-  transition:
-    transform var(--banner-dismiss-dur) var(--banner-dismiss-ease),
-    opacity var(--banner-dismiss-dur) var(--banner-dismiss-ease);
+  transition: opacity var(--banner-dismiss-dur) var(--banner-dismiss-ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .home-banner.is-closing {
-    transform: none;
-    transition: opacity 120ms linear;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
   }
 }
 

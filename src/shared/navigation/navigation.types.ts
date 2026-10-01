@@ -11,6 +11,8 @@ export type NavigationContextValue = {
   stack: ScreenEntry[]
   push: (entry: ScreenEntry) => void
   pop: () => void
+  /** Pop after an edge swipe. Allowed while a drag is in progress. */
+  commitDragPop: () => void
   popTo: (key: string) => void
   popToRoot: () => void
   /** Runs action after the current pop/popTo/popToRoot animation completes. */

@@ -2,11 +2,14 @@ import { useCallback, useRef } from "react"
 
 const EDGE_ZONE_PX = 20
 const COMMIT_THRESHOLD = 0.5
+/** Matches --nav-parallax (30%) in navigation.css. */
+export const NAV_PARALLAX_RATIO = 0.3
 
 interface UseEdgeSwipeBackOptions {
   enabled: boolean
   containerRef: React.RefObject<HTMLElement | null>
-  onCommitPop: () => void
+  onCommitPop: (offsetPx: number) => void
+  onCancelDrag: (offsetPx: number) => void
   onDragStart: () => void
   onDragEnd: () => void
   onDragMove: (offsetPx: number) => void
@@ -16,6 +19,7 @@ export function useEdgeSwipeBack({
   enabled,
   containerRef,
   onCommitPop,
+  onCancelDrag,
   onDragStart,
   onDragEnd,
   onDragMove,
@@ -116,10 +120,11 @@ export function useEdgeSwipeBack({
         const deltaX = event.clientX - drag.startX
         const progress = deltaX / width
 
+        const offset = Math.max(0, Math.min(deltaX, width))
         if (progress >= COMMIT_THRESHOLD) {
-          onCommitPop()
+          onCommitPop(offset)
         } else {
-          resetDrag()
+          onCancelDrag(offset)
         }
       }
 
@@ -128,7 +133,7 @@ export function useEdgeSwipeBack({
         event.currentTarget.releasePointerCapture(event.pointerId)
       }
     },
-    [containerRef, onCommitPop, resetDrag],
+    [containerRef, onCancelDrag, onCommitPop],
   )
 
   const onPointerCancel = useCallback(
@@ -136,14 +141,21 @@ export function useEdgeSwipeBack({
       const drag = dragRef.current
       if (!drag.active || event.pointerId !== drag.pointerId) return
 
-      resetDrag()
+      if (drag.horizontal) {
+        const container = containerRef.current
+        const width = container?.getBoundingClientRect().width ?? window.innerWidth
+        const deltaX = event.clientX - drag.startX
+        onCancelDrag(Math.max(0, Math.min(deltaX, width)))
+      } else {
+        resetDrag()
+      }
       dragRef.current.active = false
 
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId)
       }
     },
-    [resetDrag],
+    [containerRef, onCancelDrag, resetDrag],
   )
 
   return {
@@ -160,7 +172,7 @@ export function useEdgeSwipeBack({
 export function getInteractiveTransforms(
   dragOffset: number,
   containerWidth: number,
-  parallaxRatio = 0.33,
+  parallaxRatio = NAV_PARALLAX_RATIO,
 ): { top: string; below: string } {
   const parallaxPx = containerWidth * parallaxRatio
   const progress = containerWidth > 0 ? dragOffset / containerWidth : 0

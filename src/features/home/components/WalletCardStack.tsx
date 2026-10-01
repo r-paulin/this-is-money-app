@@ -10,7 +10,6 @@ interface WalletCardStackProps {
   physicalCardRef?: RefObject<HTMLDivElement | null>
   virtualCardRef?: RefObject<HTMLDivElement | null>
   hiddenCardType?: CardType | null
-  settlingCardType?: CardType | null
 }
 
 /**
@@ -25,7 +24,6 @@ export function WalletCardStack({
   physicalCardRef,
   virtualCardRef,
   hiddenCardType = null,
-  settlingCardType = null,
 }: WalletCardStackProps) {
   return (
     <div className="wallet-stack">
@@ -36,7 +34,6 @@ export function WalletCardStack({
         className={[
           "wallet-stack__card wallet-stack__card--physical",
           hiddenCardType === "physical" ? "opacity-0" : "",
-          settlingCardType === "physical" ? "card-replace-slot-settle" : "",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -55,7 +52,6 @@ export function WalletCardStack({
         className={[
           "wallet-stack__card wallet-stack__card--virtual",
           hiddenCardType === "virtual" ? "opacity-0" : "",
-          settlingCardType === "virtual" ? "card-replace-slot-settle" : "",
         ]
           .filter(Boolean)
           .join(" ")}

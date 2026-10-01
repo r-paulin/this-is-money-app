@@ -35,7 +35,7 @@ Required fields: append ` *` to the label text (`required` prop).
 
 ## Motion
 
-Label and input use a **200ms** ease (`cubic-bezier(0.32, 0.72, 0, 1)`): label slides from vertical center to top; input fades in. Respects `prefers-reduced-motion`. End icons sit in a fixed `size-8` slot, vertically centered in the 56px field.
+Label and input use `--motion-duration-sm` and `--motion-ease-standard`: label slides from vertical center to top; input fades in. Reduced motion skips the label travel and fades the input. End icons sit in a fixed `size-8` slot, vertically centered in the 56px field.
 
 ## Picker field
 

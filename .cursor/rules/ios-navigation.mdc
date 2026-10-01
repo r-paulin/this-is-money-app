@@ -40,11 +40,10 @@ pop()
 
 ## Transition spec
 
-- **Push:** incoming screen `translateX(100%) → 0`; previous screen parallax `0 → -33%`
-- **Pop:** outgoing screen `translateX(0) → 100%`; previous screen `-33% → 0`
-- **Duration:** 350ms, easing `cubic-bezier(0.32, 0.72, 0, 1)`
-- **Swipe-back:** edge drag from leading ~20px; commit pop at ≥50% width
-- **Reduced motion:** opacity fade (~150ms), no horizontal slide
+- **Push:** incoming screen `translateX(100%) → 0`; previous screen parallax `0 → -30%`. Duration `--motion-nav-enter` (500ms, iOS ease)
+- **Pop:** outgoing screen `translateX(0) → 100%`; previous screen `-30% → 0`. Duration `--motion-nav-exit` (400ms, iOS ease)
+- **Swipe-back:** edge drag from leading ~20px; commit pop at ≥50% width, continuing from the drag offset
+- **Reduced motion:** cross-fade at `--motion-duration-sm` and `--motion-ease-standard`, no horizontal slide
 
 ## Adding a new screen
 

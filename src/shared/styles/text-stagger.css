@@ -2,11 +2,10 @@
 /* https://transitions.dev */
 
 :root {
-  --stagger-dur: 500ms;
-  --stagger-distance: 12px;
-  --stagger-stagger: 40ms;
-  --stagger-blur: 3px;
-  --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --stagger-dur: var(--motion-duration-md);
+  --stagger-distance: var(--motion-offset-sm);
+  --stagger-stagger: var(--motion-stagger);
+  --stagger-ease: var(--motion-ease-enter);
 }
 
 .t-stagger-line {
@@ -15,11 +14,9 @@
   font-variation-settings: inherit;
   opacity: 0;
   transform: translateY(var(--stagger-distance));
-  filter: blur(var(--stagger-blur));
   transition:
     opacity var(--stagger-dur) var(--stagger-ease),
-    transform var(--stagger-dur) var(--stagger-ease),
-    filter var(--stagger-dur) var(--stagger-ease);
+    transform var(--stagger-dur) var(--stagger-ease);
   will-change: transform, opacity, filter;
 }
 
@@ -30,17 +27,14 @@
 .t-stagger.is-shown .t-stagger-line {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
 }
 
 .t-stagger.is-hiding .t-stagger-line {
   opacity: 0;
   transform: translateY(0);
-  filter: blur(0);
   transition:
-    opacity 200ms ease,
-    transform 0s linear,
-    filter 0s linear;
+    opacity var(--motion-duration-sm) var(--motion-ease-exit),
+    transform 0s linear;
   transition-delay: 0s;
 }
 
@@ -52,6 +46,5 @@
   .t-stagger.is-shown .t-stagger-line {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }

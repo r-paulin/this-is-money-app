@@ -31,7 +31,7 @@
 .send-money-trusted-banner {
   border-radius: var(--dimension-300);
   padding: var(--dimension-300);
-  transition: background-color 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background-color var(--motion-duration-sm) var(--motion-ease-standard);
 }
 
 .send-money-trusted-banner.is-active {
@@ -64,7 +64,7 @@
   height: 31px;
   border-radius: 999px;
   background: var(--color-bg-neutral-secondary, rgba(0, 45, 30, 0.07));
-  transition: background-color 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background-color var(--motion-duration-sm) var(--motion-ease-standard);
 }
 
 .send-money-trusted-toggle__track::after {
@@ -77,7 +77,7 @@
   border-radius: 999px;
   background: var(--color-layer-floor-1, #fff);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--motion-spring-snappy-duration) var(--motion-spring-snappy);
 }
 
 .send-money-trusted-toggle.is-checked .send-money-trusted-toggle__track {

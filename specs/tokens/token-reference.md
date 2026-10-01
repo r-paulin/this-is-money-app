@@ -69,6 +69,32 @@ Map MCC codes → theme in `src/features/transactions/data/mccThemes.ts` only.
 
 Use with `--font-weight-semibold` (650) and `--content-primary`.
 
+## Motion
+
+Defined in `src/shared/styles/tokens.css`. Authored UI motion uses these variables only. See `.cursor/rules/motion.mdc`.
+
+| Token | Value | Use |
+|-------|-------|-----|
+| `--motion-duration-xs` | 100ms | Press, colour, opacity |
+| `--motion-duration-sm` | 200ms | Toggle, icon swap, small fade. Exits one step shorter. |
+| `--motion-duration-md` | 300ms | Expand, toast, tab indicator |
+| `--motion-duration-lg` | 400ms | Large exit, dialog-scale |
+| `--motion-duration-xl` | 500ms | iOS page and sheet enter. Ceiling. |
+| `--motion-ease-standard` | `cubic-bezier(0.2, 0, 0, 1)` | Moves while it stays on screen |
+| `--motion-ease-enter` | `cubic-bezier(0.05, 0.7, 0.1, 1)` | Arrives |
+| `--motion-ease-exit` | `cubic-bezier(0.3, 0, 0.8, 0.15)` | Leaves |
+| `--motion-ease-ios` | `cubic-bezier(0.32, 0.72, 0, 1)` | Only via `--motion-nav-*` and `--motion-sheet-*` |
+| `--motion-spring-smooth` | settle 490ms, bounce 0 | Layout, drag release |
+| `--motion-spring-snappy` | settle 340ms, bounce 0.15 | Toggle thumb |
+| `--motion-spring-bouncy` | settle 450ms, bounce 0.3 | One confirmed-success element |
+| `--motion-press-scale` | 0.97 | Press. Reduced motion sets this to 1. |
+| `--motion-offset-xs` / `--motion-blur-xs` | 4px / 2px | Text swap, with `--motion-text-swap-duration` 150ms |
+| `--motion-offset-sm` | 8px | Toast / small rise |
+| `--motion-offset-md` | 30px | Short travel |
+| `--motion-stagger` | 40ms | First-render delay, five items max |
+
+`--motion-nav-enter-*`, `--motion-nav-exit-*`, `--motion-sheet-enter-*`, and `--motion-sheet-exit-*` fork per platform. This app sets `data-platform="ios"` at boot, so enter is xl + iOS ease and exit is lg + iOS ease. `prefers-reduced-motion: reduce` shortens springs and travel to sm and clears offsets.
+
 ## Radius
 
 | CSS variable | Tailwind |

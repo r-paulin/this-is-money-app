@@ -70,13 +70,15 @@ export function RecipientTextField({
           type="button"
           className={[
             "flex size-8 items-center justify-center rounded-full border-0 bg-transparent p-0",
-            "transition-opacity duration-200 ease-[cubic-bezier(0.32,0.72,0,1)]",
             focused && value
               ? "opacity-100"
               : "pointer-events-none opacity-0",
           ].join(" ")}
           aria-label={`Clear ${label.toLowerCase()}`}
           aria-hidden={!(focused && value)}
+          style={{
+            transition: "opacity var(--motion-duration-sm) var(--motion-ease-standard)",
+          }}
           tabIndex={focused && value ? 0 : -1}
           onMouseDown={(event) => event.preventDefault()}
           onClick={onClear}

@@ -5,9 +5,9 @@
   --pulse-dur: 1000ms;
   --pulse-count: infinite;
   --pulse-min: 0.5;
-  --reveal-dur: 400ms;
-  --reveal-blur: 2px;
-  --reveal-ease: ease-in-out;
+  --reveal-dur: var(--motion-duration-lg);
+  --reveal-blur: var(--motion-blur-xs);
+  --reveal-ease: var(--motion-ease-standard);
 }
 
 .t-skel {
@@ -63,7 +63,7 @@
 }
 
 .t-skel-skeleton.is-pulsing > * {
-  animation: t-skel-pulse var(--pulse-dur) ease-in-out var(--pulse-count);
+  animation: t-skel-pulse var(--pulse-dur) linear var(--pulse-count);
 }
 
 @keyframes t-skel-pulse {
@@ -79,7 +79,9 @@
 @media (prefers-reduced-motion: reduce) {
   .t-skel-skeleton,
   .t-skel-content {
-    transition: none !important;
+    transition:
+      opacity var(--motion-duration-sm) var(--motion-ease-standard),
+      filter var(--motion-duration-sm) var(--motion-ease-standard);
   }
 
   .t-skel-skeleton.is-pulsing > * {

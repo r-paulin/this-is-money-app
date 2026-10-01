@@ -30,6 +30,10 @@ const PATTERNS: { name: string; regex: RegExp }[] = [
     name: "inline hex in className",
     regex: /className=["'`][^"'`]*#[0-9a-fA-F]{3,8}/g,
   },
+  {
+    name: "cubic-bezier outside motion tokens",
+    regex: /cubic-bezier\(/g,
+  },
 ]
 
 type Violation = { file: string; line: number; rule: string; match: string }
@@ -49,9 +53,11 @@ function walk(dir: string, files: string[] = []): string[] {
 
 function auditFile(path: string): Violation[] {
   const rel = relative(ROOT, path).replaceAll("\\", "/")
-  if (ALLOWLIST.has(rel) || rel.endsWith(".test.ts") || rel.endsWith(".svg")) {
-    return []
-  }
+  if (rel.endsWith(".svg")) return []
+
+  const skipColorRules = ALLOWLIST.has(rel) || rel.endsWith(".test.ts")
+  const skipMotionRule = rel === "src/shared/styles/tokens.css"
+  if (skipColorRules && skipMotionRule) return []
 
   const content = readFileSync(path, "utf8")
   const lines = content.split("\n")
@@ -62,6 +68,9 @@ function auditFile(path: string): Violation[] {
     if (line.includes('href="#')) continue
 
     for (const { name, regex } of PATTERNS) {
+      const motionRule = name.startsWith("cubic-bezier")
+      if (motionRule ? skipMotionRule : skipColorRules) continue
+
       regex.lastIndex = 0
       let match: RegExpExecArray | null
       while ((match = regex.exec(line)) !== null) {

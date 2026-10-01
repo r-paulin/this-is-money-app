@@ -2,26 +2,9 @@
 // https://transitions.dev
 
 const __TRANSITION_STYLES = `
-:root {
-  --digit-dur: 500ms;
-  --digit-distance: 8px;
-  --digit-stagger: 70ms;
-  --digit-blur: 2px;
-  --digit-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --digit-dir-x: 0;
-  --digit-dir-y: 1;
-}
-
 @keyframes t-digit-pop-in {
-  0%   {
-    transform: translate(
-      calc(var(--digit-distance) * var(--digit-dir-x)),
-      calc(var(--digit-distance) * var(--digit-dir-y))
-    );
-    opacity: 0;
-    filter: blur(var(--digit-blur));
-  }
-  100% { transform: translate(0, 0); opacity: 1; filter: blur(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .t-digit-group {
@@ -33,17 +16,7 @@ const __TRANSITION_STYLES = `
   will-change: transform, opacity, filter;
 }
 .t-digit-group.is-animating .t-digit {
-  animation: t-digit-pop-in var(--digit-dur) var(--digit-ease) both;
-}
-.t-digit-group.is-animating .t-digit[data-stagger="1"] {
-  animation-delay: var(--digit-stagger);
-}
-.t-digit-group.is-animating .t-digit[data-stagger="2"] {
-  animation-delay: calc(var(--digit-stagger) * 2);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-digit-group .t-digit { animation: none !important; }
+  animation: t-digit-pop-in var(--motion-duration-sm) var(--motion-ease-standard) both;
 }
 `
 

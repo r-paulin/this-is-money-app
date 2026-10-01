@@ -1,12 +1,26 @@
 :root {
-  --nav-duration: 350ms;
-  --nav-ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --nav-parallax: 33%;
+  /* iOS page spatial constant. Not a motion token and not for other components. */
+  --nav-parallax: 30%;
+  --nav-pop-top-from: 0px;
+  --nav-pop-below-from: calc(var(--nav-parallax) * -1);
+}
+
+.nav-stack[data-direction="push"] {
+  --nav-duration: var(--motion-nav-enter-duration);
+  --nav-ease: var(--motion-nav-enter-ease);
+}
+
+.nav-stack[data-direction="pop"],
+.nav-stack[data-direction="settle"] {
+  --nav-duration: var(--motion-nav-exit-duration);
+  --nav-ease: var(--motion-nav-exit-ease);
 }
 
 .nav-stack {
   position: relative;
-  min-height: 100dvh;
+  /* --app-h is 100dvh on mobile; device-screen-h inside the desktop bezel */
+  height: var(--app-h);
+  min-height: var(--app-h);
   overflow: hidden;
   touch-action: pan-y;
 }
@@ -61,7 +75,7 @@
 
 @keyframes nav-pop-top {
   from {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(var(--nav-pop-top-from), 0, 0);
   }
   to {
     transform: translate3d(100%, 0, 0);
@@ -70,10 +84,28 @@
 
 @keyframes nav-pop-below {
   from {
-    transform: translate3d(calc(var(--nav-parallax) * -1), 0, 0);
+    transform: translate3d(var(--nav-pop-below-from), 0, 0);
   }
   to {
     transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nav-settle-top {
+  from {
+    transform: translate3d(var(--nav-settle-top-from, 0px), 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nav-settle-below {
+  from {
+    transform: translate3d(var(--nav-settle-below-from, 0px), 0, 0);
+  }
+  to {
+    transform: translate3d(calc(var(--nav-parallax) * -1), 0, 0);
   }
 }
 
@@ -83,6 +115,15 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes nav-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -100,6 +141,14 @@
 
 .nav-stack[data-direction="pop"] .nav-layer--below {
   animation: nav-pop-below var(--nav-duration) var(--nav-ease) both;
+}
+
+.nav-stack[data-direction="settle"] .nav-layer--top {
+  animation: nav-settle-top var(--nav-duration) var(--nav-ease) both;
+}
+
+.nav-stack[data-direction="settle"] .nav-layer--below {
+  animation: nav-settle-below var(--nav-duration) var(--nav-ease) both;
 }
 
 .nav-stack[data-direction="idle"] .nav-layer--top {
@@ -121,14 +170,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-stack[data-direction="push"] .nav-layer--top,
+  /* Covering layer fades; the page underneath stays put. Neither layer slides. */
+  .nav-stack[data-direction="push"] .nav-layer--top {
+    animation: nav-fade-in var(--motion-duration-sm) var(--motion-ease-standard) forwards;
+    transform: none;
+  }
+
   .nav-stack[data-direction="pop"] .nav-layer--top {
-    animation: nav-fade-in 150ms ease forwards;
+    animation: nav-fade-out var(--motion-duration-sm) var(--motion-ease-standard) forwards;
     transform: none;
   }
 
   .nav-stack[data-direction="push"] .nav-layer--below,
   .nav-stack[data-direction="pop"] .nav-layer--below {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  .nav-stack[data-direction="settle"] .nav-layer--top,
+  .nav-stack[data-direction="settle"] .nav-layer--below {
     animation: none;
     transform: none;
   }

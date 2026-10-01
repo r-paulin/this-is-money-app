@@ -3,8 +3,6 @@ import { PaymentCard } from "@/shared/components/PaymentCard"
 import { DESIGN_WIDTH } from "@/shared/components/PaymentCard/paymentCard.config"
 import type { CardType } from "../home.types"
 
-const FLY_IN_DURATION_MS = 550
-const FLY_IN_EASE = "cubic-bezier(0.32, 0.72, 0, 1)"
 const CARD_WIDTH = DESIGN_WIDTH
 const CARD_HEIGHT = 218
 const START_SCALE = 200 / CARD_WIDTH
@@ -61,23 +59,28 @@ export function CardReplaceFlyIn({
     const endLeft = targetRect.left + targetRect.width / 2 - endWidth / 2
     const endTop = targetRect.top + targetRect.height / 2 - endHeight / 2
 
-    overlay.style.setProperty("--card-replace-duration", `${FLY_IN_DURATION_MS}ms`)
-    overlay.style.setProperty("--card-replace-ease", FLY_IN_EASE)
-    overlay.style.left = `${startLeft}px`
-    overlay.style.top = `${startTop}px`
+    const smoothMs =
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--motion-spring-smooth-duration",
+        ),
+      ) || 490
+
+    overlay.style.left = `${endLeft}px`
+    overlay.style.top = `${endTop}px`
     overlay.style.width = `${CARD_WIDTH}px`
     overlay.style.height = `${CARD_HEIGHT}px`
-    overlay.style.transform = `scale(${START_SCALE})`
     overlay.style.transformOrigin = "top left"
+    overlay.style.transition = "none"
+    overlay.style.transform = `translate(${startLeft - endLeft}px, ${startTop - endTop}px) scale(${START_SCALE})`
     overlay.style.opacity = "1"
 
     const frame = window.requestAnimationFrame(() => {
-      overlay.style.left = `${endLeft}px`
-      overlay.style.top = `${endTop}px`
+      overlay.style.transition = ""
       overlay.style.transform = `scale(${endScale})`
     })
 
-    const timer = window.setTimeout(finish, FLY_IN_DURATION_MS)
+    const timer = window.setTimeout(finish, smoothMs)
 
     return () => {
       window.cancelAnimationFrame(frame)

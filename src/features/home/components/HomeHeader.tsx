@@ -1,6 +1,6 @@
 import { Button, GhostButton, Typography } from "@bolteu/kalep-react"
 import ArrowCircleRight from "@bolteu/kalep-react-icons/dist/ArrowCircleRight"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { formatHomeBalanceEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
@@ -28,16 +28,21 @@ export function HomeHeader({
     [balanceCents],
   )
 
-  const { groupRef, value, previousValue, playing, setDigitsStatic } = useNumberPopIn(
+  const { groupRef, value, previousValue, playing, setDigits, setDigitsStatic } = useNumberPopIn(
     formattedBalance,
-    balanceState !== "loading",
+    false,
   )
+  const balanceReadyRef = useRef(false)
 
   useEffect(() => {
-    if (balanceState === "ready") {
+    if (balanceState !== "ready") return
+    if (!balanceReadyRef.current) {
+      balanceReadyRef.current = true
       setDigitsStatic(formattedBalance)
+      return
     }
-  }, [balanceState, formattedBalance, setDigitsStatic])
+    setDigits(formattedBalance)
+  }, [balanceState, formattedBalance, setDigits, setDigitsStatic])
 
   const loading = balanceState === "loading" || balanceState === "failed"
   const sendDisabled = isSendMoneyDisabled(

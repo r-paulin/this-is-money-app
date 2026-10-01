@@ -12,20 +12,7 @@ interface AnimatedBalanceAmountProps {
   refreshTrigger?: number
 }
 
-function prefersReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches
-}
-
-function animateToAmount(
-  nextAmount: string,
-  setDigits: (value: string) => void,
-  setDigitsStatic: (value: string) => void,
-) {
-  if (prefersReducedMotion()) {
-    setDigitsStatic(nextAmount)
-    return
-  }
-
+function animateToAmount(nextAmount: string, setDigits: (value: string) => void) {
   setDigits(nextAmount)
 }
 
@@ -35,7 +22,7 @@ export function AnimatedBalanceAmount({
   changeAfterMs = 800,
   refreshTrigger = 0,
 }: AnimatedBalanceAmountProps) {
-  const { groupRef, value, previousValue, playing, setDigits, setDigitsStatic } =
+  const { groupRef, value, previousValue, playing, setDigits } =
     useNumberPopIn(initialAmount, false)
   const valueRef = useRef(value)
   const hasAutoUpdatedRef = useRef(false)
@@ -45,13 +32,11 @@ export function AnimatedBalanceAmount({
   const targetAmountRef = useRef(targetAmount)
   const changeAfterMsRef = useRef(changeAfterMs)
   const setDigitsRef = useRef(setDigits)
-  const setDigitsStaticRef = useRef(setDigitsStatic)
 
   initialAmountRef.current = initialAmount
   targetAmountRef.current = targetAmount
   changeAfterMsRef.current = changeAfterMs
   setDigitsRef.current = setDigits
-  setDigitsStaticRef.current = setDigitsStatic
 
   useEffect(() => {
     valueRef.current = value
@@ -65,11 +50,7 @@ export function AnimatedBalanceAmount({
     mountTimerRef.current = window.setTimeout(() => {
       mountTimerRef.current = null
       hasAutoUpdatedRef.current = true
-      animateToAmount(
-        targetAmountRef.current,
-        setDigitsRef.current,
-        setDigitsStaticRef.current,
-      )
+      animateToAmount(targetAmountRef.current, setDigitsRef.current)
     }, changeAfterMsRef.current)
   }, [])
 
@@ -101,11 +82,7 @@ export function AnimatedBalanceAmount({
 
     const runRefreshCycle = () => {
       if (valueRef.current !== initialAmountRef.current) {
-        animateToAmount(
-          initialAmountRef.current,
-          setDigitsRef.current,
-          setDigitsStaticRef.current,
-        )
+        animateToAmount(initialAmountRef.current, setDigitsRef.current)
       }
 
       hasAutoUpdatedRef.current = false

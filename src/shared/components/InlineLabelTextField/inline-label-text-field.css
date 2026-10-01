@@ -20,8 +20,8 @@
   transform: translateY(-50%) scale(1.143);
   transform-origin: left center;
   transition:
-    top 0.2s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    top var(--motion-duration-sm) var(--motion-ease-standard),
+    transform var(--motion-duration-sm) var(--motion-ease-standard);
 }
 
 .inline-label-text-field__content[data-floated="true"] .inline-label-text-field__label {
@@ -35,7 +35,7 @@
   inset-inline: 0;
   bottom: 0;
   opacity: 0;
-  transition: opacity 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
 }
 
 .inline-label-text-field__content[data-floated="true"] .inline-label-text-field__input {
@@ -48,8 +48,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inline-label-text-field__label,
-  .inline-label-text-field__input {
+  .inline-label-text-field__label {
     transition: none;
+  }
+
+  .inline-label-text-field__input {
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
   }
 }

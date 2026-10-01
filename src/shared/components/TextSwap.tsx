@@ -8,41 +8,36 @@ import {
 // Transitions.dev — Text states swap (React, self-contained)
 // https://transitions.dev
 
-const TEXT_SWAP_DURATION_MS = 150
-
-const __TEXT_SWAP_STYLES = `
-:root {
-  --text-swap-dur: 150ms;
-  --text-swap-translate-y: 4px;
-  --text-swap-blur: 2px;
-  --text-swap-ease: ease-in-out;
+function textSwapDurationMs(): number {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(
+    "--motion-text-swap-duration",
+  )
+  const value = Number.parseFloat(raw)
+  return Number.isFinite(value) ? value : 0
 }
 
+const __TEXT_SWAP_STYLES = `
 .t-text-swap {
   display: inline-block;
   transform: translateY(0);
   filter: blur(0);
   opacity: 1;
   transition:
-    transform var(--text-swap-dur) var(--text-swap-ease),
-    filter var(--text-swap-dur) var(--text-swap-ease),
-    opacity var(--text-swap-dur) var(--text-swap-ease);
+    transform var(--motion-text-swap-duration) ease-in-out,
+    filter var(--motion-text-swap-duration) ease-in-out,
+    opacity var(--motion-text-swap-duration) ease-in-out;
   will-change: transform, filter, opacity;
 }
 .t-text-swap.is-exit {
-  transform: translateY(calc(var(--text-swap-translate-y) * -1));
-  filter: blur(var(--text-swap-blur));
+  transform: translateY(calc(var(--motion-offset-xs) * -1));
+  filter: blur(var(--motion-blur-xs));
   opacity: 0;
 }
 .t-text-swap.is-enter-start {
-  transform: translateY(var(--text-swap-translate-y));
-  filter: blur(var(--text-swap-blur));
+  transform: translateY(var(--motion-offset-xs));
+  filter: blur(var(--motion-blur-xs));
   opacity: 0;
   transition: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-text-swap { transition: none !important; }
 }
 `
 
@@ -106,7 +101,7 @@ function useTextSwap(value: string) {
         void el.offsetHeight
         el.classList.remove("is-enter-start")
       })
-    }, TEXT_SWAP_DURATION_MS)
+    }, textSwapDurationMs())
 
     return () => {
       if (timerRef.current !== null) {

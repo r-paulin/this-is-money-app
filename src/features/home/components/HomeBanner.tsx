@@ -16,9 +16,8 @@ export interface HomeBannerProps {
 
 type MediaPhase = "primary" | "placeholder" | "gone"
 
-/** Matches --banner-dismiss-dur; fallback if transitionend is skipped. */
+/** Matches --banner-dismiss-dur / --motion-duration-sm; fallback if transitionend is skipped. */
 const DISMISS_MS = 200
-const DISMISS_REDUCED_MS = 120
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined") return false
@@ -135,8 +134,7 @@ export function HomeBanner({ id, onDismiss, className = "" }: HomeBannerProps) {
     if (closing || dismissedRef.current) return
 
     setClosing(true)
-    const duration = prefersReducedMotion() ? DISMISS_REDUCED_MS : DISMISS_MS
-    dismissTimerRef.current = window.setTimeout(finishDismiss, duration)
+    dismissTimerRef.current = window.setTimeout(finishDismiss, DISMISS_MS)
   }
 
   const handleTransitionEnd = (event: TransitionEvent<HTMLElement>) => {

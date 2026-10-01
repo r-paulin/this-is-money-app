@@ -1,7 +1,7 @@
-/* iOS crossfade — 200ms cubic-bezier(0.32, 0.72, 0, 1) (Figma 6474:47636) */
+/* Lock overlay crossfade (Figma 6474:47636) */
 .payment-card-lock-overlay {
   opacity: 0;
-  transition: opacity 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
 }
 
 .payment-card-lock-overlay.is-visible {
@@ -10,6 +10,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .payment-card-lock-overlay {
-    transition: none;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
   }
 }

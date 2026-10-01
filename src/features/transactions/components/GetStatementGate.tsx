@@ -14,8 +14,8 @@ import { GetStatementReadyContent } from "./GetStatementReadyContent"
 
 const SKELETON_MS = 800
 const BUTTON_LOAD_MS = 1000
-/** Start ready entrance after creating has begun fading (not instantly under the overlay). */
-const READY_ENTRANCE_DELAY_MS = 360
+/** Start the ready illustration as the creating screen begins to leave. */
+const READY_ENTRANCE_DELAY_MS = 0
 
 type GetStatementStep = "form" | "creating" | "ready"
 

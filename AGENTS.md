@@ -9,6 +9,7 @@ Before implementing or changing UI:
 3. Use **app tokens** from `src/shared/styles/tokens.css` for MCC colors, list spacing, `rounded-compact`
 4. **Form text fields** use `InlineLabelTextField` (label inside the field) — see `specs/patterns/text-field.md`. Do not use Kalep `TextField` with an above-label layout for forms; search bars stay `type="search"`.
 5. Never add raw `#hex` or arbitrary Tailwind like `bg-[#…]` / `rounded-[8px]` in `.tsx` — put new values in `tokens.css` and extend `tailwind.config.ts`
+6. **Motion** uses only the `--motion-*` tokens in `tokens.css` — see `.cursor/rules/motion.mdc`. No raw durations or extra cubic-beziers. `linear` is only for real-time motion and the damped shake.
 
 ```bash
 npm run token-audit

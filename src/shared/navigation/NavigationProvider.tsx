@@ -71,6 +71,17 @@ export function NavigationProvider({
     setIsTransitioning(true)
   }, [isDragging, isNavigationLocked, isTransitioning, stack.length])
 
+  const commitDragPop = useCallback(() => {
+    if (isNavigationLocked) return
+    if (stack.length <= 1 || isTransitioning) return
+
+    pendingPopRef.current = true
+    setIsDragging(false)
+    setDragOffset(0)
+    setDirection("pop")
+    setIsTransitioning(true)
+  }, [isNavigationLocked, isTransitioning, stack.length])
+
   const popTo = useCallback(
     (key: string) => {
       if (isNavigationLocked) return
@@ -129,6 +140,7 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      commitDragPop,
       popTo,
       popToRoot,
       runAfterTransition,
@@ -150,6 +162,7 @@ export function NavigationProvider({
       stack,
       push,
       pop,
+      commitDragPop,
       popTo,
       popToRoot,
       runAfterTransition,
@@ -166,7 +179,7 @@ export function NavigationProvider({
 
   return (
     <NavigationContext.Provider value={value}>
-      <div className="relative h-full min-h-dvh overflow-hidden">
+      <div className="relative h-[var(--app-h)] min-h-[var(--app-h)] overflow-hidden">
         <AppNavbar />
         <NavigationStack />
         {children}

@@ -1,4 +1,4 @@
-/* iOS-style Individual / Business tab switching — uses --nav-duration / --nav-ease from navigation.css */
+/* Recipient type switch: content cross-fades. No horizontal slide. */
 
 .recipient-type-tabs {
   position: relative;
@@ -27,28 +27,16 @@
 }
 
 .recipient-type-form-panel__track {
-  display: flex;
-  width: 200%;
-  transition: transform var(--nav-duration) var(--nav-ease);
-  will-change: transform;
-}
-
-.recipient-type-form-panel__track--business {
-  transform: translateX(-50%);
+  display: grid;
 }
 
 .recipient-type-form-panel__pane {
-  width: 50%;
-  flex: 0 0 50%;
+  grid-area: 1 / 1;
   min-width: 0;
+  transition: opacity var(--motion-duration-xs) var(--motion-ease-standard);
 }
 
 .recipient-type-form-panel__pane[aria-hidden="true"] {
+  opacity: 0;
   pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .recipient-type-form-panel__track {
-    transition: none;
-  }
 }

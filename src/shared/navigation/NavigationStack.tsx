@@ -7,11 +7,20 @@ import {
 import { isNavLayerAnimationEvent } from "./navAnimation"
 import {
   getInteractiveTransforms,
+  NAV_PARALLAX_RATIO,
   useEdgeSwipeBack,
 } from "./useEdgeSwipeBack"
 import { useNavigationStack } from "./useNavigationStack"
 
 type LayerRole = "top" | "below" | "cached"
+
+/** Matches --motion-duration-sm. The fade does not end the stack transition. */
+const REDUCED_MOTION_NAV_MS = 200
+
+function parallaxOffset(offsetPx: number, width: number): number {
+  const progress = width > 0 ? offsetPx / width : 0
+  return -width * NAV_PARALLAX_RATIO + progress * width * NAV_PARALLAX_RATIO
+}
 
 function layerClassName(role: LayerRole): string {
   switch (role) {
@@ -32,7 +41,7 @@ export function NavigationStack() {
     completeTransition,
     reducedMotion,
     canPop,
-    pop,
+    commitDragPop,
     dragOffset,
     setDragOffset,
     isDragging,
@@ -41,10 +50,20 @@ export function NavigationStack() {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = useState(0)
+  const [settling, setSettling] = useState(false)
 
   const topIndex = stack.length - 1
   const belowIndex = stack.length - 2
-  const showBelow = isTransitioning || isDragging
+  const showBelow = isTransitioning || isDragging || settling
+
+  const clearNavOrigin = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    el.style.removeProperty("--nav-pop-top-from")
+    el.style.removeProperty("--nav-pop-below-from")
+    el.style.removeProperty("--nav-settle-top-from")
+    el.style.removeProperty("--nav-settle-below-from")
+  }, [])
 
   useLayoutEffect(() => {
     const container = containerRef.current
@@ -65,33 +84,66 @@ export function NavigationStack() {
 
     const timer = window.setTimeout(() => {
       completeTransition()
-    }, 150)
+    }, REDUCED_MOTION_NAV_MS)
 
     return () => window.clearTimeout(timer)
   }, [completeTransition, direction, isTransitioning, reducedMotion, stack.length])
 
   const handleAnimationEnd = useCallback(
     (event: React.AnimationEvent<HTMLElement>) => {
+      if (event.target !== event.currentTarget) return
+      if (event.animationName === "nav-settle-top") {
+        setSettling(false)
+        clearNavOrigin()
+        return
+      }
       if (reducedMotion) return
       if (!isTransitioning || isDragging) return
       if (event.currentTarget.dataset.layerRole !== "top") return
       if (!isNavLayerAnimationEvent(event)) return
 
+      clearNavOrigin()
       completeTransition()
     },
-    [completeTransition, isDragging, isTransitioning, reducedMotion],
+    [clearNavOrigin, completeTransition, isDragging, isTransitioning, reducedMotion],
   )
 
-  const handleCommitPop = useCallback(() => {
-    setIsDragging(false)
-    setDragOffset(0)
-    pop()
-  }, [pop, setDragOffset, setIsDragging])
+  const handleCommitPop = useCallback(
+    (offsetPx: number) => {
+      const el = containerRef.current
+      const width = el?.getBoundingClientRect().width ?? 0
+      if (el && width > 0 && offsetPx > 0) {
+        el.style.setProperty("--nav-pop-top-from", `${offsetPx}px`)
+        el.style.setProperty("--nav-pop-below-from", `${parallaxOffset(offsetPx, width)}px`)
+      }
+      commitDragPop()
+    },
+    [commitDragPop],
+  )
 
-  const { edgeSwipeHandlers, resetDrag } = useEdgeSwipeBack({
-    enabled: canPop && !isTransitioning,
+  const handleCancelDrag = useCallback(
+    (offsetPx: number) => {
+      const el = containerRef.current
+      const width = el?.getBoundingClientRect().width ?? 0
+      if (reducedMotion || !el || width <= 0 || offsetPx <= 0) {
+        setIsDragging(false)
+        setDragOffset(0)
+        return
+      }
+      el.style.setProperty("--nav-settle-top-from", `${offsetPx}px`)
+      el.style.setProperty("--nav-settle-below-from", `${parallaxOffset(offsetPx, width)}px`)
+      setSettling(true)
+      setIsDragging(false)
+      setDragOffset(0)
+    },
+    [reducedMotion, setDragOffset, setIsDragging],
+  )
+
+  const { edgeSwipeHandlers } = useEdgeSwipeBack({
+    enabled: canPop && !isTransitioning && !settling,
     containerRef,
     onCommitPop: handleCommitPop,
+    onCancelDrag: handleCancelDrag,
     onDragStart: () => setIsDragging(true),
     onDragEnd: () => setIsDragging(false),
     onDragMove: setDragOffset,
@@ -99,9 +151,11 @@ export function NavigationStack() {
 
   const stackDirection = isDragging
     ? "drag"
-    : isTransitioning && direction
-      ? direction
-      : "idle"
+    : settling
+      ? "settle"
+      : isTransitioning && direction
+        ? direction
+        : "idle"
 
   const interactiveTransforms =
     isDragging && containerWidth > 0
@@ -122,15 +176,6 @@ export function NavigationStack() {
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     edgeSwipeHandlers.onPointerUp(event)
-
-    if (isDragging && dragOffset > 0) {
-      const width = containerRef.current?.getBoundingClientRect().width ?? 0
-      const progress = width > 0 ? dragOffset / width : 0
-
-      if (progress < 0.5) {
-        resetDrag()
-      }
-    }
   }
 
   const getLayerRole = (index: number): LayerRole => {

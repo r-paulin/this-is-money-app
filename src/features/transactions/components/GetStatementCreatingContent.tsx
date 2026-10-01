@@ -4,10 +4,10 @@ import "@/shared/styles/text-stagger.css"
 import "./statement-creating.css"
 
 const CREATING_HOLD_MS = 8000
-/** Soft text fade before the screen starts leaving. */
-const TEXT_HIDE_MS = 280
-/** Must match statement-creating.css exit duration. */
-const SCREEN_EXIT_MS = 620
+/** Matches --motion-duration-sm. Text fades before the screen leaves. */
+const TEXT_HIDE_MS = 200
+/** Matches --motion-duration-lg on the creating-screen exit. */
+const SCREEN_EXIT_MS = 400
 
 function prefersReducedMotion(): boolean {
   return (

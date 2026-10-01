@@ -14,6 +14,10 @@ Full rules: `.cursor/rules/ios-navigation.mdc`
 
 Include params in `key`: e.g. `card-controls:virtual`, `send-money:recipient-select`
 
+## Transition
+
+Push uses `--motion-nav-enter` (500ms, iOS ease). Pop uses `--motion-nav-exit` (400ms, iOS ease). The screen behind parallax is 30%. Reduced motion cross-fades at `--motion-duration-sm` with `--motion-ease-standard` and does not slide.
+
 ## Do not
 
 - Swap screens with `useState` + conditional render for hierarchical flows
