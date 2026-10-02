@@ -48,7 +48,7 @@ export function HomeScreen({
   }, [])
 
   return (
-    <PullToRefresh onRefresh={handleRefresh} className="!bg-layer-floor-0-grouped">
+    <PullToRefresh onRefresh={handleRefresh} className="!bg-layer-floor-1">
       <div className="flex flex-col bg-layer-floor-0-grouped">
         <HomeHeader
           balanceCents={balanceCents}

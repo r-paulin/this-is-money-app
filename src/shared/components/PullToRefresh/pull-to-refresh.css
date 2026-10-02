@@ -5,6 +5,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Scrollport covers the navbar so backdrop-filter can blur content, as on Activity. */
+  padding-top: 0;
 }
 
 .pull-to-refresh {
@@ -18,7 +20,8 @@
 
 .pull-to-refresh__pill-host {
   position: sticky;
-  top: 12px;
+  top: calc(var(--app-navbar-offset) + 12px);
+  margin-top: var(--app-navbar-offset);
   z-index: 20;
   display: flex;
   justify-content: center;
