@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { describe, it } from "node:test"
 import {
   bannerSliderIsSingle,
+  bannerSnapIndex,
   filterEligibleBanners,
   getActivityBodyState,
   getPhysicalCardStatusLine,
@@ -28,6 +29,13 @@ describe("homeScreenLogic", () => {
     assert.equal(bannerSliderIsSingle(0), true)
     assert.equal(bannerSliderIsSingle(1), true)
     assert.equal(bannerSliderIsSingle(2), false)
+  })
+
+  it("snaps the banner slider one page when the drag passes a fifth of a slide", () => {
+    assert.equal(bannerSnapIndex(0, -20, 100, 3), 1)
+    assert.equal(bannerSnapIndex(0, 20, 100, 3), 0)
+    assert.equal(bannerSnapIndex(1, 20, 100, 3), 0)
+    assert.equal(bannerSnapIndex(1, -10, 100, 3), 1)
   })
 
   it("hides GetPhysicalCard banner when physical is not ordered", () => {

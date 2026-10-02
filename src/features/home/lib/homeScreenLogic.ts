@@ -18,6 +18,22 @@ export function bannerSliderIsSingle(visibleCount: number): boolean {
   return visibleCount <= 1
 }
 
+/** Next page after a horizontal drag. Negative dx moves toward the next banner. */
+export function bannerSnapIndex(
+  index: number,
+  dx: number,
+  step: number,
+  count: number,
+): number {
+  const last = Math.max(count - 1, 0)
+  if (step <= 0) return Math.min(Math.max(index, 0), last)
+  const threshold = step * 0.2
+  let next = index
+  if (dx <= -threshold) next += 1
+  else if (dx >= threshold) next -= 1
+  return Math.min(Math.max(next, 0), last)
+}
+
 export function shouldShowPhysicalOffer(cards: HomeCardRow[]): boolean {
   return !cards.some((card) => card.kind === "physical")
 }

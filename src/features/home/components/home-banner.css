@@ -114,24 +114,21 @@
   display: flex;
   gap: var(--dimension-300);
   align-items: stretch;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  touch-action: pan-y;
+  transform: translateX(var(--banner-x, 0px));
+  transition: transform var(--motion-spring-smooth-duration) var(--motion-spring-smooth);
+}
+
+.banner-slider__track.is-dragging {
+  transition: none;
 }
 
 /* dimension/600 start/end gutters (Figma multi section inset); padding so flex gap doesn't inflate them */
 .banner-slider__track--multi {
   padding-inline: var(--dimension-600);
-  scroll-padding-inline: var(--dimension-600);
-}
-
-.banner-slider__track::-webkit-scrollbar {
-  display: none;
 }
 
 .banner-slider__slide {
-  scroll-snap-align: start;
   display: flex;
 }
 
@@ -157,7 +154,8 @@
   gap: var(--dimension-100);
   align-items: center;
   padding-bottom: 8px;
-  transform: translateX(-50%);
+  /* Active pill grows 16px to the right; shift half of that so the row stays centered. */
+  transform: translateX(calc(-50% - (24px - 8px) / 2));
   pointer-events: none;
 }
 
@@ -166,11 +164,65 @@
   width: 8px;
   height: 8px;
   border-radius: var(--dimension-100);
-  background-color: var(--color-bg-neutral-secondary, rgba(0, 45, 30, 0.07));
+  background-color: var(--color-layer-floor-0-grouped);
+  background-image: linear-gradient(
+    var(--color-bg-neutral-secondary),
+    var(--color-bg-neutral-secondary)
+  );
+  transform-origin: left center;
+  transform: translateX(calc(var(--dot-shift, 0) * (24px - 8px)));
+  transition:
+    transform var(--motion-spring-smooth-duration) var(--motion-spring-smooth),
+    background-color var(--motion-duration-xs) var(--motion-ease-standard);
 }
 
-.banner-slider__dot--active {
+/* 24×8 with a 4px radius. Sits above the dots so it can slide over the next one. */
+.banner-slider__indicator {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
   width: 24px;
   height: 8px;
-  background-color: var(--color-bg-active-neutral-secondary, rgba(0, 31, 24, 0.13));
+  border-radius: var(--dimension-100);
+  background-color: var(--color-layer-floor-0-grouped);
+  background-image: linear-gradient(
+    var(--color-bg-active-neutral-secondary),
+    var(--color-bg-active-neutral-secondary)
+  );
+  transform: translateX(calc(var(--dot-index, 0) * (8px + var(--dimension-100))));
+  transition: transform var(--motion-spring-smooth-duration) var(--motion-spring-smooth);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-slider__track {
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+
+  .banner-slider__track.is-dragging {
+    transition: none;
+  }
+
+  .banner-slider__dots {
+    transform: translateX(-50%);
+  }
+
+  .banner-slider__indicator {
+    display: none;
+  }
+
+  .banner-slider__dot,
+  .banner-slider__dot--active {
+    transform: none;
+    transition: background-color var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+
+  .banner-slider__dot--active {
+    width: 24px;
+    background-color: var(--color-layer-floor-0-grouped);
+    background-image: linear-gradient(
+      var(--color-bg-active-neutral-secondary),
+      var(--color-bg-active-neutral-secondary)
+    );
+  }
 }
