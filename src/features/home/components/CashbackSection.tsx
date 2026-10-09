@@ -1,13 +1,24 @@
 import { ListItemLayout, Typography } from "@bolteu/kalep-react"
 import { GroupedSection } from "@/shared/components/GroupedSection"
 import { SectionHeader } from "@/shared/components/SectionHeader"
+import { useNavigationStack } from "@/shared/navigation"
 import carWithCoins from "../assets/illustration-car-with-coins.png"
+import { CashbackScreen } from "./CashbackScreen"
 
 /** Figma end-slot leaf — 800×592 source, displayed at design scale. */
 const ILLUSTRATION_WIDTH = 120
 const ILLUSTRATION_HEIGHT = 89
 
 export function CashbackSection() {
+  const { push } = useNavigationStack()
+
+  const openCashback = () => {
+    push({
+      key: "cashback",
+      render: () => <CashbackScreen />,
+    })
+  }
+
   return (
     <GroupedSection
       paddingTop={8}
@@ -22,7 +33,7 @@ export function CashbackSection() {
         separator={false}
         paddingStart={6}
         paddingEnd={6}
-        onClick={() => console.info("[stub] View cashback")}
+        onClick={openCashback}
         aria-label="Earn cashback when you spend. View cashback"
         primary={
           <div className="flex flex-col gap-3">

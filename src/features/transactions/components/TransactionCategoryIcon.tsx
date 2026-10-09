@@ -9,7 +9,6 @@ import ArrowRightUp from "@bolteu/kalep-react-icons/dist/ArrowRightUp"
 import Cash from "@bolteu/kalep-react-icons/dist/Cash"
 import Decline from "@bolteu/kalep-react-icons/dist/Decline"
 import Flag from "@bolteu/kalep-react-icons/dist/Flag"
-import Gift from "@bolteu/kalep-react-icons/dist/Gift"
 import Food from "@bolteu/kalep-react-icons/dist/Food"
 import LogoBolt from "@bolteu/kalep-react-icons/dist/LogoBolt"
 import Medical from "@bolteu/kalep-react-icons/dist/Medical"
@@ -21,6 +20,7 @@ import Train from "@bolteu/kalep-react-icons/dist/Train"
 import badgeDeclined from "../assets/badge-declined.svg"
 import badgeInflow from "../assets/badge-inflow.svg"
 import badgeOutflow from "../assets/badge-outflow.svg"
+import iconCashbackColored from "../assets/icon-cashback-colored.svg"
 import iconElectric from "../assets/icon-electric.svg"
 import iconHouseUser from "../assets/icon-house-user.svg"
 import iconParking from "../assets/icon-parking.svg"
@@ -64,7 +64,8 @@ const THEME_ICONS: Record<MccThemeId, ThemeIcon> = {
   fuel: { type: "kalep", Icon: Refuel },
   auto: { type: "asset", src: iconRepair },
   other: { type: "kalep", Icon: Card },
-  cashback: { type: "kalep", Icon: Gift },
+  /** Figma cashback_colored 9526:168300 */
+  cashback: { type: "asset", src: iconCashbackColored },
   decline: { type: "kalep", Icon: Decline },
 }
 

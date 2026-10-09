@@ -83,7 +83,8 @@
   --mcc-money: #2a9c64;
   --mcc-utilities: #455a64;
   --mcc-other: #455a64;
-  --mcc-cashback: #f09800;
+  /* Figma bg/warning-primary — not bg-active/warning-primary (#f09800). */
+  --mcc-cashback: #ffb200;
   --mcc-government: #3f2d0f;
   --mcc-fuel: #6d4c41;
   --mcc-decline: #ce0019;
