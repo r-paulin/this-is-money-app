@@ -11,17 +11,17 @@ import {
   HOME_FETCH_TIMEOUT_MS,
   MOCK_BALANCE_CENTS,
   MOCK_BANNER_IDS,
-  MOCK_NOTIFICATION,
   buildMockHomeCards,
   getMockTransactionCount,
 } from "./data/homeMockData"
 import { HomeScreenContext } from "./homeScreenContext"
+import { getLockedCardNotification } from "./lib/homeScreenLogic"
 import type {
   ActivityFetchState,
   BalanceFetchState,
+  CardType,
   HomeBannerId,
   HomeCardRow,
-  HomeNotification,
 } from "./home.types"
 
 export interface HomeScreenProviderProps {
@@ -40,7 +40,6 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
   )
   const [fetchGeneration, setFetchGeneration] = useState(0)
   const [asOfMs, setAsOfMs] = useState(0)
-  const notification: HomeNotification | null = MOCK_NOTIFICATION
   const timeoutRef = useRef<number | null>(null)
 
   const clearFetchTimeout = useCallback(() => {
@@ -83,6 +82,14 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
     setDismissedBannerIds((current) => new Set([...current, id]))
   }, [])
 
+  const setCardLocked = useCallback((cardType: CardType, locked: boolean) => {
+    setCards((current) =>
+      current.map((card) =>
+        card.kind === cardType ? { ...card, locked } : card,
+      ),
+    )
+  }, [])
+
   const refresh = useCallback(async () => {
     setBalanceState("loading")
     setActivityState("loading")
@@ -106,6 +113,8 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
     [dismissedBannerIds],
   )
 
+  const notification = useMemo(() => getLockedCardNotification(cards), [cards])
+
   const value = useMemo(
     () => ({
       balanceCents,
@@ -121,6 +130,7 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
       asOfMs,
       refresh,
       retryActivity,
+      setCardLocked,
     }),
     [
       balanceCents,
@@ -136,6 +146,7 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
       asOfMs,
       refresh,
       retryActivity,
+      setCardLocked,
     ],
   )
 

@@ -5,6 +5,8 @@ import {
   bannerSnapIndex,
   filterEligibleBanners,
   getActivityBodyState,
+  getCardStatusLine,
+  getLockedCardNotification,
   getPhysicalCardStatusLine,
   isSendMoneyDisabled,
   shouldShowPhysicalOffer,
@@ -104,5 +106,48 @@ describe("homeScreenLogic", () => {
       getPhysicalCardStatusLine({ kind: "physical", color: "black", blocked: true }, 0),
       "Blocked",
     )
+  })
+
+  it("shows Locked status for a locked virtual card", () => {
+    assert.equal(
+      getCardStatusLine(
+        { kind: "virtual", color: "green", lastFour: "4231", locked: true },
+        0,
+      ),
+      "Locked",
+    )
+    assert.equal(
+      getCardStatusLine({ kind: "virtual", color: "green", lastFour: "4231" }, 0),
+      undefined,
+    )
+  })
+
+  it("builds a locked-card notification preferring virtual", () => {
+    assert.equal(getLockedCardNotification([]), null)
+    assert.equal(
+      getLockedCardNotification([{ kind: "virtual", color: "green", lastFour: "4231" }]),
+      null,
+    )
+
+    const notification = getLockedCardNotification([
+      {
+        kind: "physical",
+        color: "black",
+        lastFour: "3131",
+        locked: true,
+      },
+      {
+        kind: "virtual",
+        color: "green",
+        lastFour: "4231",
+        locked: true,
+      },
+    ])
+    assert.ok(notification)
+    assert.equal(notification.tone, "warning")
+    assert.equal(notification.accent, "Your card ·· 4231 is locked.")
+    assert.equal(notification.body, " Unlock it to start making payments again")
+    assert.equal(notification.actionLabel, "Unlock the card")
+    assert.equal(notification.cardType, "virtual")
   })
 })

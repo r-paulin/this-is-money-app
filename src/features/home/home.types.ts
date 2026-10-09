@@ -23,10 +23,14 @@ export type HomeBannerId =
 export type HomeNotificationTone = "positive" | "warning" | "error"
 
 export interface HomeNotification {
-  message: string
   tone: HomeNotificationTone
-  /** When set, the notice is tappable and navigates via stub. */
-  destination?: string
+  /** Semibold lead (e.g. "Your card ·· 4231 is locked.") */
+  accent: string
+  /** Regular body after the accent */
+  body: string
+  actionLabel: string
+  /** Card Controls destination for Unlock action */
+  cardType: CardType
 }
 
 export type CardThumbnailColor = "green" | "black"

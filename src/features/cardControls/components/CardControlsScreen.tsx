@@ -27,6 +27,9 @@ import { ReplaceCardGate } from "./ReplaceCardGate"
 export interface CardControlsScreenProps {
   cardType: CardType
   lastFour?: string
+  /** Home / provider lock flag — seeds LockPhase and syncs back after transitions. */
+  initialLocked?: boolean
+  onLockedChange?: (locked: boolean) => void
 }
 
 function getLockIconSwapState(phase: LockPhase): "a" | "b" {
@@ -45,10 +48,14 @@ function isRowDisabled(phase: LockPhase, disabledWhenLocked?: boolean): boolean 
 export function CardControlsScreen({
   cardType,
   lastFour = DEFAULT_CARD_LAST_FOUR,
+  initialLocked = false,
+  onLockedChange,
 }: CardControlsScreenProps) {
   const { push } = useNavigationStack()
   const snackbar = useSnackbar()
-  const [lockPhase, setLockPhase] = useState<LockPhase>("unlocked")
+  const [lockPhase, setLockPhase] = useState<LockPhase>(
+    initialLocked ? "locked" : "unlocked",
+  )
 
   useEffect(() => {
     if (lockPhase !== "locking" && lockPhase !== "unlocking") return
@@ -61,6 +68,11 @@ export function CardControlsScreen({
 
     return () => window.clearTimeout(timer)
   }, [lockPhase])
+
+  useEffect(() => {
+    if (lockPhase === "locked") onLockedChange?.(true)
+    if (lockPhase === "unlocked") onLockedChange?.(false)
+  }, [lockPhase, onLockedChange])
 
   const handleLockToggle = () => {
     if (lockPhase === "locking" || lockPhase === "unlocking") return

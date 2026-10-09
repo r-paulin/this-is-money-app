@@ -14,8 +14,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--dimension-400);
-  /* Figma (€) Header: pt dimension/600, pb dimension/300 */
-  padding: var(--dimension-600) 0 var(--dimension-300) 0;
+  /* Figma (€) Header with notification: pt 300, pb 600 */
+  padding: var(--dimension-300) 0 var(--dimension-600) 0;
 }
 
 .home-header__inner {
@@ -79,17 +79,64 @@
 
 .home-header__notification-wrap {
   width: 100%;
-  padding: 0 var(--dimension-600);
+  padding: 0 var(--dimension-400);
   box-sizing: border-box;
 }
 
 .home-header__notification {
-  border-radius: var(--dimension-300);
-  padding: var(--dimension-300);
+  min-height: 48px;
+  /* Figma Inline Notification — dimension/300 (12px), not radius-compact (8px) */
+  border-radius: var(--dimension-300, 12px);
+  padding: 12px var(--dimension-400);
+  box-sizing: border-box;
+}
+
+.home-header__notification--warning {
+  background: var(--color-bg-warning-secondary, rgba(255, 190, 0, 0.23));
 }
 
 .home-header__notification--positive {
   background-color: var(--color-bg-action-secondary);
+}
+
+.home-header__notification-row {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--dimension-400);
+}
+
+.home-header__notification-icon {
+  margin-top: 2px;
+}
+
+.home-header__notification-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.home-header__notification-body {
+  width: 100%;
+  padding: var(--dimension-50, 2px) 0;
+  font-feature-settings:
+    "cv03" on,
+    "cv04" on,
+    "lnum" on,
+    "pnum" on;
+}
+
+.home-header__notification-action {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: var(--dimension-50, 2px) 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
 }
 
 .home-header__separator {

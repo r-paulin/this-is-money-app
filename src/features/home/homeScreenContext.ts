@@ -2,6 +2,7 @@ import { createContext } from "react"
 import type {
   ActivityFetchState,
   BalanceFetchState,
+  CardType,
   HomeBannerId,
   HomeCardRow,
   HomeNotification,
@@ -21,6 +22,7 @@ export interface HomeScreenContextValue {
   asOfMs: number
   refresh: () => Promise<void>
   retryActivity: () => void
+  setCardLocked: (cardType: CardType, locked: boolean) => void
 }
 
 export const HomeScreenContext = createContext<HomeScreenContextValue | null>(null)

@@ -1,6 +1,39 @@
-import type { HomeBannerId, HomeCardRow } from "../home.types"
+import type {
+  CardType,
+  HomeBannerId,
+  HomeCardRow,
+  HomeNotification,
+} from "../home.types"
 
 const MS_PER_DAY = 86_400_000
+
+function isCardUnavailable(card: HomeCardRow): boolean {
+  return Boolean(card.locked || card.blocked || card.lost || card.stolen)
+}
+
+/** Prefer virtual when both kinds are locked; otherwise first unavailable card. */
+export function getLockedCardNotification(
+  cards: HomeCardRow[],
+): HomeNotification | null {
+  const unavailable = cards.filter(
+    (card) =>
+      (card.kind === "virtual" || card.kind === "physical") && isCardUnavailable(card),
+  )
+  if (unavailable.length === 0) return null
+
+  const card =
+    unavailable.find((row) => row.kind === "virtual") ?? unavailable[0]!
+  const lastFour = card.lastFour ?? "••••"
+  const cardType: CardType = card.kind === "physical" ? "physical" : "virtual"
+
+  return {
+    tone: "warning",
+    accent: `Your card ·· ${lastFour} is locked.`,
+    body: " Unlock it to start making payments again",
+    actionLabel: "Unlock the card",
+    cardType,
+  }
+}
 
 export function shouldShowSeeAll(transactionCount: number): boolean {
   return transactionCount > 4
@@ -76,11 +109,19 @@ function isSameCalendarDay(a: Date, b: Date): boolean {
   )
 }
 
-export function getPhysicalCardStatusLine(
+export function getCardStatusLine(
   card: HomeCardRow,
   now: number,
 ): string | undefined {
-  if (card.kind !== "physical") return undefined
+  if (card.kind === "offer") return undefined
+
+  if (card.kind === "virtual") {
+    if (card.lost) return "Reported lost"
+    if (card.stolen) return "Reported stolen"
+    if (card.blocked) return "Blocked"
+    if (card.locked) return "Locked"
+    return undefined
+  }
 
   if (card.expired) return "Expired"
   if (card.renewing) return "Renewing · new card on its way"
@@ -117,6 +158,14 @@ export function getPhysicalCardStatusLine(
   if (phase === "overdue") return "Card hasn't arrived?"
 
   return undefined
+}
+
+/** @deprecated Use getCardStatusLine */
+export function getPhysicalCardStatusLine(
+  card: HomeCardRow,
+  now: number,
+): string | undefined {
+  return getCardStatusLine(card, now)
 }
 
 export function isPhysicalCardStatusNegative(statusLine: string | undefined): boolean {

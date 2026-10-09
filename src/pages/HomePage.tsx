@@ -3,6 +3,7 @@ import { CardControlsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
 import { HomeScreenProvider } from "@/features/home/HomeScreenProvider"
 import { WalletCardsProvider } from "@/features/home/WalletCardsProvider"
+import { useHomeScreen } from "@/features/home/useHomeScreen"
 import { useWalletCards } from "@/features/home/useWalletCards"
 import type { CardType } from "@/features/home/home.types"
 import { TransactionsGate } from "@/features/transactions"
@@ -13,18 +14,26 @@ import { NavigationProvider, useNavigationStack } from "@/shared/navigation"
 function HomeRoute() {
   const { push } = useNavigationStack()
   const { lastFourByType } = useWalletCards()
+  const { cards, setCardLocked } = useHomeScreen()
   const openTransactionDetail = useOpenTransactionDetail()
 
   const openCardControls = useCallback(
     (cardType: CardType) => {
+      const card = cards.find((row) => row.kind === cardType)
+      const initialLocked = Boolean(card?.locked)
       push({
         key: `card-controls:${cardType}`,
         render: () => (
-          <CardControlsGate cardType={cardType} lastFour={lastFourByType[cardType]} />
+          <CardControlsGate
+            cardType={cardType}
+            lastFour={lastFourByType[cardType]}
+            initialLocked={initialLocked}
+            onLockedChange={(locked) => setCardLocked(cardType, locked)}
+          />
         ),
       })
     },
-    [lastFourByType, push],
+    [cards, lastFourByType, push, setCardLocked],
   )
 
   const openTransactions = useCallback(() => {
@@ -47,6 +56,7 @@ function HomeRoute() {
       onSendMoney={openSendMoney}
       onSeeAll={openTransactions}
       onTransactionSelect={openTransactionDetail}
+      onUnlockCard={openCardControls}
     />
   )
 }

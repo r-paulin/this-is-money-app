@@ -9,9 +9,16 @@ const LOADER_MS = 800
 export interface CardControlsGateProps {
   cardType: CardType
   lastFour?: string
+  initialLocked?: boolean
+  onLockedChange?: (locked: boolean) => void
 }
 
-export function CardControlsGate({ cardType, lastFour }: CardControlsGateProps) {
+export function CardControlsGate({
+  cardType,
+  lastFour,
+  initialLocked,
+  onLockedChange,
+}: CardControlsGateProps) {
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -30,7 +37,12 @@ export function CardControlsGate({ cardType, lastFour }: CardControlsGateProps) 
       aria-label={revealed ? undefined : "Loading card controls"}
       skeleton={<CardControlsLoadingScreen />}
     >
-      <CardControlsScreen cardType={cardType} lastFour={lastFour} />
+      <CardControlsScreen
+        cardType={cardType}
+        lastFour={lastFour}
+        initialLocked={initialLocked}
+        onLockedChange={onLockedChange}
+      />
     </SkeletonReveal>
   )
 }

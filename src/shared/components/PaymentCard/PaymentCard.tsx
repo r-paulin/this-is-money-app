@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import "./payment-card.css"
 import boltLogo from "./assets/bolt-logo.svg"
 import visaBusiness from "./assets/visa-business.svg"
+import virtualCardFace from "./assets/virtual-card-face.png"
 import { PaymentCardBadge } from "./PaymentCardBadge"
-import { PaymentCardDotPattern } from "./PaymentCardPattern"
 import {
   getBadgeLabel,
   getFullBackgroundStyle,
@@ -64,35 +64,44 @@ export function PaymentCard({
       style={getFullBackgroundStyle(virtual)}
     >
       {virtual ? (
-        <PaymentCardDotPattern full={!isControls} controls={isControls} />
+        <img
+          src={virtualCardFace}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 size-full object-cover"
+        />
       ) : null}
 
       {!isControls ? <PaymentCardBadge label={label} /> : null}
 
-      <img
-        src={boltLogo}
-        alt=""
-        aria-hidden
-        className={
-          isControls
-            ? "absolute right-4 top-4 h-[29px] w-[49px] object-contain object-right-top"
-            : "absolute left-[15px] top-[15px] h-7 w-12 object-contain object-left-top"
-        }
-      />
-
-      <img
-        src={visaBusiness}
-        alt=""
-        aria-hidden
-        className={
-          isControls
-            ? "absolute bottom-4 right-4 h-[30px] w-[60px] object-contain object-right-bottom"
-            : "absolute bottom-[11px] right-[11px] h-[30px] w-[60px] object-contain object-right-bottom"
-        }
-      />
+      {/* Virtual face art already includes Bolt + Visa (Figma 8533:110437). */}
+      {!virtual ? (
+        <>
+          <img
+            src={boltLogo}
+            alt=""
+            aria-hidden
+            className={
+              isControls
+                ? "absolute left-4 top-4 h-[29px] w-[49px] object-contain object-left-top"
+                : "absolute left-[15px] top-[15px] h-7 w-12 object-contain object-left-top"
+            }
+          />
+          <img
+            src={visaBusiness}
+            alt=""
+            aria-hidden
+            className={
+              isControls
+                ? "absolute bottom-4 right-4 h-[30px] w-[60px] object-contain object-right-bottom"
+                : "absolute bottom-[11px] right-[11px] h-[30px] w-[60px] object-contain object-right-bottom"
+            }
+          />
+        </>
+      ) : null}
 
       {showLastFour ? (
-        <div className="ffeature absolute bottom-5 left-[15px] translate-y-1/2">
+        <div className="absolute bottom-5 left-[15px] translate-y-1/2">
           <Typography
             variant="body-m-compact-accent"
             as="p"

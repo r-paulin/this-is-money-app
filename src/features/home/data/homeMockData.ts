@@ -13,6 +13,7 @@ export const MOCK_BANNER_IDS: HomeBannerId[] = [
   "PhysicalCardStatus",
 ]
 
+/** @deprecated Prefer derived locked-card notification from cards. */
 export const MOCK_NOTIFICATION: HomeNotification | null = null
 
 export function buildMockHomeCards(now = Date.now()): HomeCardRow[] {
@@ -22,6 +23,7 @@ export function buildMockHomeCards(now = Date.now()): HomeCardRow[] {
       color: "green",
       lastFour: "4231",
       expiry: "10/28",
+      locked: true,
     },
     {
       kind: "physical",

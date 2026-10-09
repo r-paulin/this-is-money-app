@@ -17,9 +17,10 @@ const GRADIENT_OVERLAY_CUT =
 const GRADIENT_OVERLAY_FULL =
   "linear-gradient(0deg, #00110B26 0%, #00110B13 40%, #E1FDF106 100%)"
 
+/** Physical: solid black chrome (Figma #1c1c1c). Virtual: maze face base #0D1712. */
 const BASE_COLORS = {
-  physical: "rgb(45, 45, 45)",
-  virtual: "rgb(22, 22, 22)",
+  physical: "rgb(28, 28, 28)",
+  virtual: "rgb(13, 23, 18)",
 } as const
 
 export const DESIGN_WIDTH = 345
@@ -40,7 +41,7 @@ export type PaymentCardProps = {
   locked?: boolean
   /** When false, PAN is omitted from the card face (Card controls hub caption shows it instead). */
   showLastFour?: boolean
-  /** Controls hub uses Figma 8533:110437 layout (300×180, logo top-right, no badge). */
+  /** Controls hub uses Figma 8533:110437 layout (300×180, no badge; face art includes logos). */
   variant?: PaymentCardVariant
   className?: string
 }
@@ -52,6 +53,10 @@ export function getCutOffBackground(virtual: boolean): string {
 
 export function getFullBackgroundStyle(virtual: boolean): CSSProperties {
   const color = virtual ? BASE_COLORS.virtual : BASE_COLORS.physical
+  // Virtual face art provides the fill; keep a matching solid base for letterboxing.
+  if (virtual) {
+    return { backgroundColor: color }
+  }
   return {
     backgroundImage: `${GRADIENT_OVERLAY_FULL}, linear-gradient(90deg, ${color} 0%, ${color} 100%)`,
   }
@@ -65,7 +70,11 @@ export function getCutOffBackgroundStyle(
   const color = virtual ? BASE_COLORS.virtual : BASE_COLORS.physical
   const base = `linear-gradient(90deg, ${color} 0%, ${color} 100%)`
 
-  if (!virtual && extended) {
+  if (virtual) {
+    return { backgroundColor: color }
+  }
+
+  if (extended) {
     return {
       backgroundImage: `${GRADIENT_OVERLAY_CUT}, ${base}`,
       backgroundSize: `100% ${DESIGN_HEIGHT_CUT}px, 100% 100%`,

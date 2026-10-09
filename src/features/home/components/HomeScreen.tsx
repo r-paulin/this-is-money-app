@@ -6,6 +6,7 @@ import type { CardType } from "../home.types"
 import { ActivitySection } from "./ActivitySection"
 import { BannerSlider } from "./BannerSlider"
 import { CardsSection } from "./CardsSection"
+import { CashbackSection } from "./CashbackSection"
 import { HomeHeader } from "./HomeHeader"
 import { LegalFooter } from "./LegalFooter"
 
@@ -14,6 +15,7 @@ export interface HomeScreenProps {
   onSendMoney: () => void
   onSeeAll: () => void
   onTransactionSelect: (transaction: Transaction) => void
+  onUnlockCard?: (cardType: CardType) => void
 }
 
 export function HomeScreen({
@@ -21,6 +23,7 @@ export function HomeScreen({
   onSendMoney,
   onSeeAll,
   onTransactionSelect,
+  onUnlockCard,
 }: HomeScreenProps) {
   const {
     balanceCents,
@@ -55,6 +58,7 @@ export function HomeScreen({
           balanceState={balanceState}
           notification={notification}
           onSendMoney={onSendMoney}
+          onUnlockCard={onUnlockCard}
         />
 
         <BannerSlider
@@ -78,6 +82,8 @@ export function HomeScreen({
           onCardClick={onCardClick}
           onGetPhysical={handleGetPhysical}
         />
+
+        <CashbackSection />
 
         <LegalFooter />
       </div>

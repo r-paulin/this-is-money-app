@@ -1,12 +1,13 @@
-import { Button, GhostButton, Typography } from "@bolteu/kalep-react"
+import { Button, Typography } from "@bolteu/kalep-react"
 import ArrowCircleRight from "@bolteu/kalep-react-icons/dist/ArrowCircleRight"
+import Lock from "@bolteu/kalep-react-icons/dist/Lock"
 import { useEffect, useMemo, useRef } from "react"
 import { formatHomeBalanceEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import { useNumberPopIn } from "@/shared/components/useNumberPopIn"
 import { isSendMoneyDisabled } from "../lib/homeScreenLogic"
-import type { BalanceFetchState, HomeNotification } from "../home.types"
+import type { BalanceFetchState, CardType, HomeNotification } from "../home.types"
 import sectionSeparator from "../assets/section-separator.svg"
 import "./home-header.css"
 
@@ -15,6 +16,7 @@ export interface HomeHeaderProps {
   balanceState: BalanceFetchState
   notification: HomeNotification | null
   onSendMoney: () => void
+  onUnlockCard?: (cardType: CardType) => void
 }
 
 export function HomeHeader({
@@ -22,6 +24,7 @@ export function HomeHeader({
   balanceState,
   notification,
   onSendMoney,
+  onUnlockCard,
 }: HomeHeaderProps) {
   const formattedBalance = useMemo(
     () => formatHomeBalanceEurFromCents(balanceCents),
@@ -58,28 +61,41 @@ export function HomeHeader({
             <div
               className={[
                 "home-header__notification",
-                notification.tone === "positive"
-                  ? "home-header__notification--positive"
-                  : "",
+                notification.tone === "warning"
+                  ? "home-header__notification--warning"
+                  : notification.tone === "positive"
+                    ? "home-header__notification--positive"
+                    : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
             >
-              {notification.destination ? (
-                <GhostButton
-                  onClick={() =>
-                    console.info("[stub] Notification:", notification.destination)
-                  }
-                >
-                  <Typography variant="body-s-regular" color="primary" as="span">
-                    {notification.message}
-                  </Typography>
-                </GhostButton>
-              ) : (
-                <Typography variant="body-s-regular" color="primary" as="p">
-                  {notification.message}
-                </Typography>
-              )}
+              <div className="home-header__notification-row">
+                <Lock
+                  size="md"
+                  className="home-header__notification-icon shrink-0 text-warning-secondary"
+                  aria-hidden
+                />
+                <div className="home-header__notification-text">
+                  <p className="home-header__notification-body m-0">
+                    <Typography variant="body-s-accent" color="primary" as="span">
+                      {notification.accent}
+                    </Typography>
+                    <Typography variant="body-s-regular" color="primary" as="span">
+                      {notification.body}
+                    </Typography>
+                  </p>
+                  <button
+                    type="button"
+                    className="home-header__notification-action"
+                    onClick={() => onUnlockCard?.(notification.cardType)}
+                  >
+                    <Typography variant="body-s-compact-accent" color="warning-primary" as="span">
+                      {notification.actionLabel}
+                    </Typography>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         ) : null}

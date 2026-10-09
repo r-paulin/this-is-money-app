@@ -4,7 +4,7 @@ import { GroupedSection } from "@/shared/components/GroupedSection"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import {
-  getPhysicalCardStatusLine,
+  getCardStatusLine,
   isPhysicalCardStatusNegative,
   shouldShowPhysicalOffer,
 } from "../lib/homeScreenLogic"
@@ -82,8 +82,7 @@ export function CardsSection({
       ) : (
         <List.Root className="[&_li>div:hover]:!bg-transparent [&_li>div:focus:hover]:!bg-transparent">
           {rows.map((card, index) => {
-            const statusLine =
-              card.kind === "physical" ? getPhysicalCardStatusLine(card, now) : undefined
+            const statusLine = getCardStatusLine(card, now)
             const statusNegative = isPhysicalCardStatusNegative(statusLine)
             const isOffer = card.kind === "offer"
             const secondary = getRowSecondary(card)

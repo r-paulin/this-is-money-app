@@ -1,11 +1,11 @@
 import boltLogo from "./assets/bolt-logo.svg"
+import virtualCardFace from "./assets/virtual-card-face.png"
 import { PaymentCardBadge } from "./PaymentCardBadge"
 import {
   getBadgeLabel,
   getCutOffBackgroundStyle,
   type PaymentCardCutOffProps,
 } from "./paymentCard.config"
-import { PaymentCardDotPattern } from "./PaymentCardPattern"
 
 export function PaymentCardCutOff({
   virtual = false,
@@ -16,16 +16,25 @@ export function PaymentCardCutOff({
 }: PaymentCardCutOffProps) {
   const content = (
     <>
-      {virtual ? <PaymentCardDotPattern /> : null}
+      {virtual ? (
+        <img
+          src={virtualCardFace}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 size-full object-cover object-top"
+        />
+      ) : null}
 
       <PaymentCardBadge label={getBadgeLabel(virtual)} />
 
-      <img
-        src={boltLogo}
-        alt=""
-        aria-hidden
-        className="absolute left-[15px] top-[15px] h-7 w-12 object-contain object-left-top"
-      />
+      {!virtual ? (
+        <img
+          src={boltLogo}
+          alt=""
+          aria-hidden
+          className="absolute left-[15px] top-[15px] h-7 w-12 object-contain object-left-top"
+        />
+      ) : null}
     </>
   )
 
