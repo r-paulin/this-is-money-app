@@ -94,6 +94,8 @@
   --motion-duration-md: 300ms;
   --motion-duration-lg: 400ms;
   --motion-duration-xl: 500ms;
+  /* Loading pulse cycle (skeleton shimmer). Real-time; use with linear only. */
+  --motion-duration-pulse: 1600ms;
 
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
@@ -253,6 +255,7 @@
     --motion-nav-exit-duration: var(--motion-duration-sm);
     --motion-sheet-enter-duration: var(--motion-duration-sm);
     --motion-sheet-exit-duration: var(--motion-duration-sm);
+    --motion-duration-pulse: 0ms;
   }
 }
 

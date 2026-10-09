@@ -1,0 +1,42 @@
+/* Activity search settling skeleton + empty/error illustration entrance.
+   Figma Flow / Search loading 8845:52942, empty 8845:53239. */
+
+.activity-search-skeleton.is-pulsing {
+  animation: activity-search-skel-pulse var(--motion-duration-pulse) linear infinite;
+}
+
+@keyframes activity-search-skel-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.activity-search-hero {
+  opacity: 0;
+  transform: translate3d(0, var(--motion-offset-sm), 0);
+}
+
+.activity-search-hero--visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity var(--motion-spring-smooth-duration) var(--motion-spring-smooth),
+    transform var(--motion-spring-smooth-duration) var(--motion-spring-smooth);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-search-skeleton.is-pulsing {
+    animation: none !important;
+  }
+
+  .activity-search-hero,
+  .activity-search-hero--visible {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+}

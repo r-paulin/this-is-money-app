@@ -5,6 +5,10 @@ import { TransactionsScreen } from "./TransactionsScreen"
 
 const LOADER_MS = 800
 
+/**
+ * Each navigation push mounts a fresh Gate. With `deferContentMount`,
+ * TransactionsScreen mounts after the loader — leave/return clears search state.
+ */
 export function TransactionsGate() {
   const [revealed, setRevealed] = useState(false)
 

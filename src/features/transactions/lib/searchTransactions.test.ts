@@ -110,10 +110,27 @@ describe("searchTransactions", () => {
 })
 
 describe("applyActivitySearch", () => {
-  it("does not apply a one-character query", () => {
-    const result = applyActivitySearch(SAMPLE, "e")
-    assert.equal(result.status, "idle")
-    assert.equal(result.items.length, SAMPLE.length)
+  it("does not apply a one- or two-character query", () => {
+    const one = applyActivitySearch(SAMPLE, "e")
+    assert.equal(one.status, "idle")
+    assert.equal(one.items.length, SAMPLE.length)
+
+    const two = applyActivitySearch(SAMPLE, "el")
+    assert.equal(two.status, "idle")
+    assert.equal(two.items.length, SAMPLE.length)
+  })
+
+  it("returns results and empty for queries of three or more characters", () => {
+    const hit = applyActivitySearch(SAMPLE, "elo")
+    assert.equal(hit.status, "results")
+    assert.deepEqual(
+      hit.items.map((tx) => tx.id),
+      ["3"],
+    )
+
+    const miss = applyActivitySearch(SAMPLE, "zzz")
+    assert.equal(miss.status, "empty")
+    assert.deepEqual(miss.items, [])
   })
 
   it("returns the error branch when the filter throws", () => {

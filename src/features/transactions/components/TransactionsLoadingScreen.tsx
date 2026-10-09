@@ -1,31 +1,58 @@
+import { ListItemLayout } from "@bolteu/kalep-react"
 import {
   SkeletonBar,
   SkeletonCircle,
 } from "@/shared/components/skeleton/SkeletonPlaceholders"
+import "./activity-search-states.css"
 
 const ROW_COUNT = 3
 
-export function TransactionSkeletonRows() {
+/** Figma 8845:53130 — section label bar + three list rows while search settles. */
+export function TransactionSearchSkeleton() {
   return (
-    <div aria-hidden>
-      {Array.from({ length: ROW_COUNT }, (_, index) => (
-        <SkeletonListItem key={index} />
-      ))}
+    <div
+      className="activity-search-skeleton is-pulsing"
+      aria-busy
+      aria-label="Searching activity"
+    >
+      <ActivityListSkeleton />
     </div>
   )
 }
 
-function SkeletonListItem() {
+function ActivityListSkeleton() {
   return (
-    <div className="flex items-center px-6 py-3">
-      <SkeletonCircle size={40} />
-      <div className="flex min-w-0 flex-1 flex-col pl-4">
-        <div className="py-0.5">
-          <SkeletonBar width="100%" height={12} />
-        </div>
-        <SkeletonBar width="40%" height={10} />
+    <div aria-hidden>
+      <div className="flex items-center px-6 pb-2 pt-5">
+        <SkeletonBar width="40%" height={16} className="rounded" />
       </div>
+      <TransactionSkeletonRows />
     </div>
+  )
+}
+
+export function TransactionSkeletonRows() {
+  return (
+    <ul className="m-0 list-none p-0" aria-hidden>
+      {Array.from({ length: ROW_COUNT }, (_, index) => (
+        <li key={index}>
+          <SkeletonListItem separator={index < ROW_COUNT - 1} />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function SkeletonListItem({ separator }: { separator: boolean }) {
+  return (
+    <ListItemLayout
+      separator={separator}
+      paddingStart={6}
+      paddingEnd={6}
+      renderStartSlot={() => <SkeletonCircle size={40} />}
+      primary={<SkeletonBar width="100%" height={14} className="my-[5px]" />}
+      secondary={<SkeletonBar width="40%" height={12} className="my-1" />}
+    />
   )
 }
 
@@ -43,11 +70,7 @@ export function TransactionsLoadingScreen() {
         <SkeletonBar width={56} height={56} className="shrink-0 !rounded-full" />
       </div>
 
-      <div className="px-6 pb-2 pt-5">
-        <SkeletonBar width="40%" height={16} />
-      </div>
-
-      <TransactionSkeletonRows />
+      <ActivityListSkeleton />
     </div>
   )
 }

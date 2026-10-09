@@ -9,7 +9,7 @@
 }
 
 .card-control-shimmer > * {
-  animation: card-control-shimmer 1200ms linear infinite;
+  animation: card-control-shimmer var(--motion-duration-pulse) linear infinite;
   animation-delay: 0s;
 }
 

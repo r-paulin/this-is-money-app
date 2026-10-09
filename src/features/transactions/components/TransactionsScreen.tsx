@@ -1,10 +1,10 @@
-import { GhostButton, TextField, Typography, useSnackbar } from "@bolteu/kalep-react"
+import { TextField, Typography, useSnackbar } from "@bolteu/kalep-react"
 import Download from "@bolteu/kalep-react-icons/dist/Download"
 import { useEffect, useMemo, useRef, useState } from "react"
-import receipt from "@/features/home/assets/illustration-receipt.svg"
 import spilledMug from "@/features/home/assets/illustration-spilled-mug.svg"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { useNavigationStack } from "@/shared/navigation"
+import longDocument from "../assets/illustration-long-document.png"
 import { useOpenTransactionDetail } from "../useOpenTransactionDetail"
 import { buildMockTransactions } from "../data/mockTransactions"
 import {
@@ -12,12 +12,21 @@ import {
   groupKeyForTransaction,
 } from "../lib/formatTransactionDate"
 import { applyActivitySearch } from "../lib/searchTransactions"
+import {
+  ActivitySearchRetryButton,
+  ActivitySearchStatus,
+} from "./ActivitySearchStatus"
 import { GetStatementGate } from "./GetStatementGate"
 import { TransactionRow } from "./TransactionRow"
-import { TransactionSkeletonRows } from "./TransactionsLoadingScreen"
+import {
+  TransactionSearchSkeleton,
+  TransactionSkeletonRows,
+} from "./TransactionsLoadingScreen"
 
+/** Matches `--motion-duration-sm`. */
 const SEARCH_DEBOUNCE_MS = 200
 const PAGE_SIZE = 20
+/** Matches `--motion-duration-lg`. */
 const NEXT_PAGE_MS = 400
 const END_SNACKBAR = "You have reached the end of your activity list"
 
@@ -33,6 +42,7 @@ export function TransactionsScreen() {
   const rootRef = useRef<HTMLDivElement>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const endNoticeSent = useRef(false)
+  const userScrolled = useRef(false)
   const previousQuery = useRef("")
 
   useEffect(() => {
@@ -59,6 +69,8 @@ export function TransactionsScreen() {
   const visibleCount = page.query === debouncedQuery ? page.count : PAGE_SIZE
   const visibleItems = search.items.slice(0, visibleCount)
   const hasMore = visibleCount < search.items.length
+  const showList =
+    !settling && search.status !== "empty" && search.status !== "error"
 
   useEffect(() => {
     const trimmed = debouncedQuery.trim()
@@ -66,17 +78,13 @@ export function TransactionsScreen() {
       rootRef.current?.closest(".nav-layer")?.scrollTo({ top: 0 })
     }
     previousQuery.current = trimmed
+    endNoticeSent.current = false
+    userScrolled.current = false
   }, [debouncedQuery])
 
   useEffect(() => {
-    if (hasMore || filtering || search.items.length === 0 || endNoticeSent.current) return
-    endNoticeSent.current = true
-    snackbar.add({ description: END_SNACKBAR, dismissible: true, timeout: 4000 })
-  }, [filtering, hasMore, search.items.length, snackbar])
-
-  useEffect(() => {
     const sentinel = sentinelRef.current
-    if (!sentinel || !hasMore || loadingPage || settling || search.status === "error") return
+    if (!sentinel || !hasMore || loadingPage || settling || !showList) return
     const root = rootRef.current?.closest(".nav-layer")
     if (!(root instanceof Element)) return
 
@@ -96,7 +104,27 @@ export function TransactionsScreen() {
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [debouncedQuery, hasMore, loadingPage, search.status, settling])
+  }, [debouncedQuery, hasMore, loadingPage, settling, showList])
+
+  useEffect(() => {
+    // End toast only when the driver scrolls to the bottom — not when a short
+    // filtered list fits on screen or auto-pagination exhausts the set.
+    if (hasMore || !showList || search.items.length === 0) return
+    const root = rootRef.current?.closest(".nav-layer")
+    if (!(root instanceof Element)) return
+
+    const onScroll = () => {
+      if (root.scrollTop > 0) userScrolled.current = true
+      if (!userScrolled.current || endNoticeSent.current) return
+      const remaining = root.scrollHeight - root.scrollTop - root.clientHeight
+      if (remaining > 8) return
+      endNoticeSent.current = true
+      snackbar.add({ description: END_SNACKBAR, dismissible: true, timeout: 4000 })
+    }
+
+    root.addEventListener("scroll", onScroll, { passive: true })
+    return () => root.removeEventListener("scroll", onScroll)
+  }, [hasMore, search.items.length, showList, snackbar])
 
   const groups = useMemo(() => {
     const map = new Map<string, typeof visibleItems>()
@@ -121,7 +149,10 @@ export function TransactionsScreen() {
   }
 
   return (
-    <div ref={rootRef} className="min-h-dvh bg-layer-floor-1">
+    <div
+      ref={rootRef}
+      className="flex min-h-[calc(var(--app-h)-var(--app-navbar-offset))] flex-col bg-layer-floor-1"
+    >
       <div className="px-6 py-3">
         <Typography variant="heading-l-accent" color="primary" as="h1">
           Activity
@@ -151,38 +182,30 @@ export function TransactionsScreen() {
         </button>
       </div>
 
-      {settling ? <TransactionSkeletonRows /> : null}
+      {settling ? <TransactionSearchSkeleton /> : null}
 
       {!settling && search.status === "empty" ? (
-        <div className="flex flex-col items-center px-6 pb-8 pt-8">
-          <img src={receipt} alt="" width={80} height={80} className="mb-3" />
-          <Typography variant="body-m-accent" color="primary" as="p" align="center">
-            We couldn&apos;t find a match
-          </Typography>
-          <Typography variant="body-m-regular" color="secondary" as="p" align="center">
-            Try searching with a different name, amount, or reference
-          </Typography>
-        </div>
+        <ActivitySearchStatus
+          imageSrc={longDocument}
+          title="We couldn't find a match"
+          body="Try searching with a different name, amount, or reference"
+        />
       ) : null}
 
       {!settling && search.status === "error" ? (
-        <div className="flex flex-col items-center px-6 pb-8 pt-8">
-          <img src={spilledMug} alt="" width={80} height={80} className="mb-3" />
-          <Typography variant="body-m-accent" color="primary" as="p" align="center">
-            Search didn&apos;t work
-          </Typography>
-          <Typography variant="body-m-regular" color="secondary" as="p" align="center">
-            Try again in a moment
-          </Typography>
-          <div className="pt-4">
-            <GhostButton onClick={() => setSearchAttempt((attempt) => attempt + 1)}>
-              Try again
-            </GhostButton>
-          </div>
-        </div>
+        <ActivitySearchStatus
+          imageSrc={spilledMug}
+          title="Search didn't work"
+          body="Try again in a moment"
+          action={
+            <ActivitySearchRetryButton
+              onRetry={() => setSearchAttempt((attempt) => attempt + 1)}
+            />
+          }
+        />
       ) : null}
 
-      {!settling && search.status !== "empty" && search.status !== "error"
+      {showList
         ? groups.map((group) => (
             <section key={group.key} aria-label={group.label}>
               <SectionHeader paddingBottom={8}>{group.label}</SectionHeader>
@@ -203,11 +226,8 @@ export function TransactionsScreen() {
         : null}
 
       {loadingPage ? <TransactionSkeletonRows /> : null}
-      {hasMore && !settling && search.status !== "error" ? (
-        <div ref={sentinelRef} className="h-8" aria-hidden />
-      ) : null}
-      {!hasMore && !filtering && search.items.length > 0 ? (
-        <div className="h-24" aria-hidden />
+      {showList && search.items.length > 0 ? (
+        <div ref={sentinelRef} className={hasMore ? "h-8" : "h-24"} aria-hidden />
       ) : null}
     </div>
   )

@@ -10,7 +10,7 @@ Authored motion uses the `--motion-*` tokens in `src/shared/styles/tokens.css` a
 
 - Durations, easings, springs, distances, blur, press scale, and stagger come from those variables.
 - Do not add a raw duration or a `cubic-bezier()` outside `tokens.css`.
-- `linear` is allowed only for real time (spinner, loading pulse, countdown, progress) and for the damped error shake.
+- `linear` is allowed only for real time (spinner, loading pulse, countdown, progress) and for the damped error shake. Loading pulse duration is `--motion-duration-pulse`.
 - `--motion-ease-ios` is reached only through `--motion-nav-*` and `--motion-sheet-*`. Do not put it on components.
 - `--nav-parallax: 30%` is the iOS page spatial constant in `navigation.css`. Do not copy it onto other components.
 - `--motion-spring-bouncy` is one confirmed-success element per screen. Errors do not bounce.

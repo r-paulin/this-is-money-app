@@ -2,7 +2,7 @@
 /* https://transitions.dev */
 
 :root {
-  --pulse-dur: 1000ms;
+  --pulse-dur: var(--motion-duration-pulse);
   --pulse-count: infinite;
   --pulse-min: 0.5;
   --reveal-dur: var(--motion-duration-lg);
