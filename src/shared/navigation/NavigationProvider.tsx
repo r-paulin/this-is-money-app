@@ -1,4 +1,3 @@
-import { AppNavbar } from "@/shared/components/AppNavbar"
 import {
   useCallback,
   useLayoutEffect,
@@ -180,7 +179,6 @@ export function NavigationProvider({
   return (
     <NavigationContext.Provider value={value}>
       <div className="relative h-[var(--app-h)] min-h-[var(--app-h)] overflow-hidden">
-        <AppNavbar />
         <NavigationStack />
         {children}
       </div>

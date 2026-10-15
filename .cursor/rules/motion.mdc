@@ -6,13 +6,14 @@ globs: ["src/**/*.tsx", "src/**/*.ts", "src/**/*.css"]
 
 # Motion
 
-Authored motion uses the `--motion-*` tokens in `src/shared/styles/tokens.css` and nothing else. Documented in `specs/tokens/token-reference.md`.
+Authored motion uses the `--motion-*` tokens in `src/shared/styles/tokens.css` and recipes in `src/shared/motion/motionSystem.ts`. Documented in `specs/tokens/token-reference.md`.
 
-- Durations, easings, springs, distances, blur, press scale, and stagger come from those variables.
+- Durations, easings, springs, distances, scales, fades, and stagger come from those variables / recipes.
 - Do not add a raw duration or a `cubic-bezier()` outside `tokens.css`.
 - `linear` is allowed only for real time (spinner, loading pulse, countdown, progress) and for the damped error shake. Loading pulse duration is `--motion-duration-pulse`.
-- `--motion-ease-ios` is reached only through `--motion-nav-*` and `--motion-sheet-*`. Do not put it on components.
-- `--nav-parallax: 30%` is the iOS page spatial constant in `navigation.css`. Do not copy it onto other components.
+- `--motion-ease-ios` is reached only through `--motion-nav-*`, `--motion-sheet-*`, `--motion-dialog-*`, and `--motion-modal-*`. Do not put it on components.
+- Page push/pop uses `--motion-nav-enter-*` / `--motion-nav-exit-*` and `--motion-nav-parallax` (Android 32px, iOS 30%). Do not invent a separate page transition.
+- Fades use `--motion-fade-in*` / `--motion-fade-out*` / `--motion-cross-fade*`.
 - `--motion-spring-bouncy` is one confirmed-success element per screen. Errors do not bounce.
-- Reduced motion swaps movement for a fade at `--motion-duration-sm` and `--motion-ease-standard`. It does not delete feedback. Stagger, parallax, and shake are removed.
+- Reduced motion swaps travel for a fade at `--motion-duration-sm` and `--motion-ease-standard` (or the fade recipes). It does not delete feedback. Stagger, parallax, and shake are removed.
 - Do not animate height, width, or `left` / `top`. Use transform and opacity.

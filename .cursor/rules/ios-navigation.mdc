@@ -13,6 +13,7 @@ Use the shared navigation stack for **hierarchical drill-down** screens. Match A
 | Pattern | API | Motion |
 |---------|-----|--------|
 | **Push** (list row, card tap, chevron link) | `push()` from `useNavigationStack()` | Enter from **right**, exit to **right** |
+| **Immersive push** (Stories) | `push({ immersive: true, … })` | Same push/pop; layer AppNavbar uses dark chrome |
 | **Modal** (Send money, forms, alerts, sheets) | Kalep modal / separate overlay — **not** the nav stack | Present from bottom or fade |
 
 ## Required API
@@ -40,10 +41,10 @@ pop()
 
 ## Transition spec
 
-- **Push:** incoming screen `translateX(100%) → 0`; previous screen parallax `0 → -30%`. Duration `--motion-nav-enter` (500ms, iOS ease)
-- **Pop:** outgoing screen `translateX(0) → 100%`; previous screen `-30% → 0`. Duration `--motion-nav-exit` (400ms, iOS ease)
+- **Push:** incoming screen `translateX(100%) → 0`; previous screen parallax via `--motion-nav-parallax` (iOS 30%, Android 32px). Duration/ease `--motion-nav-enter-*`
+- **Pop:** outgoing screen `translateX(0) → 100%`; previous restores. Duration/ease `--motion-nav-exit-*`
 - **Swipe-back:** edge drag from leading ~20px; commit pop at ≥50% width, continuing from the drag offset
-- **Reduced motion:** cross-fade at `--motion-duration-sm` and `--motion-ease-standard`, no horizontal slide
+- **Reduced motion:** covering layer uses `--motion-fade-in*` / `--motion-fade-out*`, no horizontal slide
 
 ## Adding a new screen
 

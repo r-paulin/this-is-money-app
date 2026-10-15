@@ -1,5 +1,6 @@
 import { GhostButton } from "@bolteu/kalep-react"
 import ArrowBackward from "@bolteu/kalep-react-icons/dist/ArrowBackward"
+import Cross from "@bolteu/kalep-react-icons/dist/Cross"
 import { useNavigationStack } from "@/shared/navigation"
 import batteryIcon from "@/shared/assets/status-bar/battery.svg"
 import cellularIcon from "@/shared/assets/status-bar/cellular.svg"
@@ -32,14 +33,39 @@ function WebViewStatusBar() {
   )
 }
 
-export function AppNavbar() {
-  const { canPop, pop, navbarBackHandler, isNavigationLocked } =
-    useNavigationStack()
+export interface AppNavbarProps {
+  /** Whether this screen can pop (index > 0). */
+  canGoBack: boolean
+  /** Dark chrome for immersive screens (e.g. Stories). */
+  immersive?: boolean
+  /** Only the top layer handles presses / navbarBackHandler. */
+  interactive?: boolean
+  /** Override back (e.g. modal dismiss). Skips nav `pop()`. */
+  onBack?: () => void
+}
 
-  const showBack = navbarBackHandler !== null || (!isNavigationLocked && canPop)
+export function AppNavbar({
+  canGoBack,
+  immersive = false,
+  interactive = true,
+  onBack,
+}: AppNavbarProps) {
+  const { pop, navbarBackHandler, isNavigationLocked } = useNavigationStack()
+
+  const showBack =
+    Boolean(onBack) ||
+    canGoBack ||
+    (interactive && navbarBackHandler !== null && !isNavigationLocked)
   const isHomeRoot = !showBack
 
   const handleIconClick = () => {
+    if (!interactive) return
+
+    if (onBack) {
+      onBack()
+      return
+    }
+
     if (isHomeRoot) {
       console.info("[stub] Close WebView")
       return
@@ -52,13 +78,18 @@ export function AppNavbar() {
 
     if (isNavigationLocked) return
 
-    if (canPop) {
+    if (canGoBack) {
       pop()
     }
   }
 
   return (
-    <header className="app-navbar" role="banner">
+    <header
+      className={["app-navbar", immersive ? "app-navbar--immersive" : ""]
+        .filter(Boolean)
+        .join(" ")}
+      role="banner"
+    >
       <WebViewStatusBar />
 
       <div className="app-navbar__toolbar">
@@ -66,9 +97,15 @@ export function AppNavbar() {
           <div className="app-navbar__icon-button">
             <GhostButton
               onClick={handleIconClick}
-              aria-label={isHomeRoot ? "Close" : "Back"}
+              aria-label={immersive || isHomeRoot ? "Close" : "Back"}
+              disabled={!interactive}
+              overrideClassName="app-navbar__icon-control"
             >
-              <ArrowBackward size="lg" className="text-primary" />
+              {immersive ? (
+                <Cross size="lg" className="app-navbar__back-icon" />
+              ) : (
+                <ArrowBackward size="lg" className="app-navbar__back-icon" />
+              )}
             </GhostButton>
           </div>
         ) : (

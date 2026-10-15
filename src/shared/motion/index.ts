@@ -1,0 +1,16 @@
+export {
+  applyPlatformAttribute,
+  detectPlatform,
+  distance,
+  duration,
+  ease,
+  getRecipes,
+  patterns,
+  press,
+  readNavParallaxPx,
+  reduce,
+  scale,
+  spring,
+  stagger,
+  type Platform,
+} from "./motionSystem"

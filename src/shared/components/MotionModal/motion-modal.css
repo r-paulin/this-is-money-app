@@ -1,0 +1,74 @@
+/* Full-screen modal — motionSystem forks.modal (cover | fadeScale). */
+
+.motion-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+/* iOS: cover — slide up from bottom. */
+.motion-modal[data-kind="cover"] {
+  transform: translate3d(0, 100%, 0);
+  opacity: 1;
+  transition: transform var(--motion-modal-enter-duration)
+    var(--motion-modal-enter-ease);
+}
+
+.motion-modal[data-kind="cover"][data-phase="idle"] {
+  transform: translate3d(0, 0, 0);
+}
+
+.motion-modal[data-kind="cover"][data-phase="exit"] {
+  transform: translate3d(0, 100%, 0);
+  transition: transform var(--motion-modal-exit-duration)
+    var(--motion-modal-exit-ease);
+}
+
+/* Android: fadeScale — opacity + scale. */
+.motion-modal[data-kind="fadeScale"] {
+  opacity: 0;
+  transform: scale(var(--motion-modal-scale));
+  transition:
+    opacity var(--motion-modal-fade-enter-duration) var(--motion-modal-fade-enter),
+    transform var(--motion-modal-enter-duration) var(--motion-modal-enter-ease);
+}
+
+.motion-modal[data-kind="fadeScale"][data-phase="idle"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.motion-modal[data-kind="fadeScale"][data-phase="exit"] {
+  opacity: 0;
+  transform: scale(var(--motion-modal-scale));
+  transition:
+    opacity var(--motion-modal-fade-exit-duration) var(--motion-modal-fade-exit),
+    transform var(--motion-modal-exit-duration) var(--motion-modal-exit-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-modal[data-kind="cover"],
+  .motion-modal[data-kind="fadeScale"] {
+    transform: none;
+    opacity: 0;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+
+  .motion-modal[data-kind="cover"][data-phase="idle"],
+  .motion-modal[data-kind="fadeScale"][data-phase="idle"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .motion-modal[data-kind="cover"][data-phase="exit"],
+  .motion-modal[data-kind="fadeScale"][data-phase="exit"] {
+    opacity: 0;
+    transform: none;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+}

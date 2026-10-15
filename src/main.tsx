@@ -2,8 +2,9 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import "./index.css"
 import { App } from "@/app/App"
+import { applyPlatformAttribute } from "@/shared/motion"
 
-document.documentElement.dataset.platform = "ios"
+applyPlatformAttribute()
 
 const params = new URLSearchParams(window.location.search)
 const theme = params.get("theme")

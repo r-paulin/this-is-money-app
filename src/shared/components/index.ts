@@ -1,4 +1,6 @@
 export { AppNavbar } from "./AppNavbar"
+export { MotionModal } from "./MotionModal"
+export type { MotionModalPhase, MotionModalProps } from "./MotionModal"
 export { DeviceFrame } from "./DeviceFrame"
 export type { DeviceFrameProps } from "./DeviceFrame"
 export {

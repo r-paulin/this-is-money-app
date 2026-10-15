@@ -1,7 +1,6 @@
 .stories-viewer {
-  /* Fixed dark chrome — never follows page tone. */
+  /* Continues AppNavbar immersive chrome; sheet sits below. */
   --stories-chrome-bg: var(--color-static-bg-key-dark, #000);
-  --stories-chrome-fg: var(--color-layer-floor-2, #fff);
   --stories-progress-track: color-mix(in srgb, #f4fef9 28%, transparent);
   --stories-progress-fill: var(--color-special-brand, #2a9c64);
   /* Sheet base is always floor-1; tone tints layer above (often transparent). */
@@ -10,15 +9,15 @@
   --stories-sheet-tint-transition: background-color var(--motion-duration-md)
     var(--motion-ease-standard);
 
-  position: absolute;
-  inset: 0;
-  z-index: 40;
+  position: relative;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   touch-action: none;
   background: var(--stories-chrome-bg);
-  color: var(--stories-chrome-fg);
 }
 
 .stories-viewer[data-tone="light"] {
@@ -29,121 +28,9 @@
   --stories-sheet-tint: var(--color-bg-action-secondary);
 }
 
-/* Page motion open / close (nav enter / exit tokens). */
-.stories-viewer[data-phase="enter"] {
-  animation: stories-viewer-enter var(--motion-nav-enter-duration)
-    var(--motion-nav-enter-ease) both;
-}
-
-.stories-viewer[data-phase="exit"] {
-  animation: stories-viewer-exit var(--motion-nav-exit-duration)
-    var(--motion-nav-exit-ease) both;
-  pointer-events: none;
-}
-
-@keyframes stories-viewer-enter {
-  from {
-    transform: translate3d(100%, 0, 0);
-    opacity: 0;
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-}
-
-@keyframes stories-viewer-exit {
-  from {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-  to {
-    transform: translate3d(100%, 0, 0);
-    opacity: 0;
-  }
-}
-
-.stories-viewer__chrome {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  background: var(--stories-chrome-bg);
-  color: var(--stories-chrome-fg);
-}
-
-.stories-viewer__status {
-  box-sizing: border-box;
-  display: flex;
-  height: var(--app-navbar-status-bar-height, 59px);
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 11px 16px;
-}
-
-.stories-viewer__status-time {
-  flex: 1 1 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 2px;
-  font-size: 17px;
-  font-weight: 590;
-  line-height: 22px;
-  text-align: center;
-  color: var(--stories-chrome-fg);
-}
-
-.stories-viewer__status-island {
-  width: 125px;
-  height: 37px;
-  flex-shrink: 0;
-  border-radius: 100px;
-}
-
-.stories-viewer__status-levels {
-  flex: 1 1 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding-top: 1px;
-}
-
-.stories-viewer__status-icon {
-  display: block;
-  height: auto;
-  filter: brightness(0) invert(1);
-}
-
-.stories-viewer__back-icon {
-  color: var(--stories-chrome-fg);
-}
-
-.stories-viewer__status-icon--cellular {
-  width: 19.2px;
-}
-
-.stories-viewer__status-icon--wifi {
-  width: 17.14px;
-}
-
-.stories-viewer__status-icon--battery {
-  width: 27.33px;
-}
-
-.stories-viewer__toolbar {
-  display: flex;
-  align-items: center;
-  min-height: var(--app-navbar-toolbar-height, 56px);
-  padding-inline: 12px;
-}
-
 .stories-viewer__progress {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
   padding: 8px 24px 12px;
 }
@@ -244,7 +131,7 @@
   flex-direction: column;
   min-width: 0;
   opacity: var(--stories-page-opacity, 1);
-  transition: opacity var(--motion-spring-smooth-duration) var(--motion-spring-smooth);
+  transition: opacity var(--motion-cross-fade-duration) var(--motion-cross-fade);
   will-change: opacity;
 }
 
@@ -296,34 +183,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stories-viewer[data-phase="enter"] {
-    animation: stories-viewer-fade-in var(--motion-duration-sm)
-      var(--motion-ease-standard) both;
-  }
-
-  .stories-viewer[data-phase="exit"] {
-    animation: stories-viewer-fade-out var(--motion-duration-sm)
-      var(--motion-ease-standard) both;
-  }
-
-  @keyframes stories-viewer-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes stories-viewer-fade-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
   .stories-viewer__sheet::before {
     transition: none;
   }

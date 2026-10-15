@@ -53,6 +53,7 @@ export function HomeScreen({
 
   const [storiesOpen, setStoriesOpen] = useState(false)
   const openStories = useCallback(() => setStoriesOpen(true), [])
+  const closeStories = useCallback(() => setStoriesOpen(false), [])
 
   return (
     <>
@@ -95,12 +96,11 @@ export function HomeScreen({
         </div>
       </PullToRefresh>
 
-      {storiesOpen ? (
-        <StoriesViewer
-          sequence={SECURE_ACCOUNT_STORIES}
-          onClose={() => setStoriesOpen(false)}
-        />
-      ) : null}
+      <StoriesViewer
+        sequence={SECURE_ACCOUNT_STORIES}
+        open={storiesOpen}
+        onClose={closeStories}
+      />
     </>
   )
 }

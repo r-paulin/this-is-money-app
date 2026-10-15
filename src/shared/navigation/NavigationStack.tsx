@@ -5,21 +5,23 @@ import {
   useState,
 } from "react"
 import { isNavLayerAnimationEvent } from "./navAnimation"
+import { AppNavbar } from "@/shared/components/AppNavbar"
+import { readNavParallaxPx } from "@/shared/motion"
 import {
   getInteractiveTransforms,
-  NAV_PARALLAX_RATIO,
   useEdgeSwipeBack,
 } from "./useEdgeSwipeBack"
 import { useNavigationStack } from "./useNavigationStack"
 
 type LayerRole = "top" | "below" | "cached"
 
-/** Matches --motion-duration-sm. The fade does not end the stack transition. */
+/** Matches reduced-motion nav fade (~fade-in/out spring duration). */
 const REDUCED_MOTION_NAV_MS = 200
 
 function parallaxOffset(offsetPx: number, width: number): number {
+  const parallaxPx = readNavParallaxPx(width)
   const progress = width > 0 ? offsetPx / width : 0
-  return -width * NAV_PARALLAX_RATIO + progress * width * NAV_PARALLAX_RATIO
+  return -parallaxPx + progress * parallaxPx
 }
 
 function layerClassName(role: LayerRole): string {
@@ -203,11 +205,17 @@ export function NavigationStack() {
             key={entry.key}
             className={layerClassName(role)}
             data-layer-role={layerRole}
+            data-immersive={entry.immersive ? "true" : undefined}
             aria-hidden={role === "below" || role === "cached" ? true : undefined}
             style={layerRole ? getLayerStyle(layerRole) : undefined}
             onAnimationEnd={role === "top" ? handleAnimationEnd : undefined}
           >
-            {entry.render()}
+            <AppNavbar
+              canGoBack={index > 0}
+              immersive={entry.immersive === true}
+              interactive={role === "top"}
+            />
+            <div className="nav-layer__body">{entry.render()}</div>
           </div>
         )
       })}

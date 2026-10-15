@@ -1,9 +1,8 @@
 import { useCallback, useRef } from "react"
+import { readNavParallaxPx } from "@/shared/motion"
 
 const EDGE_ZONE_PX = 20
 const COMMIT_THRESHOLD = 0.5
-/** Matches --nav-parallax (30%) in navigation.css. */
-export const NAV_PARALLAX_RATIO = 0.3
 
 interface UseEdgeSwipeBackOptions {
   enabled: boolean
@@ -172,9 +171,8 @@ export function useEdgeSwipeBack({
 export function getInteractiveTransforms(
   dragOffset: number,
   containerWidth: number,
-  parallaxRatio = NAV_PARALLAX_RATIO,
 ): { top: string; below: string } {
-  const parallaxPx = containerWidth * parallaxRatio
+  const parallaxPx = readNavParallaxPx(containerWidth)
   const progress = containerWidth > 0 ? dragOffset / containerWidth : 0
 
   return {

@@ -3,6 +3,11 @@ import type { ReactNode } from "react"
 export type ScreenEntry = {
   key: string
   render: () => ReactNode
+  /**
+   * Full-bleed screen: hides AppNavbar and nav-layer top padding.
+   * Transition still uses the shared push/pop motion.
+   */
+  immersive?: boolean
 }
 
 export type TransitionDirection = "push" | "pop"

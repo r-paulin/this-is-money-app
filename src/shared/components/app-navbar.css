@@ -9,17 +9,29 @@
 }
 
 .app-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 30;
+  --app-navbar-fg: var(--content-primary, #191f1c);
+  --app-navbar-bg: rgba(255, 255, 255, 0.7);
+  --app-navbar-border: rgba(255, 255, 255, 0.4);
+
+  position: relative;
+  z-index: 2;
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid var(--app-navbar-border);
+  background: var(--app-navbar-bg);
+  color: var(--app-navbar-fg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+/* Immersive screens (Stories): same header, dark chrome. */
+.app-navbar--immersive {
+  --app-navbar-fg: var(--color-layer-floor-2, #fff);
+  --app-navbar-bg: var(--color-static-bg-key-dark, #000);
+  --app-navbar-border: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .app-navbar__status-bar {
@@ -43,7 +55,7 @@
   font-size: 17px;
   font-weight: 590;
   line-height: 22px;
-  color: var(--content-primary);
+  color: var(--app-navbar-fg);
   text-align: center;
   white-space: nowrap;
 }
@@ -68,6 +80,14 @@
 .app-navbar__status-icon {
   display: block;
   flex-shrink: 0;
+}
+
+.app-navbar--immersive .app-navbar__status-icon {
+  filter: brightness(0) invert(1);
+}
+
+.app-navbar__back-icon {
+  color: var(--app-navbar-fg);
 }
 
 .app-navbar__status-icon--cellular {
@@ -110,13 +130,27 @@
   justify-content: center;
 }
 
+.app-navbar__icon-control {
+  display: flex;
+  min-height: 48px;
+  min-width: 48px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Figma 10114:90930 — immersive close: Cross on static neutral-secondary-light pill. */
+.app-navbar--immersive .app-navbar__icon-control {
+  border-radius: 9999px;
+  background: var(--color-static-bg-neutral-secondary-light, rgba(255, 255, 255, 0.12));
+  color: var(--color-static-content-key-light, #fff);
+}
+
+.app-navbar--immersive .app-navbar__back-icon {
+  color: var(--color-static-content-key-light, #fff);
+}
+
 .app-navbar__icon-button-spacer {
   min-height: 48px;
   min-width: 48px;
   flex-shrink: 0;
-}
-
-/* Scrollable nav layers sit below fixed navbar */
-.nav-layer {
-  padding-top: var(--app-navbar-offset);
 }

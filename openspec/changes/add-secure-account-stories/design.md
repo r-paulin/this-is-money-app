@@ -33,11 +33,11 @@ Figma `10059:191766` is four “ONBOARDING / Page” bezels: fixed dark header (
 
 ## Decisions
 
-### Overlay, not nav push
+### Nav push (same as other pages)
 
-Render the viewer as a full-bleed layer inside the device shell (portal to `portalRoot` when available, else fixed within the shell). Open/close state lives in a thin home stub or feature provider. Do **not** `push()` Stories onto `NavigationStack` — that would fight edge-swipe-back and imply hierarchy.
+Open Stories with `push({ key, immersive: true, render })` so enter/exit uses the shared nav stack motion (slide + under-page parallax; reduced-motion fade). `AppNavbar` lives inside each nav layer (not fixed), so status/back slide with the page; immersive screens use dark chrome on that layer’s navbar. Back uses the navbar; last-page CTA calls `pop()`.
 
-Alternative: Kalep `Modal`. Rejected for v1 unless Modal already supports full-bleed media + custom gestures without fighting pointer capture; a local overlay matches `CardReplaceFlyIn` and keeps gesture ownership.
+Within the sequence, horizontal page changes keep spring-smooth slide + cross-fade; that is paging, not hierarchical navigation.
 
 ### Feature folder `src/features/stories/`
 

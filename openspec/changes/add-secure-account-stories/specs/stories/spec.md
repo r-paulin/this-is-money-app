@@ -8,13 +8,14 @@ Defines a full-screen Stories viewer for short product education sequences: mult
 
 ### Requirement: Stories viewer presents a page sequence
 
-The system MUST present a Stories sequence as a full-screen immersive viewer over the app chrome. A sequence MUST consist of one or more ordered pages. Each page MUST support: a content-sheet background (semantic or app token color), media that is either an image or a video (or neither when illustration-only), and optional title, body, and primary action label. The viewer MUST keep a fixed dark header chrome (status, back, progress) on a full-screen dark base; only the rounded-top content sheet MAY change background per page. Closing the viewer MUST return the user to the underlying screen without pushing a nav-stack destination for the close itself.
+The system MUST present a Stories sequence as a full-screen immersive viewer opened via the shared navigation stack (`push` with `immersive: true`). A sequence MUST consist of one or more ordered pages. Each page MUST support: a content-sheet background (semantic or app token color), media that is either an image or a video (or neither when illustration-only), and optional title, body, and primary action label. The viewer MUST keep a fixed dark header chrome (status, back, progress) on a full-screen dark base; only the rounded-top content sheet MAY change background per page. Open and close MUST use the same push/pop page motion as other hierarchical screens. Closing MUST `pop()` back to the previous screen.
 
 #### Scenario: Open Secure your account
 
 - **WHEN** the user opens the Secure your account Stories sequence from the demo entry
-- **THEN** the viewer covers the device screen with a dark header chrome, the first page’s content sheet (background, media, copy), and progress segments
-- **AND** the underlying home (or previous) UI is not interactive until the viewer closes
+- **THEN** the viewer pushes onto the navigation stack with shared page-enter motion
+- **AND** the viewer covers the device screen with a dark header chrome, the first page’s content sheet (background, media, copy), and progress segments
+- **AND** the underlying home (or previous) UI is not interactive until the viewer pops
 
 #### Scenario: Close
 

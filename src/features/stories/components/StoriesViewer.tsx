@@ -1,20 +1,14 @@
 import {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
-  type AnimationEvent as ReactAnimationEvent,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from "react"
-import { createPortal } from "react-dom"
-import { Button, GhostButton, Typography } from "@bolteu/kalep-react"
-import ArrowBackward from "@bolteu/kalep-react-icons/dist/ArrowBackward"
-import { DeviceShellContext } from "@/shared/context/deviceShellContext"
-import batteryIcon from "@/shared/assets/status-bar/battery.svg"
-import cellularIcon from "@/shared/assets/status-bar/cellular.svg"
-import wifiIcon from "@/shared/assets/status-bar/wifi.svg"
+import { Button, Typography } from "@bolteu/kalep-react"
+import { AppNavbar } from "@/shared/components/AppNavbar"
+import { MotionModal } from "@/shared/components/MotionModal"
 import {
   clampStoryIndex,
   nextStoryIndex,
@@ -30,59 +24,38 @@ import "../stories.css"
 
 export interface StoriesViewerProps {
   sequence: StorySequence
+  /** Controlled open; when false, plays modal exit then `onExited`. */
+  open: boolean
   onClose: () => void
   onCta?: (page: StoryPage) => void
+  onExited?: () => void
 }
 
 const TAP_MAX_MS = 220
-
-type ViewerPhase = "enter" | "idle" | "exit"
 
 function prefersReducedMotion(): boolean {
   if (typeof window === "undefined") return false
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches
 }
 
-function StoriesStatusBar() {
-  return (
-    <div className="stories-viewer__status" aria-hidden>
-      <div className="stories-viewer__status-time">12:00</div>
-      <div className="stories-viewer__status-island" />
-      <div className="stories-viewer__status-levels">
-        <img
-          src={cellularIcon}
-          alt=""
-          className="stories-viewer__status-icon stories-viewer__status-icon--cellular"
-        />
-        <img
-          src={wifiIcon}
-          alt=""
-          className="stories-viewer__status-icon stories-viewer__status-icon--wifi"
-        />
-        <img
-          src={batteryIcon}
-          alt=""
-          className="stories-viewer__status-icon stories-viewer__status-icon--battery"
-        />
-      </div>
-    </div>
-  )
-}
-
-export function StoriesViewer({ sequence, onClose, onCta }: StoriesViewerProps) {
-  const { portalRoot } = useContext(DeviceShellContext)
+export function StoriesViewer({
+  sequence,
+  open,
+  onClose,
+  onCta,
+  onExited,
+}: StoriesViewerProps) {
   const pages = sequence.pages
   const pageCount = pages.length
   const [index, setIndex] = useState(0)
-  const [phase, setPhase] = useState<ViewerPhase>("enter")
   const [paused, setPaused] = useState(true)
   const [fillKey, setFillKey] = useState(0)
   const [dragging, setDragging] = useState(false)
   const [trackOffset, setTrackOffset] = useState(0)
+  const [presentationReady, setPresentationReady] = useState(false)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map())
-  const closingRef = useRef(false)
   const dragRef = useRef({
     active: false,
     axis: "" as "" | "x" | "y",
@@ -101,16 +74,8 @@ export function StoriesViewer({ sequence, onClose, onCta }: StoriesViewerProps) 
 
   const pageWidth = () => viewportRef.current?.clientWidth ?? 0
 
-  const requestClose = useCallback(() => {
-    if (closingRef.current) return
-    closingRef.current = true
-    setPaused(true)
-    setPhase("exit")
-  }, [])
-
   const goTo = useCallback(
     (next: number) => {
-      if (closingRef.current) return
       const clamped = clampStoryIndex(next, pageCount)
       setIndex(clamped)
       setFillKey((key) => key + 1)
@@ -130,41 +95,37 @@ export function StoriesViewer({ sequence, onClose, onCta }: StoriesViewerProps) 
   }, [index, writeOffset])
 
   useEffect(() => {
+    if (!presentationReady || !open) {
+      setPaused(true)
+      return
+    }
+    setPaused(false)
+    setFillKey((key) => key + 1)
+  }, [presentationReady, open])
+
+  useEffect(() => {
     videoRefs.current.forEach((video, i) => {
-      if (i === index && !paused && phase === "idle") {
+      if (i === index && !paused && presentationReady && open) {
         void video.play().catch(() => {})
       } else {
         video.pause()
       }
     })
-  }, [index, paused, phase])
+  }, [index, paused, presentationReady, open])
 
   const handleDwellComplete = useCallback(() => {
-    if (paused || phase !== "idle") return
+    if (paused || !presentationReady || !open) return
     const outcome = storyDwellOutcome(index, pageCount)
     if (outcome === "close") {
-      requestClose()
+      onClose()
       return
     }
     if (outcome === "stay") return
     goTo(nextStoryIndex(index, pageCount))
-  }, [goTo, index, pageCount, paused, phase, requestClose])
-
-  const handlePhaseAnimationEnd = (event: ReactAnimationEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget) return
-    if (phase === "enter") {
-      setPhase("idle")
-      setPaused(false)
-      setFillKey((key) => key + 1)
-      return
-    }
-    if (phase === "exit") {
-      onClose()
-    }
-  }
+  }, [goTo, index, onClose, open, pageCount, paused, presentationReady])
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (phase !== "idle") return
+    if (!presentationReady || !open) return
     if ((event.target as HTMLElement).closest("[data-stories-control]")) {
       return
     }
@@ -221,7 +182,6 @@ export function StoriesViewer({ sequence, onClose, onCta }: StoriesViewerProps) 
       } else if (index < pageCount - 1) {
         goTo(nextStoryIndex(index, pageCount))
       } else {
-        // Last page: content tap must not close — only CTA or back.
         setPaused(false)
       }
       return
@@ -238,135 +198,131 @@ export function StoriesViewer({ sequence, onClose, onCta }: StoriesViewerProps) 
       onCta(activePage)
       return
     }
-    if (index >= pageCount - 1) requestClose()
+    if (index >= pageCount - 1) onClose()
     else goTo(nextStoryIndex(index, pageCount))
   }
 
-  const content = (
-    <div
-      className="stories-viewer"
-      data-tone={activePage.tone}
-      data-phase={phase}
-      role="dialog"
-      aria-modal="true"
-      aria-label={activePage.title}
-      onAnimationEnd={handlePhaseAnimationEnd}
+  return (
+    <MotionModal
+      open={open}
+      onReadyChange={setPresentationReady}
+      onExited={onExited}
     >
-      <div className="stories-viewer__chrome">
-        <StoriesStatusBar />
-        <div className="stories-viewer__toolbar">
-          <div data-stories-control>
-            <GhostButton onClick={requestClose} aria-label="Back">
-              <ArrowBackward size="lg" className="stories-viewer__back-icon" />
-            </GhostButton>
-          </div>
-        </div>
+      <div
+        className="stories-viewer"
+        data-tone={activePage.tone}
+        role="dialog"
+        aria-modal="true"
+        aria-label={activePage.title}
+      >
+        <AppNavbar
+          canGoBack
+          immersive
+          interactive={presentationReady && open}
+          onBack={onClose}
+        />
+
         <StoriesProgress
           pageCount={pageCount}
           activeIndex={index}
-          paused={paused || phase !== "idle"}
+          paused={paused || !presentationReady || !open}
           fillKey={fillKey}
           onDwellComplete={handleDwellComplete}
         />
-      </div>
 
-      <div className="stories-viewer__sheet">
-        <div
-          ref={viewportRef}
-          className="stories-viewer__viewport"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={finishPointer}
-          onPointerCancel={finishPointer}
-        >
+        <div className="stories-viewer__sheet">
           <div
-            ref={trackRef}
-            className={["stories-viewer__track", dragging ? "is-dragging" : ""]
-              .filter(Boolean)
-              .join(" ")}
+            ref={viewportRef}
+            className="stories-viewer__viewport"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={finishPointer}
+            onPointerCancel={finishPointer}
           >
-            {pages.map((page, pageIndex) => {
-              const width = pageWidth()
-              const opacity = reducedRef.current
-                ? pageIndex === index
-                  ? 1
-                  : 0
-                : storyPageOpacity(pageIndex, trackOffset, width)
-              return (
-                <div
-                  key={page.id}
-                  className={[
-                    "stories-viewer__page",
-                    pageIndex === index ? "is-active" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={
-                    {
-                      "--stories-page-opacity": String(opacity),
-                    } as CSSProperties
-                  }
-                >
-                  <div className="stories-viewer__body">
-                    <div className="stories-viewer__copy">
-                      <Typography
-                        variant="heading-l-accent"
-                        color="primary"
-                        as="h1"
-                      >
-                        {page.title}
-                      </Typography>
-                      <Typography
-                        variant="body-l-regular"
-                        color="primary"
-                        as="p"
-                      >
-                        {page.body}
-                      </Typography>
-                    </div>
-                    <div className="stories-viewer__media">
-                      {page.media.kind === "image" ? (
-                        <img
-                          src={page.media.src}
-                          alt={page.media.alt}
-                          draggable={false}
-                        />
-                      ) : null}
-                      {page.media.kind === "video" ? (
-                        <video
-                          ref={(el) => {
-                            if (el) videoRefs.current.set(pageIndex, el)
-                            else videoRefs.current.delete(pageIndex)
-                          }}
-                          src={page.media.src}
-                          poster={page.media.poster}
-                          muted
-                          playsInline
-                          loop
-                          preload="metadata"
-                        />
-                      ) : null}
+            <div
+              ref={trackRef}
+              className={["stories-viewer__track", dragging ? "is-dragging" : ""]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              {pages.map((page, pageIndex) => {
+                const width = pageWidth()
+                const opacity = reducedRef.current
+                  ? pageIndex === index
+                    ? 1
+                    : 0
+                  : storyPageOpacity(pageIndex, trackOffset, width)
+                return (
+                  <div
+                    key={page.id}
+                    className={[
+                      "stories-viewer__page",
+                      pageIndex === index ? "is-active" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={
+                      {
+                        "--stories-page-opacity": String(opacity),
+                      } as CSSProperties
+                    }
+                  >
+                    <div className="stories-viewer__body">
+                      <div className="stories-viewer__copy">
+                        <Typography
+                          variant="heading-l-accent"
+                          color="primary"
+                          as="h1"
+                        >
+                          {page.title}
+                        </Typography>
+                        <Typography
+                          variant="body-l-regular"
+                          color="primary"
+                          as="p"
+                        >
+                          {page.body}
+                        </Typography>
+                      </div>
+                      <div className="stories-viewer__media">
+                        {page.media.kind === "image" ? (
+                          <img
+                            src={page.media.src}
+                            alt={page.media.alt}
+                            draggable={false}
+                          />
+                        ) : null}
+                        {page.media.kind === "video" ? (
+                          <video
+                            ref={(el) => {
+                              if (el) videoRefs.current.set(pageIndex, el)
+                              else videoRefs.current.delete(pageIndex)
+                            }}
+                            src={page.media.src}
+                            poster={page.media.poster}
+                            muted
+                            playsInline
+                            loop
+                            preload="metadata"
+                          />
+                        ) : null}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
+
+          {activePage.ctaLabel ? (
+            <div className="stories-viewer__cta" data-stories-control>
+              <Button size="lg" variant="primary" fullWidth onClick={handleCta}>
+                {activePage.ctaLabel}
+              </Button>
+            </div>
+          ) : null}
         </div>
-
-        {activePage.ctaLabel ? (
-          <div className="stories-viewer__cta" data-stories-control>
-            <Button size="lg" variant="primary" fullWidth onClick={handleCta}>
-              {activePage.ctaLabel}
-            </Button>
-          </div>
-        ) : null}
       </div>
-    </div>
+    </MotionModal>
   )
-
-  if (portalRoot) {
-    return createPortal(content, portalRoot)
-  }
-  return content
 }
