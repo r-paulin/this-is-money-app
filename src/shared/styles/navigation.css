@@ -33,7 +33,8 @@
   backface-visibility: hidden;
 }
 
-/* Scrollable page body under in-flow AppNavbar (moves with push/pop). */
+/* Scrollable page body under in-flow AppNavbar toolbar (moves with push/pop).
+   OsStatusBar is fixed outside the stack. */
 .nav-layer__body {
   position: relative;
   flex: 1 1 auto;

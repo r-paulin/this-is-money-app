@@ -2,36 +2,7 @@ import { GhostButton } from "@bolteu/kalep-react"
 import ArrowBackward from "@bolteu/kalep-react-icons/dist/ArrowBackward"
 import Cross from "@bolteu/kalep-react-icons/dist/Cross"
 import { useNavigationStack } from "@/shared/navigation"
-import batteryIcon from "@/shared/assets/status-bar/battery.svg"
-import cellularIcon from "@/shared/assets/status-bar/cellular.svg"
-import wifiIcon from "@/shared/assets/status-bar/wifi.svg"
 import "./app-navbar.css"
-
-function WebViewStatusBar() {
-  return (
-    <div className="app-navbar__status-bar" aria-hidden>
-      <div className="app-navbar__status-time">12:00</div>
-      <div className="app-navbar__status-island" />
-      <div className="app-navbar__status-levels">
-        <img
-          src={cellularIcon}
-          alt=""
-          className="app-navbar__status-icon app-navbar__status-icon--cellular"
-        />
-        <img
-          src={wifiIcon}
-          alt=""
-          className="app-navbar__status-icon app-navbar__status-icon--wifi"
-        />
-        <img
-          src={batteryIcon}
-          alt=""
-          className="app-navbar__status-icon app-navbar__status-icon--battery"
-        />
-      </div>
-    </div>
-  )
-}
 
 export interface AppNavbarProps {
   /** Whether this screen can pop (index > 0). */
@@ -90,7 +61,8 @@ export function AppNavbar({
         .join(" ")}
       role="banner"
     >
-      <WebViewStatusBar />
+      {/* Reserves space under fixed OsStatusBar; does not render OS chrome. */}
+      <div className="app-navbar__status-spacer" aria-hidden />
 
       <div className="app-navbar__toolbar">
         {isHomeRoot || showBack ? (

@@ -18,20 +18,49 @@
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  border-bottom: 1px solid var(--app-navbar-border);
-  background: var(--app-navbar-bg);
   color: var(--app-navbar-fg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: transparent;
 }
 
-/* Immersive screens (Stories): same header, dark chrome. */
+/* Immersive screens (Stories): dark toolbar chrome. */
 .app-navbar--immersive {
   --app-navbar-fg: var(--color-layer-floor-2, #fff);
   --app-navbar-bg: var(--color-static-bg-key-dark, #000);
   --app-navbar-border: transparent;
+}
+
+/* Fixed OS status bar — above nav layers and modals; theme only. */
+.os-status-bar {
+  --os-status-fg: var(--content-primary, #191f1c);
+  --os-status-bg: rgba(255, 255, 255, 0.7);
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  flex-shrink: 0;
+  pointer-events: none;
+  color: var(--os-status-fg);
+  background: var(--os-status-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.os-status-bar[data-theme="dark"] {
+  --os-status-fg: var(--color-layer-floor-2, #fff);
+  --os-status-bg: var(--color-static-bg-key-dark, #000);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+.os-status-bar[data-theme="dark"] .app-navbar__status-icon {
+  filter: brightness(0) invert(1);
+}
+
+.app-navbar__status-spacer {
+  height: var(--app-navbar-status-bar-height);
+  flex-shrink: 0;
 }
 
 .app-navbar__status-bar {
@@ -55,7 +84,7 @@
   font-size: 17px;
   font-weight: 590;
   line-height: 22px;
-  color: var(--app-navbar-fg);
+  color: inherit;
   text-align: center;
   white-space: nowrap;
 }
@@ -80,10 +109,6 @@
 .app-navbar__status-icon {
   display: block;
   flex-shrink: 0;
-}
-
-.app-navbar--immersive .app-navbar__status-icon {
-  filter: brightness(0) invert(1);
 }
 
 .app-navbar__back-icon {
@@ -117,6 +142,15 @@
   justify-content: center;
   align-items: flex-start;
   padding: 0 var(--dimension-300, 12px);
+  border-bottom: 1px solid var(--app-navbar-border);
+  background: var(--app-navbar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.app-navbar--immersive .app-navbar__toolbar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .app-navbar__icon-button {

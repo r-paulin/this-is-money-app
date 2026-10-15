@@ -2,6 +2,7 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
   type ReactNode,
   type TransitionEvent,
@@ -23,6 +24,9 @@ export interface MotionModalProps {
   className?: string
 }
 
+/** Exit fallback if `transitionend` is skipped (interrupted / reduced motion). */
+const EXIT_FALLBACK_MS = 600
+
 export function MotionModal({
   open,
   children,
@@ -34,14 +38,31 @@ export function MotionModal({
   const kind = getRecipes().modal.kind
   const [mounted, setMounted] = useState(open)
   const [phase, setPhase] = useState<MotionModalPhase>(open ? "enter" : "exit")
+  const phaseRef = useRef(phase)
+  const sessionRef = useRef(0)
+  const exitedRef = useRef(false)
+  phaseRef.current = phase
+
+  const finishExit = () => {
+    if (exitedRef.current || phaseRef.current !== "exit") return
+    exitedRef.current = true
+    setMounted(false)
+    onExited?.()
+  }
 
   useEffect(() => {
-    if (open) setMounted(true)
+    if (open) {
+      sessionRef.current += 1
+      exitedRef.current = false
+      setMounted(true)
+      setPhase("enter")
+      return
+    }
+    setPhase("exit")
   }, [open])
 
   useLayoutEffect(() => {
-    if (!mounted || !open) return
-    setPhase("enter")
+    if (!mounted || !open || phase !== "enter") return
     let inner = 0
     const outer = requestAnimationFrame(() => {
       inner = requestAnimationFrame(() => setPhase("idle"))
@@ -50,19 +71,25 @@ export function MotionModal({
       cancelAnimationFrame(outer)
       cancelAnimationFrame(inner)
     }
-  }, [mounted, open])
+  }, [mounted, open, phase])
 
   useEffect(() => {
-    if (!open && mounted) setPhase("exit")
-  }, [open, mounted])
+    onReadyChange?.(phase === "idle" && open)
+  }, [phase, open, onReadyChange])
 
   useEffect(() => {
-    onReadyChange?.(phase === "idle")
-  }, [phase, onReadyChange])
+    if (open || !mounted || phase !== "exit") return
+    const session = sessionRef.current
+    const timer = window.setTimeout(() => {
+      if (sessionRef.current !== session) return
+      finishExit()
+    }, EXIT_FALLBACK_MS)
+    return () => window.clearTimeout(timer)
+  }, [open, mounted, phase, onExited])
 
   const handleTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return
-    if (phase !== "exit") return
+    if (phaseRef.current !== "exit") return
     const property = event.propertyName
     const reduced =
       typeof window !== "undefined" &&
@@ -72,8 +99,7 @@ export function MotionModal({
     } else if (property !== "transform") {
       return
     }
-    setMounted(false)
-    onExited?.()
+    finishExit()
   }
 
   if (!mounted) return null

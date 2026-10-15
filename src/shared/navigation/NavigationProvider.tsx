@@ -6,6 +6,11 @@ import {
   useState,
   type ReactNode,
 } from "react"
+import {
+  OsStatusBar,
+  OsStatusBarContext,
+  type OsStatusBarTheme,
+} from "@/shared/components/OsStatusBar"
 import { NavigationContext } from "./navigationContext"
 import { NavigationStack } from "./NavigationStack"
 import type { ScreenEntry, TransitionDirection } from "./navigation.types"
@@ -45,6 +50,8 @@ export function NavigationProvider({
     null,
   )
   const [isNavigationLocked, setNavigationLocked] = useState(false)
+  const [statusBarOverride, setStatusBarOverride] =
+    useState<OsStatusBarTheme | null>(null)
   const pendingPopRef = useRef(false)
   const pendingPopToRootRef = useRef(false)
   const pendingPopToIndexRef = useRef<number | null>(null)
@@ -176,12 +183,27 @@ export function NavigationProvider({
     ],
   )
 
+  const topImmersive = stack[stack.length - 1]?.immersive === true
+  const statusBarTheme: OsStatusBarTheme =
+    statusBarOverride ?? (topImmersive ? "dark" : "light")
+
+  const statusBarContext = useMemo(
+    () => ({
+      theme: statusBarTheme,
+      setThemeOverride: setStatusBarOverride,
+    }),
+    [statusBarTheme],
+  )
+
   return (
     <NavigationContext.Provider value={value}>
-      <div className="relative h-[var(--app-h)] min-h-[var(--app-h)] overflow-hidden">
-        <NavigationStack />
-        {children}
-      </div>
+      <OsStatusBarContext.Provider value={statusBarContext}>
+        <div className="relative h-[var(--app-h)] min-h-[var(--app-h)] overflow-hidden">
+          <OsStatusBar theme={statusBarTheme} />
+          <NavigationStack />
+          {children}
+        </div>
+      </OsStatusBarContext.Provider>
     </NavigationContext.Provider>
   )
 }

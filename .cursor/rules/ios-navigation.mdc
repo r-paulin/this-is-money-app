@@ -13,8 +13,8 @@ Use the shared navigation stack for **hierarchical drill-down** screens. Match A
 | Pattern | API | Motion |
 |---------|-----|--------|
 | **Push** (list row, card tap, chevron link) | `push()` from `useNavigationStack()` | Enter from **right**, exit to **right** |
-| **Immersive push** (Stories) | `push({ immersive: true, … })` | Same push/pop; layer AppNavbar uses dark chrome |
-| **Modal** (Send money, forms, alerts, sheets) | Kalep modal / separate overlay — **not** the nav stack | Present from bottom or fade |
+| **Immersive push** | `push({ immersive: true, … })` | Same push/pop; dark `OsStatusBar` + immersive toolbar |
+| **Modal** (Stories, sheets, forms) | Overlay — **not** the nav stack; Stories uses `setThemeOverride("dark")` | Modal enter/exit; `OsStatusBar` stays fixed |
 
 ## Required API
 

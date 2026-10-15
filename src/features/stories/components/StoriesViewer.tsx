@@ -9,6 +9,7 @@ import {
 import { Button, Typography } from "@bolteu/kalep-react"
 import { AppNavbar } from "@/shared/components/AppNavbar"
 import { MotionModal } from "@/shared/components/MotionModal"
+import { useOsStatusBar } from "@/shared/components/OsStatusBar"
 import {
   clampStoryIndex,
   nextStoryIndex,
@@ -45,6 +46,7 @@ export function StoriesViewer({
   onCta,
   onExited,
 }: StoriesViewerProps) {
+  const { setThemeOverride } = useOsStatusBar()
   const pages = sequence.pages
   const pageCount = pages.length
   const [index, setIndex] = useState(0)
@@ -67,12 +69,17 @@ export function StoriesViewer({
   })
   const reducedRef = useRef(prefersReducedMotion())
 
-  const writeOffset = useCallback((px: number) => {
-    trackRef.current?.style.setProperty("--stories-x", `${px}px`)
-    setTrackOffset(px)
-  }, [])
+  useEffect(() => {
+    if (open) setThemeOverride("dark")
+    else setThemeOverride(null)
+    return () => setThemeOverride(null)
+  }, [open, setThemeOverride])
 
   const pageWidth = () => viewportRef.current?.clientWidth ?? 0
+
+  const writeOffset = useCallback((px: number) => {
+    setTrackOffset(px)
+  }, [])
 
   const goTo = useCallback(
     (next: number) => {
@@ -87,12 +94,19 @@ export function StoriesViewer({
     [pageCount, writeOffset],
   )
 
+  // Re-open remounts the track DOM; keep transform + opacity in sync with index.
   useEffect(() => {
+    if (!open) return
     reducedRef.current = prefersReducedMotion()
-    if (!reducedRef.current) {
-      writeOffset(-index * pageWidth())
-    }
-  }, [index, writeOffset])
+    setIndex(0)
+    setTrackOffset(0)
+    setFillKey((key) => key + 1)
+  }, [open])
+
+  useEffect(() => {
+    if (!open || !presentationReady || reducedRef.current) return
+    writeOffset(-index * pageWidth())
+  }, [open, presentationReady, index, writeOffset])
 
   useEffect(() => {
     if (!presentationReady || !open) {
@@ -244,6 +258,11 @@ export function StoriesViewer({
               className={["stories-viewer__track", dragging ? "is-dragging" : ""]
                 .filter(Boolean)
                 .join(" ")}
+              style={
+                {
+                  "--stories-x": `${trackOffset}px`,
+                } as CSSProperties
+              }
             >
               {pages.map((page, pageIndex) => {
                 const width = pageWidth()

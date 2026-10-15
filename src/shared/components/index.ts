@@ -1,4 +1,6 @@
 export { AppNavbar } from "./AppNavbar"
+export { OsStatusBar, useOsStatusBar } from "./OsStatusBar"
+export type { OsStatusBarTheme } from "./OsStatusBar"
 export { MotionModal } from "./MotionModal"
 export type { MotionModalPhase, MotionModalProps } from "./MotionModal"
 export { DeviceFrame } from "./DeviceFrame"
