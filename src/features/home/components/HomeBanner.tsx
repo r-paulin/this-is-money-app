@@ -11,6 +11,7 @@ import "./home-banner.css"
 export interface HomeBannerProps {
   id: HomeBannerId
   onDismiss: () => void
+  onActivate?: (id: HomeBannerId) => void
   className?: string
 }
 
@@ -33,7 +34,12 @@ function prefersStaticMedia(): boolean {
   return reduceMotion || Boolean(connection?.saveData)
 }
 
-export function HomeBanner({ id, onDismiss, className = "" }: HomeBannerProps) {
+export function HomeBanner({
+  id,
+  onDismiss,
+  onActivate,
+  className = "",
+}: HomeBannerProps) {
   const content = HOME_BANNER_CONTENT[id]
   const plainText = bannerBodyPlainText(content.body)
   const [mediaPhase, setMediaPhase] = useState<MediaPhase>("primary")
@@ -118,7 +124,7 @@ export function HomeBanner({ id, onDismiss, className = "" }: HomeBannerProps) {
 
   const activate = () => {
     if (closing) return
-    console.info("[stub] Banner action:", id)
+    onActivate?.(id)
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {

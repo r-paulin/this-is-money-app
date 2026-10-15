@@ -22,7 +22,7 @@ export function DeviceShellOutlet({
     <DeviceShellContext.Provider value={value}>
       <div
         ref={setPortalRoot}
-        className={["__kalep", className].filter(Boolean).join(" ")}
+        className={["__kalep", "relative", className].filter(Boolean).join(" ")}
         {...rest}
       >
         {children}

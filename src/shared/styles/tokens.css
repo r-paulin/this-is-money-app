@@ -97,6 +97,8 @@
   --motion-duration-xl: 500ms;
   /* Loading pulse cycle (skeleton shimmer). Real-time; use with linear only. */
   --motion-duration-pulse: 1600ms;
+  /* Story page dwell / progress fill. Real-time; use with linear only. Not UI travel. */
+  --motion-duration-story-dwell: 5000ms;
 
   --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --motion-ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
@@ -257,6 +259,7 @@
     --motion-sheet-enter-duration: var(--motion-duration-sm);
     --motion-sheet-exit-duration: var(--motion-duration-sm);
     --motion-duration-pulse: 0ms;
+    /* Keep story dwell so progress still communicates time; paging slides are removed in CSS. */
   }
 }
 

@@ -352,7 +352,7 @@ export function ReviewAndSendScreen({
   }, [draft, isTransitioning, push, trustedToggleChecked])
 
   return (
-    <div className="flex min-h-dvh flex-col bg-layer-floor-1">
+    <div className="flex flex-col bg-layer-floor-1">
       <div className="px-6 py-3">
         <Typography variant="body-s-regular" color="secondary" as="p">
           Step 3 of 3
@@ -364,7 +364,7 @@ export function ReviewAndSendScreen({
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col pb-4">
+      <div className="flex flex-col pb-4">
         {rules.bannerKind === "trust" ? (
           <div className="pb-2">
             <InlineBanner
@@ -437,7 +437,7 @@ export function ReviewAndSendScreen({
         ) : null}
       </div>
 
-      <div className="sticky bottom-0 flex flex-col gap-3 bg-layer-floor-1 px-6 py-4">
+      <div className="flex flex-col gap-3 px-6 py-4">
         {rules.ctaMode === "edit-and-send" ? (
           <>
             <Button

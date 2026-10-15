@@ -84,6 +84,7 @@ Defined in `src/shared/styles/tokens.css`. Authored UI motion uses these variabl
 | `--motion-duration-lg` | 400ms | Large exit, dialog-scale |
 | `--motion-duration-xl` | 500ms | iOS page and sheet enter. Ceiling for authored UI travel. |
 | `--motion-duration-pulse` | 1600ms | Skeleton / loading pulse only. Pair with `linear`. Reduced motion: 0ms. |
+| `--motion-duration-story-dwell` | 5000ms | Stories page auto-advance / progress fill only. Pair with `linear`. Real-time, not UI travel (travel ceiling remains xl). |
 | `--motion-ease-standard` | `cubic-bezier(0.2, 0, 0, 1)` | Moves while it stays on screen |
 | `--motion-ease-enter` | `cubic-bezier(0.05, 0.7, 0.1, 1)` | Arrives |
 | `--motion-ease-exit` | `cubic-bezier(0.3, 0, 0.8, 0.15)` | Leaves |

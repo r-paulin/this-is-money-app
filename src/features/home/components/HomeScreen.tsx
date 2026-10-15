@@ -1,5 +1,6 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { PullToRefresh } from "@/shared/components/PullToRefresh"
+import { SECURE_ACCOUNT_STORIES, StoriesViewer } from "@/features/stories"
 import { useHomeScreen } from "../useHomeScreen"
 import type { Transaction } from "@/features/transactions/data/mockTransactions"
 import type { CardType } from "../home.types"
@@ -50,43 +51,56 @@ export function HomeScreen({
     console.info("[stub] Order physical card")
   }, [])
 
+  const [storiesOpen, setStoriesOpen] = useState(false)
+  const openStories = useCallback(() => setStoriesOpen(true), [])
+
   return (
-    <PullToRefresh onRefresh={handleRefresh} className="!bg-layer-floor-1">
-      <div className="flex flex-col bg-layer-floor-0-grouped">
-        <HomeHeader
-          balanceCents={balanceCents}
-          balanceState={balanceState}
-          notification={notification}
-          onSendMoney={onSendMoney}
-          onUnlockCard={onUnlockCard}
+    <>
+      <PullToRefresh onRefresh={handleRefresh} className="!bg-layer-floor-1">
+        <div className="flex flex-col bg-layer-floor-0-grouped">
+          <HomeHeader
+            balanceCents={balanceCents}
+            balanceState={balanceState}
+            notification={notification}
+            onSendMoney={onSendMoney}
+            onUnlockCard={onUnlockCard}
+          />
+
+          <BannerSlider
+            bannerIds={banners}
+            physicalOrdered={physicalOrdered}
+            onDismiss={dismissBanner}
+            onActivate={openStories}
+          />
+
+          <ActivitySection
+            activityState={activityState}
+            transactionCount={transactionCount}
+            onSeeAll={onSeeAll}
+            onRetry={retryActivity}
+            onTransactionSelect={onTransactionSelect}
+          />
+
+          <CardsSection
+            cards={cards}
+            cardsState={cardsState}
+            asOfMs={asOfMs}
+            onCardClick={onCardClick}
+            onGetPhysical={handleGetPhysical}
+          />
+
+          <CashbackSection />
+
+          <LegalFooter />
+        </div>
+      </PullToRefresh>
+
+      {storiesOpen ? (
+        <StoriesViewer
+          sequence={SECURE_ACCOUNT_STORIES}
+          onClose={() => setStoriesOpen(false)}
         />
-
-        <BannerSlider
-          bannerIds={banners}
-          physicalOrdered={physicalOrdered}
-          onDismiss={dismissBanner}
-        />
-
-        <ActivitySection
-          activityState={activityState}
-          transactionCount={transactionCount}
-          onSeeAll={onSeeAll}
-          onRetry={retryActivity}
-          onTransactionSelect={onTransactionSelect}
-        />
-
-        <CardsSection
-          cards={cards}
-          cardsState={cardsState}
-          asOfMs={asOfMs}
-          onCardClick={onCardClick}
-          onGetPhysical={handleGetPhysical}
-        />
-
-        <CashbackSection />
-
-        <LegalFooter />
-      </div>
-    </PullToRefresh>
+      ) : null}
+    </>
   )
 }

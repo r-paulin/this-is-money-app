@@ -12,12 +12,14 @@ export interface BannerSliderProps {
   bannerIds: HomeBannerId[]
   physicalOrdered: boolean
   onDismiss: (id: HomeBannerId) => void
+  onActivate?: (id: HomeBannerId) => void
 }
 
 export function BannerSlider({
   bannerIds,
   physicalOrdered,
   onDismiss,
+  onActivate,
 }: BannerSliderProps) {
   const visible = filterEligibleBanners(bannerIds, physicalOrdered)
   const single = bannerSliderIsSingle(visible.length)
@@ -211,6 +213,7 @@ export function BannerSlider({
               <HomeBanner
                 id={id}
                 onDismiss={() => onDismiss(id)}
+                onActivate={onActivate}
                 className="h-full w-full flex-1"
               />
             </div>
