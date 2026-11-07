@@ -7,7 +7,7 @@ import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
 import { useNumberPopIn } from "@/shared/components/useNumberPopIn"
 import { isSendMoneyDisabled } from "../lib/homeScreenLogic"
-import type { BalanceFetchState, CardType, HomeNotification } from "../home.types"
+import type { BalanceFetchState, HomeNotification } from "../home.types"
 import sectionSeparator from "../assets/section-separator.svg"
 import "./home-header.css"
 
@@ -16,7 +16,7 @@ export interface HomeHeaderProps {
   balanceState: BalanceFetchState
   notification: HomeNotification | null
   onSendMoney: () => void
-  onUnlockCard?: (cardType: CardType) => void
+  onNotificationAction?: (notification: HomeNotification) => void
 }
 
 export function HomeHeader({
@@ -24,7 +24,7 @@ export function HomeHeader({
   balanceState,
   notification,
   onSendMoney,
-  onUnlockCard,
+  onNotificationAction,
 }: HomeHeaderProps) {
   const formattedBalance = useMemo(
     () => formatHomeBalanceEurFromCents(balanceCents),
@@ -88,7 +88,7 @@ export function HomeHeader({
                   <button
                     type="button"
                     className="home-header__notification-action"
-                    onClick={() => onUnlockCard?.(notification.cardType)}
+                    onClick={() => onNotificationAction?.(notification)}
                   >
                     <Typography variant="body-s-compact-accent" color="warning-primary" as="span">
                       {notification.actionLabel}

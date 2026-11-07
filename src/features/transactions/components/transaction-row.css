@@ -1,0 +1,14 @@
+/**
+ * Figma Ⓒ List Item `9656:41653` — amount on the same line as the title.
+ * Kalep centers the row and the end slot; override so icon, label, and amount
+ * share the top edge (amount keeps pt-1 / primary keeps label py).
+ */
+.transaction-row > :first-child > :first-child {
+  align-items: flex-start !important;
+}
+
+.transaction-row > :first-child > :first-child > :first-child,
+.transaction-row > :first-child > :first-child > :last-child {
+  align-items: flex-start !important;
+  height: auto !important;
+}

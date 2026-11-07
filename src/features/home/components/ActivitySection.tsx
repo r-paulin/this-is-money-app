@@ -115,12 +115,13 @@ export function ActivitySection({
     transactionCount,
   )
 
+  const now = useMemo(() => new Date(), [])
   const previewTransactions = useMemo(() => {
     if (bodyState !== "few" && bodyState !== "maximum") return []
-    return buildMockTransactions()
+    return buildMockTransactions(now)
       .sort((a, b) => b.occurredAt - a.occurredAt)
       .slice(0, PREVIEW_LIMIT)
-  }, [bodyState])
+  }, [bodyState, now])
 
   const showSeeAll = bodyState === "maximum" && shouldShowSeeAll(transactionCount)
 

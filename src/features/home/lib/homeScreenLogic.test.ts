@@ -1,12 +1,19 @@
 import assert from "node:assert/strict"
 import { describe, it } from "node:test"
 import {
+  buildDefaultSpendingLimits,
+  resetSpendingLimitsStore,
+  setSpendingLimits,
+} from "../../cardControls/lib/spendingLimits"
+import {
   bannerSliderIsSingle,
   bannerSnapIndex,
   filterEligibleBanners,
   getActivityBodyState,
   getCardStatusLine,
+  getHomeNotification,
   getLockedCardNotification,
+  getSpendingLimitNotification,
   getPhysicalCardStatusLine,
   isSendMoneyDisabled,
   shouldShowPhysicalOffer,
@@ -148,6 +155,31 @@ describe("homeScreenLogic", () => {
     assert.equal(notification.accent, "Your card ·· 4231 is locked.")
     assert.equal(notification.body, " Unlock it to start making payments again")
     assert.equal(notification.actionLabel, "Unlock the card")
+    assert.equal(notification.action, "unlock")
     assert.equal(notification.cardType, "virtual")
+  })
+
+  it("prefers locked-card notification over spending-limit warnings", () => {
+    const cards = [
+      { kind: "virtual" as const, color: "green" as const, lastFour: "4231", locked: true },
+    ]
+    const notification = getHomeNotification(cards)
+    assert.ok(notification)
+    assert.equal(notification.action, "unlock")
+  })
+
+  it("builds a spending-limit notification when available today is low", () => {
+    resetSpendingLimitsStore()
+    const state = buildDefaultSpendingLimits(new Date(2026, 10, 6, 12, 0))
+    setSpendingLimits("virtual", { ...state, spentTodayCents: 295_000 })
+
+    const notification = getSpendingLimitNotification(
+      [{ kind: "virtual", color: "green", lastFour: "4231" }],
+      Date.UTC(2026, 10, 6, 12, 0),
+    )
+    assert.ok(notification)
+    assert.equal(notification.action, "spending-limits")
+    assert.match(notification.accent, /€50\.00 left to spend today/)
+    resetSpendingLimitsStore()
   })
 })

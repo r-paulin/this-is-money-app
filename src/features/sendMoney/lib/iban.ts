@@ -119,3 +119,25 @@ export function formatIbanTruncated(iban: string): string {
   const prefix = formatIbanDisplay(normalized.slice(0, 8))
   return `${prefix}…`
 }
+
+/** One masked nibble — Figma / card chrome use middots, not bullet glyphs. */
+export const IBAN_MASK_GROUP = "····"
+
+/** Masked detail display, e.g. FR14 ···· ···· ···· ···· 2606 */
+export function formatIbanMasked(iban: string): string {
+  const parts = getIbanMaskParts(iban)
+  if (!parts) return formatIbanDisplay(iban)
+  return [parts.prefix, ...parts.maskedGroups, parts.suffix].join(" ")
+}
+
+export function getIbanMaskParts(
+  iban: string,
+): { prefix: string; maskedGroups: string[]; suffix: string } | null {
+  const normalized = normalizeIban(iban)
+  if (normalized.length < 10) return null
+  return {
+    prefix: normalized.slice(0, 4),
+    maskedGroups: [IBAN_MASK_GROUP, IBAN_MASK_GROUP, IBAN_MASK_GROUP, IBAN_MASK_GROUP],
+    suffix: normalized.slice(-4),
+  }
+}

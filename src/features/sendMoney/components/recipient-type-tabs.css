@@ -1,4 +1,4 @@
-/* Recipient type switch: content cross-fades. No horizontal slide. */
+/* Recipient type switch: form slides horizontally (iOS tab-view). */
 
 .recipient-type-tabs {
   position: relative;
@@ -27,16 +27,38 @@
 }
 
 .recipient-type-form-panel__track {
-  display: grid;
+  display: flex;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform var(--motion-duration-md) var(--motion-ease-standard);
+}
+
+.recipient-type-form-panel__track--business {
+  transform: translateX(-50%);
 }
 
 .recipient-type-form-panel__pane {
-  grid-area: 1 / 1;
+  width: 50%;
   min-width: 0;
-  transition: opacity var(--motion-duration-xs) var(--motion-ease-standard);
+  flex-shrink: 0;
 }
 
-.recipient-type-form-panel__pane[aria-hidden="true"] {
-  opacity: 0;
-  pointer-events: none;
+@media (prefers-reduced-motion: reduce) {
+  .recipient-type-form-panel__track {
+    display: grid;
+    width: 100%;
+    transform: none;
+    transition: none;
+  }
+
+  .recipient-type-form-panel__pane {
+    grid-area: 1 / 1;
+    width: 100%;
+    transition: opacity var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+
+  .recipient-type-form-panel__pane[aria-hidden="true"] {
+    opacity: 0;
+    pointer-events: none;
+  }
 }

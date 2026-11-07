@@ -14,7 +14,7 @@ Step 1 of the send-money flow — bank details for a new payee.
 | Business | Business name |
 
 - Switching tabs **keeps** the same `accountHolderName` value; only the label changes.
-- **Motion:** the form (country, account fields, name) cross-fades at `--motion-duration-xs` and `--motion-ease-standard` (`RecipientTypeFormPanels`). It does not slide. Active input blurs on switch.
+- **Motion:** the form slides horizontally like an iOS tab view (`translateX`, `--motion-duration-md`, `--motion-ease-standard` in `RecipientTypeFormPanels`). Reduced motion cross-fades at `--motion-duration-sm` / `--motion-ease-standard` with no slide. Active input blurs on switch.
 - Selected type is stored on `Recipient.recipientType` when the user continues.
 - Components: `RecipientTypeTabs`, `RecipientTypeFormPanels` under `src/features/sendMoney/components/`
 

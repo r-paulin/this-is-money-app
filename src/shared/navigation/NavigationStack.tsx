@@ -214,6 +214,7 @@ export function NavigationStack() {
               canGoBack={index > 0}
               immersive={entry.immersive === true}
               interactive={role === "top"}
+              toolbarEnd={entry.toolbarEnd}
             />
             <div className="nav-layer__body">{entry.render()}</div>
           </div>

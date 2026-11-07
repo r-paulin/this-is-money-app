@@ -13,6 +13,10 @@ export interface GroupedSectionProps {
    * Figma Activity: 12; Cards: 8.
    */
   paddingBottom?: 8 | 12
+  /** 8px gutter above the card. Default true. */
+  separatorTop?: boolean
+  /** 8px gutter below the card. Default true. */
+  separatorBottom?: boolean
   "aria-labelledby"?: string
 }
 
@@ -35,11 +39,13 @@ export function GroupedSection({
   children,
   paddingTop = 24,
   paddingBottom,
+  separatorTop = true,
+  separatorBottom = true,
   "aria-labelledby": ariaLabelledBy,
 }: GroupedSectionProps) {
   return (
     <div className="grouped-section__wrap">
-      <div className="grouped-section__separator" aria-hidden />
+      {separatorTop ? <div className="grouped-section__separator" aria-hidden /> : null}
       <section
         className="grouped-section__card"
         aria-labelledby={ariaLabelledBy}
@@ -50,7 +56,7 @@ export function GroupedSection({
           <div className={BOTTOM_PAD_CLASS[paddingBottom]} aria-hidden />
         ) : null}
       </section>
-      <div className="grouped-section__separator" aria-hidden />
+      {separatorBottom ? <div className="grouped-section__separator" aria-hidden /> : null}
     </div>
   )
 }

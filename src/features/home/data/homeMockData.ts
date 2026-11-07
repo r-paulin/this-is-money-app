@@ -52,6 +52,6 @@ export function buildMockHomeCardsWithOffer(): HomeCardRow[] {
   ]
 }
 
-export function getMockTransactionCount(): number {
-  return buildMockTransactions().length
+export function getMockTransactionCount(now = new Date()): number {
+  return buildMockTransactions(now).length
 }

@@ -2,54 +2,58 @@
 
 ## Purpose
 
-Show a card payment as a settled record whose status matches what actually happened to the money.
+Show a card payment detail screen that matches Figma Flow / Card transactions (`9640:34528`): summary with status and date, optional inline notice, Paid with / Charged on / Transaction ID / Merchant, optional Currency / Fee / Related / Cashback / Dispute sections, and a state-specific footer.
 
 ## ADDED Requirements
 
-### Requirement: Detail follows the transaction kind
-Opening a card payment MUST show a summary (category mark, amount, timestamp) and a Transaction details section with card, merchant, and status, plus Get help. The status MUST come from the transaction kind. A declined, failed, pending authorization, reversal, or refund MUST NOT be labeled Completed.
-
-#### Scenario: Declined payment
-- **WHEN** the driver opens a declined card payment
-- **THEN** the status is Declined and is not Completed
-
-#### Scenario: Authorization hold
-- **WHEN** the driver opens an authorization that has not been captured
-- **THEN** the status is Pending
-
-### Requirement: Status copy
-Completed MUST show the status with no extra description. Pending MUST say the merchant has placed a hold and include the date the hold will be released if the merchant does not collect the payment. Reversal MUST use the status Hold released and say that no money was taken. Refund MUST use the status Refunded and say the merchant refunded the payment. The summary mark MUST follow the same category-icon rules as the Activity row.
+### Requirement: Summary shows status and date
+Opening a card payment MUST show the category mark, signed amount, and subtext `{Status} · {detail date}`. Returned holds MUST use status Credited with a struck amount. Declined and failed amounts MUST be unsigned and struck. Refund pending amounts MUST use the muted credit tone.
 
 #### Scenario: Completed payment
 - **WHEN** the driver opens a captured card payment
-- **THEN** the status is Completed and no explanatory sentence is shown under it
+- **THEN** the subtext starts with `Completed ·` and there is no status notice under the summary
 
-#### Scenario: Reversal
-- **WHEN** the driver opens a reversal
-- **THEN** the status is Hold released and the description says no money was taken
+#### Scenario: Returned hold
+- **WHEN** the driver opens a returned authorization
+- **THEN** the status is Credited, the amount is struck, and a notice explains the return
 
-#### Scenario: Refund
-- **WHEN** the driver opens a refund
-- **THEN** the status is Refunded and the description says the merchant refunded the payment
+### Requirement: Inline notice replaces the Status row
+Card detail MUST NOT show a Status list row. Pending, declined, returned, refund pending, fee, dispute, and charged-later states MUST show an inline notice under the summary with the tone and copy from the design comments.
 
-### Requirement: Decline reasons stay plain
-A declined payment that includes a known reason MUST show one non-technical sentence for that reason. The known reasons are insufficient funds, inactive or closed card, expired card, suspected fraud, transaction not allowed, velocity limit, amount limit, blocked merchant category, blocked region, invalid card details, issuer unavailable, technical issue, and failed cardholder verification. An unknown or missing reason MUST still show Declined without inventing a cause.
+#### Scenario: Authorization hold
+- **WHEN** the driver opens a pending authorization
+- **THEN** a warning notice titled Payment pending explains the reservation and return-by date
 
-#### Scenario: Insufficient funds
-- **WHEN** the decline reason is insufficient funds
-- **THEN** the description says there was not enough balance to complete the payment
+#### Scenario: Declined payment
+- **WHEN** the driver opens a declined card payment with a known reason
+- **THEN** a danger notice titled Declined shows one plain-language sentence for that reason
 
-#### Scenario: Unknown reason
-- **WHEN** a declined payment has no mapped reason
-- **THEN** the status is Declined and no guessed explanation is shown
+### Requirement: Transaction details rows
+The Transaction details section MUST show Paid with (virtual or physical card last four), optional Charged on when clearing date differs from purchase date, a copyable Transaction ID, optional amount rows when reserved and charged differ, and Merchant with location / Also appears as rules.
+
+#### Scenario: Charged on a later day
+- **WHEN** the clearing date is a different calendar day from the purchase
+- **THEN** Charged on shows the clearing timestamp
+
+### Requirement: Optional sections
+When foreign amount data is present, a Currency section MUST show paid foreign amount, rate, and that conversion fee is separate. Fee kind rows MUST show Fee details and Related payment. Refunds MUST link Related payment when an id is present. Cashback pending or received MUST appear in a Cashback section. Dispute states MUST show a Dispute section with opened date and reference.
+
+### Requirement: Footer actions
+Pending, declined, returned, fee, cashback, and dispute states MUST show Get help. Settled completed card payments without an active dispute MUST show Dispute. Actions MAY be stubs.
+
+#### Scenario: Pending footer
+- **WHEN** the driver opens a pending authorization
+- **THEN** the footer is Get help and not Dispute
+
+#### Scenario: Completed footer
+- **WHEN** the driver opens a completed purchase without a dispute
+- **THEN** the footer is Dispute
+
+### Requirement: listStatus drives detail over kind alone
+Refund pending MUST be Pending with a refund-pending notice even when kind is refund. Partially returned / partially charged / charged later MUST use their list statuses in the summary. Kind alone MUST NOT force Refunded when listStatus is refund_pending.
 
 ### Requirement: Merchant recognition
 The merchant row MUST show the merchant name and, when a city or country is present, the location. A missing location MUST read Location unavailable. An online merchant with no physical presence MUST omit the location row. When the stored descriptor does not match the clean merchant name, the row MUST add "Also appears as:" plus that descriptor. An empty merchant name MUST fall back to Unknown merchant.
 
-#### Scenario: Missing location
-- **WHEN** a card payment has a merchant name and no location
-- **THEN** the location reads Location unavailable
-
-#### Scenario: Cryptic descriptor
-- **WHEN** the acquirer descriptor differs from the clean merchant name
-- **THEN** the merchant row includes "Also appears as:" and the descriptor
+### Requirement: Hold return days
+Pending return-by dates MUST use 5 days in-person, 10 days online, and 30 days for rental-class MCCs (rentals, hotels, restaurants, bars, transport).

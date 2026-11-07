@@ -8,6 +8,8 @@ export type ScreenEntry = {
    * Transition still uses the shared push/pop motion.
    */
   immersive?: boolean
+  /** Trailing toolbar control for this layer only. */
+  toolbarEnd?: ReactNode
 }
 
 export type TransitionDirection = "push" | "pop"

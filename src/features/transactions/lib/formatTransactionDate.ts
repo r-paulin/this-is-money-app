@@ -13,6 +13,8 @@ const MONTHS_SHORT = [
   "Dec",
 ] as const
 
+const WEEKDAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const
+
 function startOfLocalDay(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate())
 }
@@ -25,13 +27,13 @@ function isSameLocalDay(a: Date, b: Date): boolean {
   )
 }
 
-/** Section header: “Today” or “1 Jul, 2026”. */
+/** Section header: “Today” or “Mon, 2 Nov”. */
 export function formatTransactionSectionLabel(occurredAt: number, now = new Date()): string {
   const date = new Date(occurredAt)
   if (isSameLocalDay(date, now)) {
     return "Today"
   }
-  return `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}, ${date.getFullYear()}`
+  return `${WEEKDAYS_SHORT[date.getDay()]}, ${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`
 }
 
 const TIMESTAMP_FORMAT: Intl.DateTimeFormatOptions = {

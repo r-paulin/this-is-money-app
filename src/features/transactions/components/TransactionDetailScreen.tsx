@@ -1,6 +1,11 @@
 import { Button } from "@bolteu/kalep-react"
 import type { Transaction } from "../data/mockTransactions"
-import { buildTransactionDetailView } from "../lib/transactionDetailContent"
+import {
+  buildTransactionDetailView,
+  type DetailFooterAction,
+  type TransactionDetailView,
+} from "../lib/transactionDetailContent"
+import { DetailNotice } from "./DetailNotice"
 import { TransactionDetailSections } from "./TransactionDetailSections"
 import { TransactionDetailSummary } from "./TransactionDetailSummary"
 import "./transaction-detail.css"
@@ -9,28 +14,31 @@ export interface TransactionDetailScreenProps {
   transaction: Transaction
 }
 
-function DetailFooter({ view }: { view: ReturnType<typeof buildTransactionDetailView> }) {
-  const handleGetHelp = () => console.info("[stub] Get help")
-  const handleDownloadReceipt = () => console.info("[stub] Download receipt")
-
-  if (view.variant === "transfer") {
-    return (
-      <div className="transaction-detail__footer">
-        <Button size="lg" variant="secondary" fullWidth onClick={handleDownloadReceipt}>
-          Download receipt
-        </Button>
-        <Button size="lg" variant="secondary" fullWidth onClick={handleGetHelp}>
-          Get help
-        </Button>
-      </div>
-    )
+function footerLabel(action: DetailFooterAction): string {
+  switch (action) {
+    case "dispute":
+      return "Dispute"
+    case "download_receipt":
+      return "Download receipt"
+    case "get_help":
+      return "Get help"
   }
+}
 
+function DetailFooter({ view }: { view: TransactionDetailView }) {
   return (
     <div className="transaction-detail__footer">
-      <Button size="lg" variant="secondary" fullWidth onClick={handleGetHelp}>
-        Get help
-      </Button>
+      {view.footer.actions.map((action) => (
+        <Button
+          key={action}
+          size="lg"
+          variant="secondary"
+          fullWidth
+          onClick={() => console.info(`[stub] ${footerLabel(action)}`)}
+        >
+          {footerLabel(action)}
+        </Button>
+      ))}
     </div>
   )
 }
@@ -39,12 +47,19 @@ export function TransactionDetailScreen({ transaction }: TransactionDetailScreen
   const view = buildTransactionDetailView(transaction)
 
   return (
-    <div className="transaction-detail min-h-dvh">
+    <div className="transaction-detail">
       <div className="transaction-detail__scroll">
         <TransactionDetailSummary transaction={transaction} view={view} />
+        {view.notice ? (
+          <DetailNotice
+            tone={view.notice.tone}
+            title={view.notice.title}
+            body={view.notice.body}
+          />
+        ) : null}
         <TransactionDetailSections view={view} />
+        <DetailFooter view={view} />
       </div>
-      <DetailFooter view={view} />
     </div>
   )
 }

@@ -10,6 +10,7 @@ function minutesAgo(minutes: number, now: number): number {
   return now - minutes * 60 * 1000
 }
 
+/** Recipients relative to app-open `now` (180-day retention; not the Activity 7-day window). */
 export function buildMockRecipients(now = Date.now()): Recipient[] {
   return [
     {

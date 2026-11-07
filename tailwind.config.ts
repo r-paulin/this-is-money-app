@@ -46,6 +46,7 @@ export default {
       ...(kalep.theme?.extend ?? {}),
       borderRadius: {
         ...(kalep.theme?.extend?.borderRadius ?? {}),
+        badge: "var(--radius-badge)",
         compact: "var(--radius-compact)",
         card: "var(--radius-card)",
         grouped: "var(--radius-grouped)",

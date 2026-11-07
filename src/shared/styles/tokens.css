@@ -56,6 +56,7 @@
   --list-item-label-py: 2px;
 
   /* Radius */
+  --radius-badge: var(--dimension-100);
   --radius-compact: var(--dimension-200);
   --radius-card: 12px;
   --radius-grouped: var(--dimension-400);
@@ -83,7 +84,7 @@
   --mcc-money: #2a9c64;
   --mcc-utilities: #455a64;
   --mcc-other: #455a64;
-  /* Figma bg/warning-primary — not bg-active/warning-primary (#f09800). */
+  /* Unused by Theme=Cashback (uses bg-positive-secondary). Kept for token map stability. */
   --mcc-cashback: #ffb200;
   --mcc-government: #3f2d0f;
   --mcc-fuel: #6d4c41;

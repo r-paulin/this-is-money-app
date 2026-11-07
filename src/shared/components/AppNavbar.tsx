@@ -1,6 +1,7 @@
 import { GhostButton } from "@bolteu/kalep-react"
 import ArrowBackward from "@bolteu/kalep-react-icons/dist/ArrowBackward"
 import Cross from "@bolteu/kalep-react-icons/dist/Cross"
+import type { ReactNode } from "react"
 import { useNavigationStack } from "@/shared/navigation"
 import "./app-navbar.css"
 
@@ -13,6 +14,8 @@ export interface AppNavbarProps {
   interactive?: boolean
   /** Override back (e.g. modal dismiss). Skips nav `pop()`. */
   onBack?: () => void
+  /** Trailing control. Omitted layers render nothing on that side. */
+  toolbarEnd?: ReactNode
 }
 
 export function AppNavbar({
@@ -20,6 +23,7 @@ export function AppNavbar({
   immersive = false,
   interactive = true,
   onBack,
+  toolbarEnd,
 }: AppNavbarProps) {
   const { pop, navbarBackHandler, isNavigationLocked } = useNavigationStack()
 
@@ -83,6 +87,9 @@ export function AppNavbar({
         ) : (
           <span className="app-navbar__icon-button-spacer" aria-hidden />
         )}
+        {toolbarEnd ? (
+          <div className="app-navbar__icon-button">{toolbarEnd}</div>
+        ) : null}
       </div>
     </header>
   )

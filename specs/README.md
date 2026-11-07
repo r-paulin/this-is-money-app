@@ -16,9 +16,12 @@ Machine- and human-readable design documentation for this app. **Read these befo
 - [Token reference](tokens/token-reference.md) — CSS variables and Tailwind aliases
 - [MCC icon](components/mcc-icon.md) — transaction category circles
 - [List item](patterns/list-item.md) — transaction / recipient rows
+- [Transaction detail](patterns/transaction-detail.md) — card / transfer / payout detail screens
 - [Text field](patterns/text-field.md) — inline-label form inputs (not search)
 - [Add recipient form](patterns/add-recipient-form.md) — Individual / Business tabs, step 1 fields
 - [Navigation](patterns/navigation.md) — push vs modal (see also `.cursor/rules/ios-navigation.mdc`)
+- [Card controls](patterns/card-controls.md) — lock/unlock hub, disable matrix, caption
+- [Spending limits](patterns/spending-limits.md) — overview ring, change limits, Home warnings
 
 ## Enforcement
 

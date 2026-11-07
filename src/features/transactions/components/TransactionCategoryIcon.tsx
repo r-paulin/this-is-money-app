@@ -5,7 +5,6 @@ import Boat from "@bolteu/kalep-react-icons/dist/Boat"
 import Bus from "@bolteu/kalep-react-icons/dist/Bus"
 import Card from "@bolteu/kalep-react-icons/dist/Card"
 import Carsharing from "@bolteu/kalep-react-icons/dist/Carsharing"
-import ArrowRightUp from "@bolteu/kalep-react-icons/dist/ArrowRightUp"
 import Cash from "@bolteu/kalep-react-icons/dist/Cash"
 import Decline from "@bolteu/kalep-react-icons/dist/Decline"
 import Flag from "@bolteu/kalep-react-icons/dist/Flag"
@@ -20,8 +19,10 @@ import Train from "@bolteu/kalep-react-icons/dist/Train"
 import badgeDeclined from "../assets/badge-declined.svg"
 import badgeInflow from "../assets/badge-inflow.svg"
 import badgeOutflow from "../assets/badge-outflow.svg"
+import iconAtmBill from "../assets/icon-atm-bill.svg"
 import iconCashbackColored from "../assets/icon-cashback-colored.svg"
 import iconElectric from "../assets/icon-electric.svg"
+import iconFlash from "../assets/icon-flash.svg"
 import iconHouseUser from "../assets/icon-house-user.svg"
 import iconParking from "../assets/icon-parking.svg"
 import iconRepair from "../assets/icon-repair.svg"
@@ -58,13 +59,15 @@ const THEME_ICONS: Record<MccThemeId, ThemeIcon> = {
   medical: { type: "kalep", Icon: Medical },
   shopping: { type: "kalep", Icon: ShoppingBag },
   money: { type: "kalep", Icon: Cash },
+  withdrawal: { type: "asset", src: iconAtmBill },
   bolt: { type: "kalep", Icon: LogoBolt },
   utilities: { type: "asset", src: iconElectric },
   government: { type: "kalep", Icon: Flag },
+  ev_charging: { type: "asset", src: iconFlash },
   fuel: { type: "kalep", Icon: Refuel },
   auto: { type: "asset", src: iconRepair },
   other: { type: "kalep", Icon: Card },
-  /** Figma cashback_colored 9526:168300 */
+  /** Figma cashback_color_original on Theme=Cashback `8955:41604`. */
   cashback: { type: "asset", src: iconCashbackColored },
   decline: { type: "kalep", Icon: Decline },
 }
@@ -164,21 +167,6 @@ export function TransactionCategoryIcon({
   surface = "list",
 }: TransactionCategoryIconProps) {
   const mark = resolveCategoryMark({ mcc, kind, themeOverride })
-
-  if (mark.kind === "arrow-in" || mark.kind === "arrow-out") {
-    return (
-      <span
-        className="relative flex size-10 shrink-0 items-center justify-center overflow-visible rounded-full bg-mcc-money p-mcc-pad"
-        aria-hidden
-      >
-        <ArrowRightUp
-          size="sm"
-          className={`block size-5 shrink-0 text-static-key-light ${mark.kind === "arrow-in" ? "rotate-180" : ""}`}
-        />
-      </span>
-    )
-  }
-
   const muted = kind === "declined" || kind === "failed"
   const theme = THEME_ICONS[mark.theme.id]
   const circleClass = muted

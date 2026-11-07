@@ -1,0 +1,24 @@
+/* Filters chips + custom-date expand. Motion tokens only. */
+
+.activity-filter-chip {
+  transition:
+    transform var(--motion-duration-xs) var(--motion-ease-standard),
+    background-color var(--motion-duration-sm) var(--motion-ease-standard),
+    color var(--motion-duration-sm) var(--motion-ease-standard),
+    border-color var(--motion-duration-sm) var(--motion-ease-standard);
+}
+
+.activity-filter-chip:not(:disabled):active {
+  transform: scale(var(--motion-press-scale));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-filter-chip,
+  .activity-filter-chip:not(:disabled):active {
+    transform: none;
+    transition:
+      background-color var(--motion-duration-sm) var(--motion-ease-standard),
+      color var(--motion-duration-sm) var(--motion-ease-standard),
+      border-color var(--motion-duration-sm) var(--motion-ease-standard);
+  }
+}

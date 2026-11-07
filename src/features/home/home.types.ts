@@ -22,6 +22,8 @@ export type HomeBannerId =
 
 export type HomeNotificationTone = "positive" | "warning" | "error"
 
+export type HomeNotificationAction = "unlock" | "spending-limits"
+
 export interface HomeNotification {
   tone: HomeNotificationTone
   /** Semibold lead (e.g. "Your card ·· 4231 is locked.") */
@@ -29,7 +31,8 @@ export interface HomeNotification {
   /** Regular body after the accent */
   body: string
   actionLabel: string
-  /** Card Controls destination for Unlock action */
+  action: HomeNotificationAction
+  /** Card destination for the action */
   cardType: CardType
 }
 

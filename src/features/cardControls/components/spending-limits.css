@@ -1,0 +1,94 @@
+.spending-limits-ring {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin-inline: auto;
+}
+
+.spending-limits-ring__svg {
+  display: block;
+}
+
+.spending-limits-ring__track {
+  stroke: var(--color-border-separator);
+}
+
+.spending-limits-ring__fill {
+  stroke: var(--color-content-action-primary);
+}
+
+.spending-limits-ring__fill--animate {
+  transition: stroke-dashoffset var(--motion-duration-md) var(--motion-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spending-limits-ring__fill--animate {
+    transition: none;
+  }
+}
+
+.spending-limits-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dimension-100);
+  padding: var(--dimension-600);
+  text-align: center;
+  pointer-events: none;
+}
+
+.spending-limits-screen {
+  display: flex;
+  min-height: calc(var(--app-h) - var(--app-navbar-offset));
+  flex-direction: column;
+  background-color: var(--color-layer-floor-1);
+}
+
+.spending-limits-screen__body {
+  flex: 1 1 auto;
+  padding-bottom: var(--dimension-400);
+}
+
+.spending-limits-screen__intro {
+  padding: var(--dimension-400) var(--dimension-600) 0;
+}
+
+.spending-limits-screen__ring-wrap {
+  padding: var(--dimension-400) 0;
+}
+
+.spending-limits-screen__footer {
+  flex-shrink: 0;
+  padding: var(--dimension-400) var(--dimension-600);
+  background-color: var(--color-layer-floor-1);
+}
+
+.change-limits-screen {
+  display: flex;
+  min-height: calc(var(--app-h) - var(--app-navbar-offset));
+  flex-direction: column;
+  background-color: var(--color-layer-floor-1);
+}
+
+.change-limits-screen__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-400);
+  padding: var(--dimension-400) var(--dimension-600);
+}
+
+.change-limits-screen__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dimension-400);
+}
+
+.change-limits-screen__footer {
+  flex-shrink: 0;
+  padding: var(--dimension-400) var(--dimension-600);
+  background-color: var(--color-layer-floor-1);
+}

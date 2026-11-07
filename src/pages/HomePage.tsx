@@ -1,12 +1,13 @@
 import { useCallback } from "react"
-import { CardControlsGate } from "@/features/cardControls"
+import { CardControlsGate, SpendingLimitsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
 import { HomeScreenProvider } from "@/features/home/HomeScreenProvider"
 import { WalletCardsProvider } from "@/features/home/WalletCardsProvider"
 import { useHomeScreen } from "@/features/home/useHomeScreen"
 import { useWalletCards } from "@/features/home/useWalletCards"
-import type { CardType } from "@/features/home/home.types"
+import type { CardType, HomeNotification } from "@/features/home/home.types"
 import { TransactionsGate } from "@/features/transactions"
+import { GetStatementToolbarButton } from "@/features/transactions/components/GetStatementToolbarButton"
 import { useOpenTransactionDetail } from "@/features/transactions/useOpenTransactionDetail"
 import { SendMoneyGate } from "@/features/sendMoney"
 import { NavigationProvider, useNavigationStack } from "@/shared/navigation"
@@ -36,9 +37,42 @@ function HomeRoute() {
     [cards, lastFourByType, push, setCardLocked],
   )
 
+  const openSpendingLimits = useCallback(
+    (cardType: CardType) => {
+      push({
+        key: `card-controls:${cardType}`,
+        render: () => (
+          <CardControlsGate
+            cardType={cardType}
+            lastFour={lastFourByType[cardType]}
+            initialLocked={Boolean(cards.find((row) => row.kind === cardType)?.locked)}
+            onLockedChange={(locked) => setCardLocked(cardType, locked)}
+          />
+        ),
+      })
+      push({
+        key: `spending-limits:${cardType}`,
+        render: () => <SpendingLimitsGate cardType={cardType} />,
+      })
+    },
+    [cards, lastFourByType, push, setCardLocked],
+  )
+
+  const handleNotificationAction = useCallback(
+    (notification: HomeNotification) => {
+      if (notification.action === "spending-limits") {
+        openSpendingLimits(notification.cardType)
+        return
+      }
+      openCardControls(notification.cardType)
+    },
+    [openCardControls, openSpendingLimits],
+  )
+
   const openTransactions = useCallback(() => {
     push({
       key: "transactions",
+      toolbarEnd: <GetStatementToolbarButton />,
       render: () => <TransactionsGate />,
     })
   }, [push])
@@ -56,7 +90,7 @@ function HomeRoute() {
       onSendMoney={openSendMoney}
       onSeeAll={openTransactions}
       onTransactionSelect={openTransactionDetail}
-      onUnlockCard={openCardControls}
+      onNotificationAction={handleNotificationAction}
     />
   )
 }

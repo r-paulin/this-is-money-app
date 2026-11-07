@@ -10,7 +10,7 @@ import failedTransferVideo from "../assets/failed-transfer-light.mp4"
 import successfulTransferVideo from "../assets/successful-transfer-light.mp4"
 import { formatRecipientDisplayName } from "../lib/formatRecipientName"
 import { formatReviewReference } from "../lib/formatTransferReview"
-import { formatIbanDisplay } from "../lib/iban"
+import { formatIbanDisplay, getIbanCountryCode } from "../lib/iban"
 import {
   createMockTransfer,
   type MockCreateTransferResult,
@@ -34,10 +34,11 @@ export interface TransferResultScreenProps {
 interface ResultDetailRowProps {
   label: string
   value: string
+  caption?: string
   separator?: boolean
 }
 
-function ResultDetailRow({ label, value, separator = true }: ResultDetailRowProps) {
+function ResultDetailRow({ label, value, caption, separator = true }: ResultDetailRowProps) {
   return (
     <ListItemLayout
       isReverse
@@ -48,13 +49,24 @@ function ResultDetailRow({ label, value, separator = true }: ResultDetailRowProp
         </Typography>
       }
       primary={
-        <Typography variant="body-m-compact-regular" color="primary" as="span">
-          {value}
-        </Typography>
+        caption ? (
+          <Typography variant="body-m-compact-regular" color="primary" as="div">
+            <div>{value}</div>
+            <Typography variant="body-s-regular" color="secondary" as="div">
+              {caption}
+            </Typography>
+          </Typography>
+        ) : (
+          <Typography variant="body-m-compact-regular" color="primary" as="span">
+            {value}
+          </Typography>
+        )
       }
       separator={separator}
       paddingStart={6}
       paddingEnd={6}
+      paddingTop={3}
+      paddingBottom={3}
     />
   )
 }
@@ -75,6 +87,8 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
   const { recipient, amountCents, feeCents, reference } = draft
   const displayName = formatRecipientDisplayName(recipient.rawName)
   const ibanDisplay = formatIbanDisplay(recipient.iban)
+  const bankName =
+    draft.payeeVerification.resolvedBankName ?? resolveResultBankName(recipient.iban)
   const referenceDisplay = formatReviewReference(reference)
 
   const uiState: TransferResultUiState = result == null
@@ -253,6 +267,7 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
               <ResultDetailRow
                 label="IBAN"
                 value={ibanDisplay}
+                caption={bankName}
                 separator={Boolean(reference?.trim())}
               />
               {reference?.trim() ? (
@@ -292,4 +307,11 @@ export function TransferResultScreen({ draft }: TransferResultScreenProps) {
       ) : null}
     </div>
   )
+}
+
+function resolveResultBankName(iban: string): string {
+  const country = getIbanCountryCode(iban)
+  if (country === "FR") return "BNP Paribas"
+  if (country === "LV") return "Swedbank"
+  return "Recipient bank"
 }

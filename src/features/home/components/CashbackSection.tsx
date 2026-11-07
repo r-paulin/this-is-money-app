@@ -2,20 +2,28 @@ import { ListItemLayout, Typography } from "@bolteu/kalep-react"
 import { GroupedSection } from "@/shared/components/GroupedSection"
 import { SectionHeader } from "@/shared/components/SectionHeader"
 import { useNavigationStack } from "@/shared/navigation"
+import { TransactionsGate } from "@/features/transactions"
+import { GetStatementToolbarButton } from "@/features/transactions/components/GetStatementToolbarButton"
+import { EMPTY_ACTIVITY_FILTERS } from "@/features/transactions/lib/activityFilters"
 import carWithCoins from "../assets/illustration-car-with-coins.png"
-import { CashbackScreen } from "./CashbackScreen"
 
 /** Figma end-slot leaf — 800×592 source, displayed at design scale. */
 const ILLUSTRATION_WIDTH = 120
 const ILLUSTRATION_HEIGHT = 89
+
+const CASHBACK_ACTIVITY_FILTERS = {
+  ...EMPTY_ACTIVITY_FILTERS,
+  types: ["cashback" as const],
+}
 
 export function CashbackSection() {
   const { push } = useNavigationStack()
 
   const openCashback = () => {
     push({
-      key: "cashback",
-      render: () => <CashbackScreen />,
+      key: "transactions:cashback",
+      toolbarEnd: <GetStatementToolbarButton />,
+      render: () => <TransactionsGate initialFilters={CASHBACK_ACTIVITY_FILTERS} />,
     })
   }
 

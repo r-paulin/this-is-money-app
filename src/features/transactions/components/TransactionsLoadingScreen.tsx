@@ -8,12 +8,16 @@ import "./activity-search-states.css"
 const ROW_COUNT = 3
 
 /** Figma 8845:53130 — section label bar + three list rows while search settles. */
-export function TransactionSearchSkeleton() {
+export function TransactionSearchSkeleton({
+  label = "Searching activity",
+}: {
+  label?: string
+}) {
   return (
     <div
       className="activity-search-skeleton is-pulsing"
       aria-busy
-      aria-label="Searching activity"
+      aria-label={label}
     >
       <ActivityListSkeleton />
     </div>
@@ -58,7 +62,7 @@ function SkeletonListItem({ separator }: { separator: boolean }) {
 
 export function TransactionsLoadingScreen() {
   return (
-    <div className="flex min-h-dvh flex-col bg-layer-floor-1">
+    <div className="pointer-events-none flex min-h-dvh flex-col bg-layer-floor-1" aria-hidden>
       <div className="px-6 pb-5">
         <SkeletonBar width="50%" height={24} />
       </div>
@@ -67,6 +71,7 @@ export function TransactionsLoadingScreen() {
         <div className="min-w-0 flex-1 pl-6 pr-3">
           <SkeletonBar width="100%" height={56} className="!rounded-full" />
         </div>
+        {/* Filter control beside search. Back and Get statement stay real in the toolbar. */}
         <SkeletonBar width={56} height={56} className="shrink-0 !rounded-full" />
       </div>
 

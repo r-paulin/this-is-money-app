@@ -1,13 +1,14 @@
 .transaction-detail {
   display: flex;
-  min-height: 100%;
+  min-height: calc(var(--app-h) - var(--app-navbar-offset));
   flex-direction: column;
   background-color: var(--color-layer-floor-1);
 }
 
 .transaction-detail__scroll {
+  display: flex;
   flex: 1 1 auto;
-  min-height: 0;
+  flex-direction: column;
 }
 
 .transaction-detail__summary-wrap {
@@ -71,12 +72,23 @@
 }
 
 .transaction-detail__footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: var(--dimension-300);
+  margin-top: auto;
   background-color: var(--color-layer-floor-1);
   padding: var(--dimension-400) var(--dimension-600);
+}
+
+/* Figma masked IBAN: middot groups, not bullet glyphs. */
+.iban-masked {
+  display: inline;
+  font-variant-numeric: lining-nums proportional-nums;
+  letter-spacing: normal;
+  word-break: break-word;
+}
+
+.iban-masked__group {
+  white-space: nowrap;
 }

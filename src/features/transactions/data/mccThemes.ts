@@ -14,9 +14,11 @@ export type MccThemeId =
   | "medical"
   | "shopping"
   | "money"
+  | "withdrawal"
   | "bolt"
   | "utilities"
   | "government"
+  | "ev_charging"
   | "fuel"
   | "auto"
   | "other"
@@ -33,6 +35,8 @@ export type TransactionKind =
   | "authorization"
   | "reversal"
   | "failed"
+  | "cashback"
+  | "fee"
 
 export type TransactionBadge = "inbound" | "outbound" | "declined"
 
@@ -129,7 +133,13 @@ export const MCC_THEMES: readonly MccTheme[] = [
   },
   {
     id: "money",
-    mccs: [6011, 6012, 4829, 6536, 6537, 6538],
+    mccs: [6012, 4829, 6536, 6537, 6538],
+    bgClass: "bg-mcc-money",
+    iconClass: "text-static-key-light",
+  },
+  {
+    id: "withdrawal",
+    mccs: [6010, 6011, 24001],
     bgClass: "bg-mcc-money",
     iconClass: "text-static-key-light",
   },
@@ -149,6 +159,12 @@ export const MCC_THEMES: readonly MccTheme[] = [
     id: "government",
     mccs: [9211, 9222, 9311],
     bgClass: "bg-mcc-government",
+    iconClass: "text-static-key-light",
+  },
+  {
+    id: "ev_charging",
+    mccs: [5552],
+    bgClass: "bg-mcc-fuel",
     iconClass: "text-static-key-light",
   },
   {
@@ -172,7 +188,8 @@ export const MCC_THEMES: readonly MccTheme[] = [
   {
     id: "cashback",
     mccs: [],
-    bgClass: "bg-mcc-cashback",
+    /** Figma Theme=Cashback `8955:41604` — bg/positive-secondary, not yellow. */
+    bgClass: "bg-positive-secondary",
     iconClass: "text-static-key-light",
   },
   {
@@ -202,29 +219,25 @@ const LOOKUP_ORDER: readonly MccThemeId[] = [
   "transport_bus",
   "transport_train",
   "shopping",
+  "ev_charging",
   "fuel",
   "auto",
   "utilities",
   "government",
   "medical",
+  "withdrawal",
   "money",
   "other",
 ]
 
-export type CategoryMark =
-  | { kind: "arrow-in" }
-  | { kind: "arrow-out" }
-  | { kind: "theme"; theme: MccTheme }
+export type CategoryMark = { kind: "theme"; theme: MccTheme }
 
-/** ATM stays an arrow mark. Everything else is the category circle plus a corner badge. */
+/** Every mark is the 40px category circle (plus a corner badge when needed). */
 export function resolveCategoryMark(opts: {
   mcc: number
   kind: TransactionKind
   themeOverride?: MccThemeId
 }): CategoryMark {
-  if (opts.kind === "atm") {
-    return { kind: "arrow-out" }
-  }
   return { kind: "theme", theme: resolveThemeForTransaction(opts) }
 }
 
@@ -236,10 +249,19 @@ export function resolveThemeForTransaction(opts: {
   if (opts.kind === "ride_payout") {
     return THEME_BY_ID.bolt
   }
+  if (opts.kind === "cashback") {
+    return THEME_BY_ID.cashback
+  }
+  if (opts.kind === "fee") {
+    return THEME_BY_ID.money
+  }
   if (opts.themeOverride) {
     return THEME_BY_ID[opts.themeOverride]
   }
-  if (opts.kind === "atm" || opts.kind === "transfer_out" || opts.kind === "transfer_in") {
+  if (opts.kind === "atm") {
+    return THEME_BY_ID.withdrawal
+  }
+  if (opts.kind === "transfer_out" || opts.kind === "transfer_in") {
     return THEME_BY_ID.money
   }
 
@@ -259,10 +281,11 @@ export function badgeForKind(kind: TransactionKind): TransactionBadge | undefine
     kind === "ride_payout" ||
     kind === "refund" ||
     kind === "transfer_in" ||
-    kind === "reversal"
+    kind === "reversal" ||
+    kind === "cashback"
   ) {
     return "inbound"
   }
-  if (kind === "atm" || kind === "transfer_out") return "outbound"
+  if (kind === "atm" || kind === "transfer_out" || kind === "fee") return "outbound"
   return undefined
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { SkeletonReveal } from "@/shared/components/SkeletonReveal"
+import type { ActivityFilterSelection } from "../lib/activityFilters"
 import { TransactionsLoadingScreen } from "./TransactionsLoadingScreen"
 import { TransactionsScreen } from "./TransactionsScreen"
 
@@ -9,7 +10,11 @@ const LOADER_MS = 800
  * Each navigation push mounts a fresh Gate. With `deferContentMount`,
  * TransactionsScreen mounts after the loader — leave/return clears search state.
  */
-export function TransactionsGate() {
+export function TransactionsGate({
+  initialFilters,
+}: {
+  initialFilters?: ActivityFilterSelection
+} = {}) {
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -28,7 +33,7 @@ export function TransactionsGate() {
       aria-label={revealed ? undefined : "Loading transactions"}
       skeleton={<TransactionsLoadingScreen />}
     >
-      <TransactionsScreen />
+      <TransactionsScreen initialFilters={initialFilters} />
     </SkeletonReveal>
   )
 }

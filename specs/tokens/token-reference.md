@@ -46,7 +46,7 @@ Tailwind extensions: `tailwind.config.ts`
 | money | `--mcc-money` | `bg-mcc-money` |
 | utilities | `--mcc-utilities` | `bg-mcc-utilities` |
 | other | `--mcc-other` | `bg-mcc-other` |
-| cashback | `--mcc-cashback` | `bg-mcc-cashback` |
+| cashback | — | `bg-positive-secondary` (Figma Theme=Cashback; `--mcc-cashback` unused) |
 | government | `--mcc-government` | `bg-mcc-government` |
 | fuel | `--mcc-fuel` | `bg-mcc-fuel` |
 | decline | `--mcc-decline` | `bg-mcc-decline` |
@@ -85,6 +85,7 @@ Defined in `src/shared/styles/tokens.css` (motionSystem v1). JS recipes: `src/sh
 | `--motion-spring-smooth` / `snappy` / `bouncy` | spring or ease fallback | Layout, toggle, success |
 | `--motion-distance-sm` / `md` / `lg` | 4 / 8 / 32px | Travel distances |
 | `--motion-scale-sm` / `lg` | 0.97 / 0.5 | Press / pop-in |
+| `--motion-stagger` | 40ms | List enter delay; first five items, then the rest together. Never on scroll/refresh |
 | `--motion-fade-in*` / `fade-out*` / `cross-fade*` | spring recipes | Opacity enters/exits |
 | `--motion-nav-enter-*` / `exit-*` / `parallax` | platform fork | Page push/pop (Android 32px parallax, iOS 30%) |
 | `--motion-sheet-*` / `dialog-*` / `modal-*` | platform fork | Sheets, dialogs, modals |
@@ -96,6 +97,7 @@ Platform: `applyPlatformAttribute()` in `main.tsx` sets `data-platform`. Nav ent
 
 | CSS variable | Tailwind |
 |--------------|----------|
+| `--radius-badge` | `rounded-badge` |
 | `--radius-compact` | `rounded-compact` |
 | `--radius-card` | `rounded-card` |
 | `--radius-grouped` | `rounded-grouped` |

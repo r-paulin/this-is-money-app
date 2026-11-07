@@ -61,6 +61,21 @@ describe("formatSignedTransactionAmount", () => {
     assert.equal(result.tone, "missing")
   })
 
+  it("treats cashback as a credit and a fee as a debit", () => {
+    assert.equal(
+      formatSignedTransactionAmount({ amountCents: 250, kind: "cashback" }).text,
+      "+€2.50",
+    )
+    assert.equal(
+      formatSignedTransactionAmount({ amountCents: 100, kind: "fee" }).tone,
+      "primary",
+    )
+    assert.equal(
+      formatSignedTransactionAmount({ amountCents: 100, kind: "fee" }).text,
+      "-€1.00",
+    )
+  })
+
   it("strikethrough tone for reversal without sign", () => {
     const result = formatSignedTransactionAmount({
       amountCents: 15000,
@@ -68,6 +83,28 @@ describe("formatSignedTransactionAmount", () => {
     })
 
     assert.equal(result.text, "€150.00")
+    assert.equal(result.tone, "declined")
+  })
+
+  it("mutes a pending refund while keeping the plus", () => {
+    const result = formatSignedTransactionAmount({
+      amountCents: 5000,
+      kind: "refund",
+      listStatus: "refund_pending",
+    })
+
+    assert.equal(result.text, "+€50.00")
+    assert.equal(result.tone, "muted")
+  })
+
+  it("unsigned tertiary amount for returned holds", () => {
+    const result = formatSignedTransactionAmount({
+      amountCents: 10000,
+      kind: "reversal",
+      listStatus: "returned",
+    })
+
+    assert.equal(result.text, "€100.00")
     assert.equal(result.tone, "declined")
   })
 })

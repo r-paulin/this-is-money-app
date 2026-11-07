@@ -9,10 +9,11 @@ export interface TransactionDetailSummaryProps {
   view: TransactionDetailView
 }
 
+/** Detail summary: + and − use content/primary (Figma Cashback / Transaction details). */
 function amountColor(
   tone: TransactionDetailView["amountTone"],
-): "primary" | "action-primary" | "secondary" {
-  if (tone === "credit") return "action-primary"
+): "primary" | "secondary" | "tertiary" {
+  if (tone === "muted") return "tertiary"
   if (tone === "declined" || tone === "missing") return "secondary"
   return "primary"
 }
@@ -28,8 +29,13 @@ export function TransactionDetailSummary({ transaction, view }: TransactionDetai
           surface="detail"
         />
         <div className="transaction-detail__summary-amount">
-          <Typography variant="heading-l-accent" color={amountColor(view.amountTone)} as="p" align="center">
-            {view.amountText}
+          <Typography
+            variant="heading-l-accent"
+            color={amountColor(view.amountTone)}
+            as="p"
+            align="center"
+          >
+            <span className={view.amountStrike ? "line-through" : undefined}>{view.amountText}</span>
           </Typography>
         </div>
         <div className="transaction-detail__summary-subtext">

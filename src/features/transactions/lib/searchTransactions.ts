@@ -15,6 +15,8 @@ const TYPE_LABEL: Record<TransactionKind, string> = {
   transfer_in: "Transfer",
   transfer_out: "Transfer",
   ride_payout: "Ride payout",
+  cashback: "Cashback",
+  fee: "Fee",
 }
 
 function queryHasDiacritics(query: string): boolean {
@@ -37,7 +39,14 @@ function nameMatches(title: string, normalizedQuery: string, stripDiacritics: bo
 
 function amountSign(kind: TransactionKind): -1 | 1 | 0 {
   if (kind === "declined" || kind === "failed" || kind === "reversal") return 0
-  if (kind === "ride_payout" || kind === "refund" || kind === "transfer_in") return 1
+  if (
+    kind === "ride_payout" ||
+    kind === "refund" ||
+    kind === "transfer_in" ||
+    kind === "cashback"
+  ) {
+    return 1
+  }
   return -1
 }
 

@@ -1,0 +1,23 @@
+/* List enter stagger: first five rows, then the rest together. Not for scroll/pagination. */
+
+.activity-row-enter {
+  animation: activity-row-enter var(--motion-duration-md) var(--motion-ease-enter) both;
+  animation-delay: calc(var(--stagger-i, 0) * var(--motion-stagger));
+}
+
+@keyframes activity-row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-offset-sm));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-row-enter {
+    animation: none;
+  }
+}

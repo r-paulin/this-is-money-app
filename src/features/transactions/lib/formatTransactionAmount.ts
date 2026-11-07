@@ -1,4 +1,5 @@
 import type { TransactionKind } from "../data/mccThemes"
+import type { TransactionListStatus } from "./listStatus"
 
 /** General euro display (e.g. recipient subtitles). */
 export function formatEurFromCents(cents: number): string {
@@ -23,11 +24,37 @@ export function formatTransactionListEurFromCents(cents: number): string {
   return `€${abs.toFixed(2)}`
 }
 
-export type TransactionAmountTone = "primary" | "credit" | "declined" | "missing"
+export type TransactionAmountTone = "primary" | "credit" | "declined" | "muted" | "missing"
+
+function isUnsignedStrike(
+  kind: TransactionKind,
+  listStatus?: TransactionListStatus,
+): boolean {
+  if (
+    listStatus === "returned" ||
+    listStatus === "declined" ||
+    listStatus === "failed" ||
+    listStatus === "reverted"
+  ) {
+    return true
+  }
+  if (listStatus != null) return false
+  return kind === "declined" || kind === "failed" || kind === "reversal"
+}
+
+function isCreditKind(kind: TransactionKind): boolean {
+  return (
+    kind === "ride_payout" ||
+    kind === "refund" ||
+    kind === "transfer_in" ||
+    kind === "cashback"
+  )
+}
 
 export function formatSignedTransactionAmount(opts: {
   amountCents?: number | null
   kind: TransactionKind
+  listStatus?: TransactionListStatus
 }): { text: string; tone: TransactionAmountTone } {
   if (opts.amountCents == null) {
     return { text: "--", tone: "missing" }
@@ -35,11 +62,15 @@ export function formatSignedTransactionAmount(opts: {
 
   const formatted = formatTransactionListEurFromCents(Math.abs(opts.amountCents))
 
-  if (opts.kind === "declined" || opts.kind === "failed" || opts.kind === "reversal") {
+  if (isUnsignedStrike(opts.kind, opts.listStatus)) {
     return { text: formatted, tone: "declined" }
   }
 
-  if (opts.kind === "ride_payout" || opts.kind === "refund" || opts.kind === "transfer_in") {
+  if (opts.listStatus === "refund_pending") {
+    return { text: `+${formatted}`, tone: "muted" }
+  }
+
+  if (isCreditKind(opts.kind)) {
     return { text: `+${formatted}`, tone: "credit" }
   }
 

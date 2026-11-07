@@ -3,7 +3,7 @@ import { PullToRefresh } from "@/shared/components/PullToRefresh"
 import { SECURE_ACCOUNT_STORIES, StoriesViewer } from "@/features/stories"
 import { useHomeScreen } from "../useHomeScreen"
 import type { Transaction } from "@/features/transactions/data/mockTransactions"
-import type { CardType } from "../home.types"
+import type { CardType, HomeNotification } from "../home.types"
 import { ActivitySection } from "./ActivitySection"
 import { BannerSlider } from "./BannerSlider"
 import { CardsSection } from "./CardsSection"
@@ -16,7 +16,7 @@ export interface HomeScreenProps {
   onSendMoney: () => void
   onSeeAll: () => void
   onTransactionSelect: (transaction: Transaction) => void
-  onUnlockCard?: (cardType: CardType) => void
+  onNotificationAction?: (notification: HomeNotification) => void
 }
 
 export function HomeScreen({
@@ -24,7 +24,7 @@ export function HomeScreen({
   onSendMoney,
   onSeeAll,
   onTransactionSelect,
-  onUnlockCard,
+  onNotificationAction,
 }: HomeScreenProps) {
   const {
     balanceCents,
@@ -64,7 +64,7 @@ export function HomeScreen({
             balanceState={balanceState}
             notification={notification}
             onSendMoney={onSendMoney}
-            onUnlockCard={onUnlockCard}
+            onNotificationAction={onNotificationAction}
           />
 
           <BannerSlider

@@ -15,7 +15,7 @@ import {
   getMockTransactionCount,
 } from "./data/homeMockData"
 import { HomeScreenContext } from "./homeScreenContext"
-import { getLockedCardNotification } from "./lib/homeScreenLogic"
+import { getHomeNotification } from "./lib/homeScreenLogic"
 import type {
   ActivityFetchState,
   BalanceFetchState,
@@ -58,7 +58,7 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
     const now = Date.now()
     setAsOfMs(now)
     setCards(buildMockHomeCards(now))
-    setTransactionCount(getMockTransactionCount())
+    setTransactionCount(getMockTransactionCount(new Date(now)))
   }, [clearFetchTimeout])
 
   const failFetch = useCallback(() => {
@@ -113,7 +113,7 @@ export function HomeScreenProvider({ children }: HomeScreenProviderProps) {
     [dismissedBannerIds],
   )
 
-  const notification = useMemo(() => getLockedCardNotification(cards), [cards])
+  const notification = useMemo(() => getHomeNotification(cards), [cards])
 
   const value = useMemo(
     () => ({

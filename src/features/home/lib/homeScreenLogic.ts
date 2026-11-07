@@ -1,3 +1,8 @@
+import {
+  buildSpendingLimitsView,
+  getSpendingLimits,
+  spendingWarningCopy,
+} from "../../cardControls/lib/spendingLimits"
 import type {
   CardType,
   HomeBannerId,
@@ -31,8 +36,47 @@ export function getLockedCardNotification(
     accent: `Your card ·· ${lastFour} is locked.`,
     body: " Unlock it to start making payments again",
     actionLabel: "Unlock the card",
+    action: "unlock",
     cardType,
   }
+}
+
+/**
+ * Limit warning when no locked-card notification applies.
+ * Prefers virtual card limits; falls back to physical.
+ */
+export function getSpendingLimitNotification(
+  cards: HomeCardRow[],
+  now = Date.now(),
+): HomeNotification | null {
+  const preferred =
+    cards.find((row) => row.kind === "virtual" && !isCardUnavailable(row)) ??
+    cards.find((row) => row.kind === "physical" && !isCardUnavailable(row))
+  if (!preferred || (preferred.kind !== "virtual" && preferred.kind !== "physical")) {
+    return null
+  }
+
+  const cardType: CardType = preferred.kind
+  const view = buildSpendingLimitsView(getSpendingLimits(cardType, new Date(now)))
+  const copy = spendingWarningCopy(view, now)
+  if (!copy) return null
+
+  return {
+    tone: "warning",
+    accent: copy.accent,
+    body: copy.body,
+    actionLabel: "View spending limits",
+    action: "spending-limits",
+    cardType,
+  }
+}
+
+/** Locked card wins over spending-limit warnings. */
+export function getHomeNotification(
+  cards: HomeCardRow[],
+  now = Date.now(),
+): HomeNotification | null {
+  return getLockedCardNotification(cards) ?? getSpendingLimitNotification(cards, now)
 }
 
 export function shouldShowSeeAll(transactionCount: number): boolean {

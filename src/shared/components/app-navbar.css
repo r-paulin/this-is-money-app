@@ -136,11 +136,11 @@
   display: flex;
   height: var(--app-navbar-toolbar-height);
   min-height: var(--app-navbar-toolbar-height);
-  flex-direction: column;
+  flex-direction: row;
   flex-shrink: 0;
   align-self: stretch;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   padding: 0 var(--dimension-300, 12px);
   border-bottom: 1px solid var(--app-navbar-border);
   background: var(--app-navbar-bg);

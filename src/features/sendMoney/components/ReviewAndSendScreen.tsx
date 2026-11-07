@@ -33,6 +33,8 @@ export interface ReviewAndSendScreenProps {
 interface RecipientDetailRowProps {
   label: string
   value: ReactNode
+  /** Figma List Item bottom slot — bank name under IBAN. */
+  caption?: string
   separator?: boolean
   valueAccent?: boolean
 }
@@ -40,9 +42,33 @@ interface RecipientDetailRowProps {
 function RecipientDetailRow({
   label,
   value,
+  caption,
   separator = true,
   valueAccent = false,
 }: RecipientDetailRowProps) {
+  const primary = caption ? (
+    <Typography
+      variant={valueAccent ? "body-m-compact-accent" : "body-m-compact-regular"}
+      color="primary"
+      as="div"
+    >
+      <div>{value}</div>
+      <Typography variant="body-s-regular" color="secondary" as="div">
+        {caption}
+      </Typography>
+    </Typography>
+  ) : typeof value === "string" ? (
+    <Typography
+      variant={valueAccent ? "body-m-compact-accent" : "body-m-compact-regular"}
+      color="primary"
+      as="span"
+    >
+      {value}
+    </Typography>
+  ) : (
+    value
+  )
+
   return (
     <ListItemLayout
       isReverse
@@ -52,22 +78,12 @@ function RecipientDetailRow({
           {label}
         </Typography>
       }
-      primary={
-        typeof value === "string" ? (
-          <Typography
-            variant={valueAccent ? "body-m-compact-accent" : "body-m-compact-regular"}
-            color="primary"
-            as="span"
-          >
-            {value}
-          </Typography>
-        ) : (
-          value
-        )
-      }
+      primary={primary}
       separator={separator}
       paddingStart={6}
       paddingEnd={6}
+      paddingTop={3}
+      paddingBottom={3}
     />
   )
 }
@@ -395,8 +411,7 @@ export function ReviewAndSendScreen({
                 </div>
               }
             />
-            <RecipientDetailRow label="IBAN" value={ibanDisplay} />
-            <RecipientDetailRow label="Bank" value={bankName} />
+            <RecipientDetailRow label="IBAN" value={ibanDisplay} caption={bankName} />
             <RecipientDetailRow
               label="Reference"
               value={formatReviewReference(reference)}
