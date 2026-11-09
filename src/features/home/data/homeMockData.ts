@@ -23,7 +23,6 @@ export function buildMockHomeCards(now = Date.now()): HomeCardRow[] {
       color: "green",
       lastFour: "4231",
       expiry: "10/28",
-      locked: true,
     },
     {
       kind: "physical",
