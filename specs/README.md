@@ -20,6 +20,7 @@ Machine- and human-readable design documentation for this app. **Read these befo
 - [Text field](patterns/text-field.md) — inline-label form inputs (not search)
 - [Add recipient form](patterns/add-recipient-form.md) — Individual / Business tabs, step 1 fields
 - [Navigation](patterns/navigation.md) — push vs modal (see also `.cursor/rules/ios-navigation.mdc`)
+- [Onboarding](patterns/onboarding.md) — pre-Home Bolt Card gate, hero video
 - [Card controls](patterns/card-controls.md) — lock/unlock hub, disable matrix, caption
 - [Spending limits](patterns/spending-limits.md) — overview ring, change limits, Home warnings
 

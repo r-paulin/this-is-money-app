@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { AccountDetailsScreen } from "@/features/accountDetails"
 import { CardControlsGate, SpendingLimitsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
@@ -7,6 +7,7 @@ import { WalletCardsProvider } from "@/features/home/WalletCardsProvider"
 import { useHomeScreen } from "@/features/home/useHomeScreen"
 import { useWalletCards } from "@/features/home/useWalletCards"
 import type { CardType, HomeNotification } from "@/features/home/home.types"
+import { OnboardingScreen } from "@/features/onboarding"
 import { TransactionsGate } from "@/features/transactions"
 import { GetStatementToolbarButton } from "@/features/transactions/components/GetStatementToolbarButton"
 import { useOpenTransactionDetail } from "@/features/transactions/useOpenTransactionDetail"
@@ -105,15 +106,22 @@ function HomeRoute() {
 }
 
 export function HomePage() {
+  const [onboardingDone, setOnboardingDone] = useState(false)
+  const finishOnboarding = useCallback(() => setOnboardingDone(true), [])
+
   return (
     <WalletCardsProvider>
       <HomeScreenProvider>
-        <NavigationProvider
-          initialScreen={{
-            key: "home",
-            render: () => <HomeRoute />,
-          }}
-        />
+        {onboardingDone ? (
+          <NavigationProvider
+            initialScreen={{
+              key: "home",
+              render: () => <HomeRoute />,
+            }}
+          />
+        ) : (
+          <OnboardingScreen onContinue={finishOnboarding} />
+        )}
       </HomeScreenProvider>
     </WalletCardsProvider>
   )

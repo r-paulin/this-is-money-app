@@ -1,0 +1,123 @@
+.onboarding-screen {
+  position: relative;
+  display: flex;
+  height: var(--app-h);
+  min-height: var(--app-h);
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-layer-floor-1);
+}
+
+.onboarding-screen__chrome {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.onboarding-screen__body {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: var(--dimension-400);
+}
+
+.onboarding-hero {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--dimension-600);
+}
+
+.onboarding-hero__frame {
+  position: relative;
+  width: 100%;
+  max-width: 345px;
+  height: 240px;
+  overflow: hidden;
+  border-radius: var(--dimension-300);
+  background-color: var(--color-layer-floor-0-grouped);
+}
+
+.onboarding-hero__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.onboarding-intro {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: var(--dimension-200);
+  padding: var(--dimension-300) var(--dimension-600);
+}
+
+.onboarding-bullets {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onboarding-bullet {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: var(--dimension-300);
+  min-height: 44px;
+  padding: var(--dimension-300) var(--dimension-600) 0;
+  box-sizing: border-box;
+}
+
+.onboarding-bullet__icon {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.onboarding-bullet__text {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.onboarding-learn-more {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: var(--dimension-300) var(--dimension-600);
+  box-sizing: border-box;
+}
+
+.onboarding-learn-more__button {
+  margin: 0;
+  padding: var(--dimension-50) 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+}
+
+.onboarding-footer {
+  z-index: 1;
+  flex-shrink: 0;
+  background-color: var(--color-layer-floor-1);
+  box-shadow: 0 -4px 12px 0 rgb(0 0 0 / 0.08);
+}
+
+.onboarding-footer__inner {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: var(--dimension-400) var(--dimension-600);
+  box-sizing: border-box;
+}
