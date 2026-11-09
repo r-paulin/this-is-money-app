@@ -17,10 +17,10 @@ const GRADIENT_OVERLAY_CUT =
 const GRADIENT_OVERLAY_FULL =
   "linear-gradient(0deg, #00110B26 0%, #00110B13 40%, #E1FDF106 100%)"
 
-/** Physical: solid black chrome (Figma #1c1c1c). Virtual: maze face base #0D1712. */
+/** Physical: solid black chrome (Figma #1c1c1c). Virtual: face-art letterbox base. */
 const BASE_COLORS = {
   physical: "rgb(28, 28, 28)",
-  virtual: "rgb(13, 23, 18)",
+  virtual: "rgb(0, 0, 0)",
 } as const
 
 export const DESIGN_WIDTH = 345
