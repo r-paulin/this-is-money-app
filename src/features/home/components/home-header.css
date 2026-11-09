@@ -1,10 +1,10 @@
 .home-header {
   position: relative;
+  /* Figma Header Centered: floor-1 → floor-0-grouped at 55% */
   background: linear-gradient(
     180deg,
     var(--color-layer-floor-1) 0%,
-    var(--color-layer-floor-1) 55%,
-    var(--color-layer-floor-0-grouped) 100%
+    var(--color-layer-floor-0-grouped) 55%
   );
 }
 
@@ -22,7 +22,7 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0;
   padding: 0 var(--dimension-600);
 }
@@ -50,7 +50,7 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -64,41 +64,24 @@
   font-weight: var(--font-weight-semibold);
   line-height: var(--display-m-line-height);
   letter-spacing: var(--display-m-letter-spacing);
+  text-align: center;
   font-variant-numeric: lining-nums proportional-nums;
   font-feature-settings:
     "cv03" on,
     "cv04" on;
 }
 
-.home-header__iban {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  padding-top: var(--dimension-200);
-}
-
-.home-header__iban-button {
-  display: flex;
-  align-items: center;
-  gap: var(--dimension-200);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  text-align: start;
-  color: inherit;
-}
-
-.home-header__iban-icon {
-  flex-shrink: 0;
-}
-
 .home-header__actions {
   display: flex;
   width: 100%;
   align-items: center;
+  gap: var(--dimension-300);
   padding-top: var(--dimension-400);
+}
+
+.home-header__action {
+  min-width: 0;
+  flex: 1 1 0;
 }
 
 .home-header__notification-wrap {

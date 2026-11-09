@@ -1,10 +1,8 @@
 import { Button, Typography } from "@bolteu/kalep-react"
-import ArrowCircleRight from "@bolteu/kalep-react-icons/dist/ArrowCircleRight"
-import Building from "@bolteu/kalep-react-icons/dist/Building"
+import ArrowCircleLeftDown from "@bolteu/kalep-react-icons/dist/ArrowCircleLeftDown"
+import ArrowCircleRightUp from "@bolteu/kalep-react-icons/dist/ArrowCircleRightUp"
 import Lock from "@bolteu/kalep-react-icons/dist/Lock"
 import { useEffect, useMemo, useRef } from "react"
-import { MOCK_ACCOUNT_DETAILS } from "@/features/accountDetails"
-import { formatIbanDisplay } from "@/features/sendMoney/lib/iban"
 import { formatHomeBalanceEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
@@ -19,6 +17,7 @@ export interface HomeHeaderProps {
   balanceState: BalanceFetchState
   notification: HomeNotification | null
   onSendMoney: () => void
+  /** Opens account details (Receive money). */
   onAccountDetails: () => void
   onNotificationAction?: (notification: HomeNotification) => void
 }
@@ -99,7 +98,7 @@ export function HomeHeader({
 
         <div className="home-header__inner">
           <div className="home-header__label">
-            <Typography variant="body-m-regular" color="secondary" as="p" align="start">
+            <Typography variant="body-m-regular" color="secondary" as="p" align="center">
               Available balance
             </Typography>
           </div>
@@ -119,52 +118,55 @@ export function HomeHeader({
             )}
           </div>
 
-          <div className="home-header__iban">
-            {loading ? (
-              <SkeletonBar width={220} height={24} className="rounded" />
-            ) : (
-              <button
-                type="button"
-                className="home-header__iban-button"
-                onClick={onAccountDetails}
-                aria-label={`Account details, IBAN ${formatIbanDisplay(MOCK_ACCOUNT_DETAILS.iban)}`}
-              >
-                <Building
-                  size="sm"
-                  className="home-header__iban-icon text-secondary"
-                  aria-hidden
-                />
-                <Typography variant="body-m-regular" color="secondary" as="span">
-                  {formatIbanDisplay(MOCK_ACCOUNT_DETAILS.iban)}
-                </Typography>
-              </button>
-            )}
-          </div>
-
           <div className="home-header__actions">
             {loading ? (
-              <SkeletonBar width={140} height={40} className="rounded-full" />
+              <>
+                <SkeletonBar width="100%" height={56} className="home-header__action rounded-full" />
+                <SkeletonBar width="100%" height={56} className="home-header__action rounded-full" />
+              </>
             ) : (
-              <Button
-                variant="static-light"
-                size="md"
-                disabled={sendDisabled}
-                onClick={onSendMoney}
-                aria-description={
-                  sendDisabled
-                    ? "Send money is unavailable when your balance is zero"
-                    : undefined
-                }
-              >
-                Send money
-                <ArrowCircleRight
-                  size="md"
-                  className={
-                    sendDisabled ? "text-static-tertiary-dark" : "text-action-primary"
-                  }
-                  aria-hidden
-                />
-              </Button>
+              <>
+                <div className="home-header__action">
+                  <Button
+                    variant="static-light"
+                    size="lg"
+                    fullWidth
+                    disabled={sendDisabled}
+                    onClick={onSendMoney}
+                    aria-label="Send money"
+                    aria-description={
+                      sendDisabled
+                        ? "Send money is unavailable when your balance is zero"
+                        : undefined
+                    }
+                  >
+                    Send
+                    <ArrowCircleRightUp
+                      size="md"
+                      className={
+                        sendDisabled ? "text-static-tertiary-dark" : "text-action-primary"
+                      }
+                      aria-hidden
+                    />
+                  </Button>
+                </div>
+                <div className="home-header__action">
+                  <Button
+                    variant="static-light"
+                    size="lg"
+                    fullWidth
+                    onClick={onAccountDetails}
+                    aria-label="Receive money"
+                  >
+                    Receive
+                    <ArrowCircleLeftDown
+                      size="md"
+                      className="text-action-primary"
+                      aria-hidden
+                    />
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </div>
