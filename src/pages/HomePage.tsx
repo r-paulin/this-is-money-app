@@ -1,4 +1,5 @@
 import { useCallback } from "react"
+import { AccountDetailsScreen } from "@/features/accountDetails"
 import { CardControlsGate, SpendingLimitsGate } from "@/features/cardControls"
 import { HomeScreen } from "@/features/home"
 import { HomeScreenProvider } from "@/features/home/HomeScreenProvider"
@@ -84,10 +85,18 @@ function HomeRoute() {
     })
   }, [push])
 
+  const openAccountDetails = useCallback(() => {
+    push({
+      key: "account-details",
+      render: () => <AccountDetailsScreen />,
+    })
+  }, [push])
+
   return (
     <HomeScreen
       onCardClick={openCardControls}
       onSendMoney={openSendMoney}
+      onAccountDetails={openAccountDetails}
       onSeeAll={openTransactions}
       onTransactionSelect={openTransactionDetail}
       onNotificationAction={handleNotificationAction}

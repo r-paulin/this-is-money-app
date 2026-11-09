@@ -1,7 +1,10 @@
 import { Button, Typography } from "@bolteu/kalep-react"
 import ArrowCircleRight from "@bolteu/kalep-react-icons/dist/ArrowCircleRight"
+import Building from "@bolteu/kalep-react-icons/dist/Building"
 import Lock from "@bolteu/kalep-react-icons/dist/Lock"
 import { useEffect, useMemo, useRef } from "react"
+import { MOCK_ACCOUNT_DETAILS } from "@/features/accountDetails"
+import { formatIbanDisplay } from "@/features/sendMoney/lib/iban"
 import { formatHomeBalanceEurFromCents } from "@/features/transactions/lib/formatTransactionAmount"
 import { NumberPopIn } from "@/shared/components/NumberPopIn"
 import { SkeletonBar } from "@/shared/components/skeleton/SkeletonPlaceholders"
@@ -16,6 +19,7 @@ export interface HomeHeaderProps {
   balanceState: BalanceFetchState
   notification: HomeNotification | null
   onSendMoney: () => void
+  onAccountDetails: () => void
   onNotificationAction?: (notification: HomeNotification) => void
 }
 
@@ -24,6 +28,7 @@ export function HomeHeader({
   balanceState,
   notification,
   onSendMoney,
+  onAccountDetails,
   onNotificationAction,
 }: HomeHeaderProps) {
   const formattedBalance = useMemo(
@@ -58,7 +63,8 @@ export function HomeHeader({
       <div className="home-header__content">
         {notification ? (
           <div className="home-header__notification-wrap">
-            <div
+            <button
+              type="button"
               className={[
                 "home-header__notification",
                 notification.tone === "warning"
@@ -69,6 +75,8 @@ export function HomeHeader({
               ]
                 .filter(Boolean)
                 .join(" ")}
+              aria-label={notification.actionLabel}
+              onClick={() => onNotificationAction?.(notification)}
             >
               <div className="home-header__notification-row">
                 <Lock
@@ -76,27 +84,16 @@ export function HomeHeader({
                   className="home-header__notification-icon shrink-0 text-warning-secondary"
                   aria-hidden
                 />
-                <div className="home-header__notification-text">
-                  <p className="home-header__notification-body m-0">
-                    <Typography variant="body-s-accent" color="primary" as="span">
-                      {notification.accent}
-                    </Typography>
-                    <Typography variant="body-s-regular" color="primary" as="span">
-                      {notification.body}
-                    </Typography>
-                  </p>
-                  <button
-                    type="button"
-                    className="home-header__notification-action"
-                    onClick={() => onNotificationAction?.(notification)}
-                  >
-                    <Typography variant="body-s-compact-accent" color="warning-primary" as="span">
-                      {notification.actionLabel}
-                    </Typography>
-                  </button>
-                </div>
+                <p className="home-header__notification-body m-0">
+                  <Typography variant="body-s-accent" color="primary" as="span">
+                    {notification.accent}
+                  </Typography>
+                  <Typography variant="body-s-regular" color="primary" as="span">
+                    {notification.body}
+                  </Typography>
+                </p>
               </div>
-            </div>
+            </button>
           </div>
         ) : null}
 
@@ -119,6 +116,28 @@ export function HomeHeader({
                   playing={playing}
                 />
               </p>
+            )}
+          </div>
+
+          <div className="home-header__iban">
+            {loading ? (
+              <SkeletonBar width={220} height={24} className="rounded" />
+            ) : (
+              <button
+                type="button"
+                className="home-header__iban-button"
+                onClick={onAccountDetails}
+                aria-label={`Account details, IBAN ${formatIbanDisplay(MOCK_ACCOUNT_DETAILS.iban)}`}
+              >
+                <Building
+                  size="sm"
+                  className="home-header__iban-icon text-secondary"
+                  aria-hidden
+                />
+                <Typography variant="body-m-regular" color="secondary" as="span">
+                  {formatIbanDisplay(MOCK_ACCOUNT_DETAILS.iban)}
+                </Typography>
+              </button>
             )}
           </div>
 

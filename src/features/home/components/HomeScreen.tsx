@@ -14,6 +14,7 @@ import { LegalFooter } from "./LegalFooter"
 export interface HomeScreenProps {
   onCardClick: (cardType: CardType) => void
   onSendMoney: () => void
+  onAccountDetails: () => void
   onSeeAll: () => void
   onTransactionSelect: (transaction: Transaction) => void
   onNotificationAction?: (notification: HomeNotification) => void
@@ -22,6 +23,7 @@ export interface HomeScreenProps {
 export function HomeScreen({
   onCardClick,
   onSendMoney,
+  onAccountDetails,
   onSeeAll,
   onTransactionSelect,
   onNotificationAction,
@@ -64,6 +66,7 @@ export function HomeScreen({
             balanceState={balanceState}
             notification={notification}
             onSendMoney={onSendMoney}
+            onAccountDetails={onAccountDetails}
             onNotificationAction={onNotificationAction}
           />
 

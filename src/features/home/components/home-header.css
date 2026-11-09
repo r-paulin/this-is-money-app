@@ -70,6 +70,30 @@
     "cv04" on;
 }
 
+.home-header__iban {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding-top: var(--dimension-200);
+}
+
+.home-header__iban-button {
+  display: flex;
+  align-items: center;
+  gap: var(--dimension-200);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+  color: inherit;
+}
+
+.home-header__iban-icon {
+  flex-shrink: 0;
+}
+
 .home-header__actions {
   display: flex;
   width: 100%;
@@ -84,11 +108,17 @@
 }
 
 .home-header__notification {
+  display: block;
+  width: 100%;
   min-height: 48px;
+  margin: 0;
+  border: 0;
   /* Figma Inline Notification — dimension/300 (12px), not radius-compact (8px) */
   border-radius: var(--dimension-300, 12px);
   padding: 12px var(--dimension-400);
   box-sizing: border-box;
+  cursor: pointer;
+  text-align: start;
 }
 
 .home-header__notification--warning {
@@ -110,15 +140,9 @@
   margin-top: 2px;
 }
 
-.home-header__notification-text {
-  display: flex;
+.home-header__notification-body {
   min-width: 0;
   flex: 1;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.home-header__notification-body {
   width: 100%;
   padding: var(--dimension-50, 2px) 0;
   font-feature-settings:
@@ -126,17 +150,6 @@
     "cv04" on,
     "lnum" on,
     "pnum" on;
-}
-
-.home-header__notification-action {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-  padding: var(--dimension-50, 2px) 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  text-align: start;
 }
 
 .home-header__separator {
